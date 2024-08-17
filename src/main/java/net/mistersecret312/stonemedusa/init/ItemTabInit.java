@@ -19,7 +19,7 @@ public class ItemTabInit
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ItemInit.MEDUSA.get()))
                     .title(Component.translatable("creativetab.main_tab"))
                     .displayItems((pParameters, pOutput) -> {
-                        pOutput.accept(MedusaItem.getMedusa(ItemInit.MEDUSA.get(), MedusaItem.maxEnergy, 5, 60));
+                        pOutput.accept(MedusaItem.getMedusa(ItemInit.MEDUSA.get(), MedusaItem.maxEnergy, 5, 20));
                     })
                     .build());
 

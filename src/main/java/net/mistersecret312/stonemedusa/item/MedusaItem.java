@@ -46,6 +46,7 @@ public class MedusaItem extends Item
             MedusaProjectile medusaProjectile = new MedusaProjectile(pLevel, pPlayer,
                     this.getEnergy(itemstack), this.getRadius(itemstack), this.getDelay(itemstack));
             medusaProjectile.setItem(itemstack);
+            medusaProjectile.setDelay(this.getDelay(itemstack));
             medusaProjectile.shootFromRotation(pPlayer, pPlayer.getXRot(), pPlayer.getYRot(), 0.0F, 1F, 0F);
             pLevel.addFreshEntity(medusaProjectile);
         }

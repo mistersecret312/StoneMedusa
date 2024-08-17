@@ -10,6 +10,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
@@ -127,8 +128,13 @@ public class MedusaProjectile extends ThrowableItemProjectile
     public void activate()
     {
         this.setActive(true);
-        this.setNoGravity(true);
         this.setDeltaMovement(Vec3.ZERO);
+    }
+
+    @Override
+    public boolean isNoGravity()
+    {
+        return this.isActive();
     }
 
     public void activeTick()
@@ -138,6 +144,8 @@ public class MedusaProjectile extends ThrowableItemProjectile
         {
             deactivate();
             activeTicker = 0;
+            expansionTicker = 0;
+            shrinkingTicker = 0;
         }
         else
         {
@@ -158,10 +166,15 @@ public class MedusaProjectile extends ThrowableItemProjectile
         }
     }
 
+    @Override
+    public void move(MoverType pType, Vec3 pPos)
+    {
+        super.move(pType, pPos);
+    }
+
     public void deactivate()
     {
         this.setActive(false);
-        this.setNoGravity(false);
     }
 
     @Override
