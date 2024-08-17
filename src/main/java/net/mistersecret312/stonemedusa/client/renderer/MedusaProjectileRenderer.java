@@ -28,7 +28,7 @@ public class MedusaProjectileRenderer extends ThrownItemRenderer<MedusaProjectil
     {
         pMatrixStack.pushPose();
         if(medusa.isActive())
-            SphereUtils.drawTexturedSphere(pMatrixStack, pBuffer, new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"), medusa.getCurrentRadius(), 1000, 0.0F, 0.0F, pPackedLight, true, OverlayTexture.NO_OVERLAY);
+            SphereUtils.drawTexturedSphere(pMatrixStack, pBuffer, new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"), medusa.getCurrentRadius(), 16, 0.0F, 0.0F, pPackedLight, true, OverlayTexture.NO_OVERLAY);
         pMatrixStack.popPose();
         super.render(medusa, pEntityYaw, pPartialTicks, pMatrixStack, pBuffer, pPackedLight);
 

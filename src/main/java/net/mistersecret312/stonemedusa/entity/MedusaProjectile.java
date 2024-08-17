@@ -74,14 +74,8 @@ public class MedusaProjectile extends ThrowableItemProjectile
     protected void defineSynchedData()
     {
         super.defineSynchedData();
-        this.entityData.set(ACTIVE, false);
-        this.entityData.set(RADIUS, 0F);
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket()
-    {
-        return NetworkHooks.getEntitySpawningPacket(this);
+        this.entityData.define(ACTIVE, false);
+        this.entityData.define(RADIUS, 0F);
     }
 
     @Override
