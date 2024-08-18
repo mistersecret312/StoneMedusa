@@ -22,7 +22,7 @@ public class ModEvents
     public static void entityHurt(LivingHurtEvent event)
     {
         if(event.getEntity().getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
-            event.setAmount(0);
+            event.setCanceled(true);
     }
 
     @SubscribeEvent

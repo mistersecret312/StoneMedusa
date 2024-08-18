@@ -1,7 +1,10 @@
 package net.mistersecret312.stonemedusa.client.renderer;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -30,5 +33,11 @@ public class MedusaProjectileRenderer extends ThrownItemRenderer<MedusaProjectil
         SphereUtils.drawTexturedSphere(pMatrixStack, pBuffer, new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"), medusa.getCurrentRadius()/1300f, 32, 0.0F, 0.0F, pPackedLight, false, OverlayTexture.NO_OVERLAY, new float[]{0.0f, 1.0f, 0.0f, 0.25f});
         pMatrixStack.popPose();
         super.render(medusa, pEntityYaw, pPartialTicks, pMatrixStack, pBuffer, pPackedLight);
+    }
+
+    @Override
+    public boolean shouldRender(MedusaProjectile pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ)
+    {
+        return true;
     }
 }

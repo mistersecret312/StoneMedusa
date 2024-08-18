@@ -7,6 +7,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,13 +18,17 @@ import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
+import net.mistersecret312.stonemedusa.init.EffectInit;
 import net.mistersecret312.stonemedusa.init.EntityInit;
 import net.mistersecret312.stonemedusa.init.ItemInit;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
+
+import java.util.List;
 
 public class MedusaProjectile extends ThrowableItemProjectile
 {
@@ -104,12 +109,14 @@ public class MedusaProjectile extends ThrowableItemProjectile
     @Override
     public void tick()
     {
-        super.tick();
+        if(this.level().isClientSide())
+            return;
         if(delay > 0)
             countdown();
         if(isActive())
             activeTick();
-
+        if(!isActive())
+            super.tick();
     }
 
     @Override
@@ -129,6 +136,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
     {
         this.setActive(true);
         this.setDeltaMovement(Vec3.ZERO);
+        this.setNoGravity(true);
     }
 
     @Override
@@ -140,7 +148,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
     public void activeTick()
     {
 
-        if(activeTicker >= this.targetRadius*100)
+        if(activeTicker >= this.targetRadius*45)
         {
             deactivate();
             activeTicker = 0;
@@ -154,27 +162,41 @@ public class MedusaProjectile extends ThrowableItemProjectile
             else this.energy = 0;
 
             activeTicker++;
-            if(activeTicker <= this.targetRadius*40 && !(activeTicker > this.targetRadius*40))
+            if(activeTicker <= this.targetRadius*5 && !(activeTicker > this.targetRadius*5))
                 expansionTicker++;
-            if(activeTicker > this.targetRadius*60 && activeTicker <= this.targetRadius*100)
+            if(activeTicker > this.targetRadius*40 && activeTicker <= this.targetRadius*45)
                 shrinkingTicker++;
 
-            if(expansionTicker > 0 && activeTicker <= this.targetRadius*40)
-                this.setCurrentRadius(Mth.lerp(expansionTicker/(this.targetRadius*40), 0, this.targetRadius));
-            if(shrinkingTicker > 0 && activeTicker > this.targetRadius*60 && activeTicker <= this.targetRadius*100)
-                this.setCurrentRadius(Mth.lerp(shrinkingTicker/(this.targetRadius*40), this.targetRadius, 0));
+            if(expansionTicker > 0 && activeTicker <= this.targetRadius*5)
+                this.setCurrentRadius(Mth.lerp(expansionTicker/(this.targetRadius*5), 0, this.targetRadius));
+            if(shrinkingTicker > 0 && activeTicker > this.targetRadius*40 && activeTicker <= this.targetRadius*45)
+                this.setCurrentRadius(Mth.lerp(shrinkingTicker/(this.targetRadius*5), this.targetRadius, 0));
+
+            if(this.getCurrentRadius() > 0f)
+                petrify();
         }
     }
 
-    @Override
-    public void move(MoverType pType, Vec3 pPos)
+    public void petrify()
     {
-        super.move(pType, pPos);
+        List<Entity> targets = this.level().getEntities(this,
+                new AABB(this.blockPosition().getX()-(this.getCurrentRadius()*1.3f), this.blockPosition().getY()-(this.getCurrentRadius()*1.3f),
+                        this.blockPosition().getZ()-(this.getCurrentRadius()*1.3f), this.blockPosition().getX()+(this.getCurrentRadius()*1.3f),
+                        this.blockPosition().getY()+(this.getCurrentRadius()*1.3f), this.blockPosition().getZ()+(this.getCurrentRadius()*1.3f)),
+                entity -> entity instanceof LivingEntity);
+
+        for(Entity entity : targets)
+        {
+            if(entity instanceof LivingEntity living)
+                if(!living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
+                    living.addEffect(new MobEffectInstance(EffectInit.PETRIFICATION.get(), 4000, 0, false, false, true));
+        }
     }
 
     public void deactivate()
     {
         this.setActive(false);
+        this.setNoGravity(false);
     }
 
     @Override
@@ -186,6 +208,9 @@ public class MedusaProjectile extends ThrowableItemProjectile
     @Override
     protected void onHit(HitResult pResult)
     {
+        if(this.isActive())
+            return;
+
         ItemStack stack = MedusaItem.getMedusa(ItemInit.MEDUSA.get(), this.getEnergy(), this.getTargetRadius(), this.getDelay());
 
         this.level().addFreshEntity(new ItemEntity(this.level(), this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ(), stack));

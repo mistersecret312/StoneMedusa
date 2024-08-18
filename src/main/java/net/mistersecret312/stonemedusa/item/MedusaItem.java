@@ -6,9 +6,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SnowballItem;
 import net.minecraft.world.level.Level;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.init.ItemInit;
@@ -18,6 +20,7 @@ public class MedusaItem extends Item
     public static final String ENERGY = "energy";
     public static final String RADIUS = "radius";
     public static final String DELAY = "delay";
+    public static final String START_DELAY = "start_delay";
     public static final int maxEnergy = 1000000;
     public static final float maxRadius = 30F;
 
@@ -32,6 +35,7 @@ public class MedusaItem extends Item
         item.setEnergy(stack, energy);
         item.setRadius(stack, radius);
         item.setDelay(stack, delay);
+        item.setStartDelay(stack, delay);
 
         return stack;
     }
@@ -57,6 +61,12 @@ public class MedusaItem extends Item
         }
 
         return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
+    }
+
+    @Override
+    public void inventoryTick(ItemStack pStack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected)
+    {
+        this.setDelay(pStack, this.getStartDelay(pStack));
     }
 
     @Override
@@ -98,6 +108,13 @@ public class MedusaItem extends Item
         else return 0;
     }
 
+    public int getStartDelay(ItemStack stack)
+    {
+        if(stack.getTag() != null && stack.getTag().contains(START_DELAY))
+            return stack.getTag().getInt(START_DELAY);
+        else return 0;
+    }
+
     public void setEnergy(ItemStack stack, int energy)
     {
         if(stack.getTag() != null)
@@ -117,6 +134,13 @@ public class MedusaItem extends Item
         if(stack.getTag() != null)
             stack.getTag().putInt(DELAY, delay);
         else stack.getOrCreateTag().putInt(DELAY, delay);
+    }
+
+    public void setStartDelay(ItemStack stack, int delay)
+    {
+        if(stack.getTag() != null)
+            stack.getTag().putInt(START_DELAY, delay);
+        else stack.getOrCreateTag().putInt(START_DELAY, delay);
     }
 
 

@@ -8,6 +8,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
+import net.mistersecret312.stonemedusa.item.RevivalFluidItem;
 
 public class ItemInit
 {
@@ -15,6 +16,9 @@ public class ItemInit
 
     public static final RegistryObject<MedusaItem> MEDUSA = ITEMS.register("medusa",
             () -> new MedusaItem(new Item.Properties().stacksTo(1).fireResistant().rarity(Rarity.EPIC)));
+
+    public static final RegistryObject<RevivalFluidItem> REVIVAL_FLUID = ITEMS.register("revival_fluid",
+            () -> new RevivalFluidItem(new Item.Properties().stacksTo(1).fireResistant().rarity(Rarity.UNCOMMON)));
 
     public static void register(IEventBus bus)
     {

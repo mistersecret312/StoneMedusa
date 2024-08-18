@@ -5,6 +5,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.SplashPotionItem;
 import net.mistersecret312.stonemedusa.init.EffectInit;
 
 public class PetrificationEffect extends MobEffect
@@ -22,9 +23,9 @@ public class PetrificationEffect extends MobEffect
 
         MobEffectInstance petrification = pLivingEntity.getActiveEffectsMap().get(EffectInit.PETRIFICATION.get());
 
-        if(petrification.endsWithin(80))
+        if(petrification.endsWithin(20))
         {
-            MobEffectInstance depetrification = new MobEffectInstance(MobEffects.HEAL,40, 1, false, false, false);
+            MobEffectInstance depetrification = new MobEffectInstance(MobEffects.HEAL,20, 0, false, false, false);
             pLivingEntity.addEffect(depetrification);
         }
         else
@@ -36,7 +37,7 @@ public class PetrificationEffect extends MobEffect
             });
         }
 
-        if(petrification.endsWithin(10))
+        if(petrification.endsWithin(5))
             pLivingEntity.setInvulnerable(false);
 
 

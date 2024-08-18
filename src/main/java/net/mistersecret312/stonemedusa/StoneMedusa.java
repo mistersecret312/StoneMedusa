@@ -51,6 +51,7 @@ public class StoneMedusa
         {
             event.enqueueWork(() -> {
                 EntityRenderers.register(EntityInit.MEDUSA.get(), MedusaProjectileRenderer::new);
+                EntityRenderers.register(EntityInit.REVIVAL_FLUIID.get(), ThrownItemRenderer::new);
             });
         }
     }
