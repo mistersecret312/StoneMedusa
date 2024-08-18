@@ -1,9 +1,12 @@
 package net.mistersecret312.stonemedusa.entity;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -36,6 +39,8 @@ public class ThrownRevivalFluidEntity extends ThrowableItemProjectile
     @Override
     protected void onHit(HitResult pResult)
     {
+        this.level().levelEvent(2007, this.blockPosition(), 14024585);
+
         AABB aabb = this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
         List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, aabb);
         for (LivingEntity living : list)
