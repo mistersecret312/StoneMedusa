@@ -1,0 +1,15 @@
+{
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "stonemedusa:item/medusa_activated"
+    },
+    "overrides":
+    [
+        {
+            "predicate": {
+                "stonemedusa:is_active": 1
+            },
+            "model": "stonemedusa:item/medusa_activated"
+        }
+    ]
+}
