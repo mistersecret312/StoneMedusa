@@ -10,6 +10,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.mistersecret312.stonemedusa.StoneMedusa;
+import net.mistersecret312.stonemedusa.network.packets.PetrifiedEntityUpdatePacket;
 
 public class NetworkInit
 {
@@ -19,7 +20,7 @@ public class NetworkInit
     public static int ID = 0;
 
     public static void registerPackets(){
-        //INSTANCE.registerMessage(id(), UpdateDivingPacket.class, UpdateDivingPacket::write, UpdateDivingPacket::read, UpdateDivingPacket::handle);
+        INSTANCE.registerMessage(id(), PetrifiedEntityUpdatePacket.class, PetrifiedEntityUpdatePacket::write, PetrifiedEntityUpdatePacket::read, PetrifiedEntityUpdatePacket::handle);
     }
 
     public static void sendPacketToAll(Object message){

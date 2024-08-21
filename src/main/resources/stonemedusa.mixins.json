@@ -8,7 +8,8 @@
         "MobMixin"
     ],
     "client": [
-        "MouseHandlerMixin"
+        "MouseHandlerMixin",
+        "PlayerModelMixin"
     ],
     "injectors": {
         "defaultRequire": 1

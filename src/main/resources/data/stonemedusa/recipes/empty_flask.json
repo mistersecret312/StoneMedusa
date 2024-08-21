@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "pattern": [
+        "# #",
+        " # "
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:glass_pane"
+        }
+    },
+    "result": {
+        "item": "stonemedusa:empty_flask",
+        "count": 2
+    },
+    "show_notification": true
+}

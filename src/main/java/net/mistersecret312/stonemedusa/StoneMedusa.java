@@ -1,10 +1,29 @@
 package net.mistersecret312.stonemedusa;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.LayerDefinitions;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.renderer.entity.layers.ElytraLayer;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.mistersecret312.stonemedusa.client.Layers;
+import net.mistersecret312.stonemedusa.client.layers.StoneRenderLayer;
 import net.mistersecret312.stonemedusa.client.renderer.MedusaProjectileRenderer;
 import net.mistersecret312.stonemedusa.init.*;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,6 +54,7 @@ public class StoneMedusa
         EffectInit.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(Layers::registerLayers);
 
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -42,7 +62,7 @@ public class StoneMedusa
     private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(
         () -> {
-
+            NetworkInit.registerPackets();
         });
     }
 
@@ -58,6 +78,31 @@ public class StoneMedusa
 
                 ItemProperties.register(ItemInit.MEDUSA.get(), new ResourceLocation(MOD_ID, "is_active"), new ActiveMedusaItemProperty());
             });
+        }
+
+        @SubscribeEvent
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        public static void addLayers(EntityRenderersEvent.AddLayers event)
+        {
+            addPlayerLayer(event, "default");
+            addPlayerLayer(event, "slim");
+
+            event.getContext().getEntityRenderDispatcher().renderers.forEach((type, renderer) ->
+            {
+                if(renderer instanceof LivingEntityRenderer livingEntityRenderer)
+                    livingEntityRenderer.addLayer(new StoneRenderLayer(livingEntityRenderer));
+            });
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        private static void addPlayerLayer(EntityRenderersEvent.AddLayers event, String skin)
+        {
+            EntityRenderer<? extends Player> renderer = event.getSkin(skin);
+
+            if (renderer instanceof LivingEntityRenderer livingRenderer)
+            {
+                livingRenderer.addLayer(new StoneRenderLayer(livingRenderer));
+            }
         }
     }
 }

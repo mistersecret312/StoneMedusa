@@ -14,6 +14,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.mistersecret312.stonemedusa.init.EffectInit;
 import net.mistersecret312.stonemedusa.init.EntityInit;
+import net.mistersecret312.stonemedusa.init.ItemInit;
 
 import java.util.List;
 
@@ -33,15 +34,13 @@ public class ThrownRevivalFluidEntity extends ThrowableItemProjectile
     @Override
     protected Item getDefaultItem()
     {
-        return null;
+        return ItemInit.REVIVAL_FLUID.get();
     }
 
     @Override
     protected void onHit(HitResult pResult)
     {
-        this.level().levelEvent(2007, this.blockPosition(), 14024585);
-
-        AABB aabb = this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
+        AABB aabb = this.getBoundingBox().inflate(2.0D, 2.0D, 2.0D);
         List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, aabb);
         for (LivingEntity living : list)
             if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))

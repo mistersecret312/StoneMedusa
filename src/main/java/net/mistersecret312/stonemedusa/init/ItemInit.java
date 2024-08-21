@@ -18,7 +18,9 @@ public class ItemInit
             () -> new MedusaItem(new Item.Properties().stacksTo(1).fireResistant().rarity(Rarity.EPIC)));
 
     public static final RegistryObject<RevivalFluidItem> REVIVAL_FLUID = ITEMS.register("revival_fluid",
-            () -> new RevivalFluidItem(new Item.Properties().stacksTo(1).fireResistant().rarity(Rarity.UNCOMMON)));
+            () -> new RevivalFluidItem(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> EMPTY_FLASK = ITEMS.register("empty_flask",
+            () -> new Item(new Item.Properties().stacksTo(16).rarity(Rarity.COMMON)));
 
     public static void register(IEventBus bus)
     {

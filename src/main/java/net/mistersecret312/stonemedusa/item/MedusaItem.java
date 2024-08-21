@@ -77,9 +77,8 @@ public class MedusaItem extends Item
             summonMedusa(itemstack, pLevel, pPlayer, true);
 
         pPlayer.awardStat(Stats.ITEM_USED.get(this));
-        if (!pPlayer.getAbilities().instabuild) {
-            itemstack.shrink(1);
-        }
+        itemstack.shrink(1);
+
 
         return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
     }
@@ -144,7 +143,7 @@ public class MedusaItem extends Item
         if(entity instanceof LivingEntity living)
         {
             MedusaProjectile medusaProjectile = new MedusaProjectile(level, living,
-                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), this.isCountdownActive(stack), this.isActive(stack));
+                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), true, this.isActive(stack));
             medusaProjectile.setItem(stack);
             medusaProjectile.setDelay(this.getDelay(stack));
             medusaProjectile.shootFromRotation(living, living.getXRot(), living.getYRot(), 0.0F, shoot? 1F : 0f, 0F);
@@ -153,7 +152,7 @@ public class MedusaItem extends Item
         else
         {
             MedusaProjectile medusaProjectile = new MedusaProjectile(level,
-                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), this.isCountdownActive(stack), this.isActive(stack));
+                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), true, this.isActive(stack));
             medusaProjectile.setItem(stack);
             medusaProjectile.setDelay(this.getDelay(stack));
             medusaProjectile.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.0F, shoot ? 1F : 0F, 0F);

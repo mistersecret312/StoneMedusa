@@ -4,6 +4,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -24,6 +26,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
+import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import net.mistersecret312.stonemedusa.init.EffectInit;
 import net.mistersecret312.stonemedusa.init.EntityInit;
 import net.mistersecret312.stonemedusa.init.ItemInit;
@@ -128,12 +131,10 @@ public class MedusaProjectile extends ThrowableItemProjectile
     {
         if(this.level().isClientSide())
             return;
+
         if(delay > 0 && this.isCountingDown())
             countdown();
-        else {
-            MedusaItem item = (MedusaItem) this.getItem().getItem();
-            this.setDelay(item.getDelay(this.getItem()));
-        }
+
         if(isActive())
             activeTick();
         if(!isActive())
@@ -156,6 +157,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
     public void activate()
     {
         this.setActive(true);
+        this.setCountingDown(false);
         this.noPhysics = true;
         this.setNoGravity(true);
     }
@@ -209,15 +211,24 @@ public class MedusaProjectile extends ThrowableItemProjectile
 
         for(Entity entity : targets)
         {
-            if(entity instanceof LivingEntity living)
-                if(!living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()) && living.blockPosition().distSqr(new Vec3i(this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ())) < this.getCurrentRadius()*this.getCurrentRadius())
-                    living.addEffect(new MobEffectInstance(EffectInit.PETRIFICATION.get(), 4000, 0, false, false, true));
+            if(entity instanceof Player player)
+            {
+                if(player.isCreative() || player.isSpectator())
+                    return;
+            }
+            if (entity instanceof LivingEntity living)
+                if (!living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()) && living.blockPosition().distSqr(new Vec3i(this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ())) < this.getCurrentRadius() * this.getCurrentRadius() * 2.5f)
+                {
+                    living.addEffect(new MobEffectInstance(EffectInit.PETRIFICATION.get(), 4000, 0, false, false, true), living);
+                    living.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> cap.setPetrified(true));
+                }
         }
     }
 
     public void deactivate()
     {
         this.setActive(false);
+        this.setCountingDown(false);
         this.setNoGravity(false);
         this.noPhysics = false;
     }
