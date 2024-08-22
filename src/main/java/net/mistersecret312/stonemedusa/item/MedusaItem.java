@@ -2,22 +2,30 @@ package net.mistersecret312.stonemedusa.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SnowballItem;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.init.ItemInit;
+
+import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
 public class MedusaItem extends Item
 {
@@ -28,8 +36,9 @@ public class MedusaItem extends Item
     public static final String START_DELAY = "start_delay";
     public static final String IS_ACTIVE = "isActive";
     public static final String IS_COUNTINDOWN_ACTIVE= "isCountdownActive";
+    public static final String TARGET_ENTITY_TYPE = "targetType";
     public static final int maxEnergy = 1000000;
-    public static final float maxRadius = 30F;
+    public static final float maxRadius = 200F;
 
     public MedusaItem(Properties pProperties)
     {
@@ -45,6 +54,8 @@ public class MedusaItem extends Item
         item.setStartDelay(stack, delay);
         item.setActive(stack, false);
         item.setCountdownActive(stack, false);
+        item.setActiveTicks(stack, 0);
+        item.setTargetEntityType(stack, null);
 
         return stack;
     }
@@ -58,8 +69,21 @@ public class MedusaItem extends Item
         item.setStartDelay(stack, startDelay);
         item.setActive(stack, active);
         item.setCountdownActive(stack, countdown);
+        item.setActiveTicks(stack, 0);
+        item.setTargetEntityType(stack, null);
 
         return stack;
+    }
+
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand)
+    {
+        if(player.level().isClientSide())
+            return InteractionResult.PASS;
+
+        this.setTargetEntityType(stack,target.getType().builtInRegistryHolder().key());
+
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -67,12 +91,10 @@ public class MedusaItem extends Item
     {
         ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
         if(Screen.hasShiftDown())
-        {
-            this.setCountdownActive(itemstack, true);
             return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
-        }
+
         pLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(),
-                SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (pLevel.getRandom().nextFloat() * 0.4F + 0.8F));
+                SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (pLevel.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!pLevel.isClientSide)
             summonMedusa(itemstack, pLevel, pPlayer, true);
 
@@ -143,7 +165,7 @@ public class MedusaItem extends Item
         if(entity instanceof LivingEntity living)
         {
             MedusaProjectile medusaProjectile = new MedusaProjectile(level, living,
-                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), true, this.isActive(stack));
+                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), true, this.isActive(stack), this.getTargetEntityType(stack));
             medusaProjectile.setItem(stack);
             medusaProjectile.setDelay(this.getDelay(stack));
             medusaProjectile.shootFromRotation(living, living.getXRot(), living.getYRot(), 0.0F, shoot? 1F : 0f, 0F);
@@ -152,7 +174,7 @@ public class MedusaItem extends Item
         else
         {
             MedusaProjectile medusaProjectile = new MedusaProjectile(level,
-                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), true, this.isActive(stack));
+                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), true, this.isActive(stack), this.getTargetEntityType(stack));
             medusaProjectile.setItem(stack);
             medusaProjectile.setDelay(this.getDelay(stack));
             medusaProjectile.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.0F, shoot ? 1F : 0F, 0F);
@@ -229,6 +251,19 @@ public class MedusaItem extends Item
         else return 0;
     }
 
+    public ResourceKey<EntityType<?>> getTargetEntityType(ItemStack stack)
+    {
+        String type = "";
+        if(stack.getTag() != null && stack.getTag().contains(TARGET_ENTITY_TYPE))
+            type = stack.getTag().getString(TARGET_ENTITY_TYPE);
+
+        if(!type.isBlank() && ResourceLocation.tryParse(type) != null)
+        {
+            return ResourceKey.create(ForgeRegistries.ENTITY_TYPES.getRegistryKey(), ResourceLocation.tryParse(type));
+        }
+        else return null;
+    }
+
     public void setEnergy(ItemStack stack, int energy)
     {
         if(stack.getTag() != null)
@@ -276,5 +311,14 @@ public class MedusaItem extends Item
         if(stack.getTag() != null)
             stack.getTag().putInt(ACTIVE_COUNTER, delay);
         else stack.getOrCreateTag().putInt(ACTIVE_COUNTER, delay);
+    }
+
+    public void setTargetEntityType(ItemStack stack, @Nullable ResourceKey<EntityType<?>> type)
+    {
+        String targetType = type == null ? "" : type.location().toString();
+
+        if(stack.getTag() != null)
+            stack.getTag().putString(TARGET_ENTITY_TYPE, targetType);
+        else stack.getOrCreateTag().putString(TARGET_ENTITY_TYPE, targetType);
     }
 }

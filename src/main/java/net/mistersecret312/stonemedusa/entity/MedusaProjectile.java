@@ -8,6 +8,8 @@ import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -26,12 +28,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import net.mistersecret312.stonemedusa.init.EffectInit;
 import net.mistersecret312.stonemedusa.init.EntityInit;
 import net.mistersecret312.stonemedusa.init.ItemInit;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class MedusaProjectile extends ThrowableItemProjectile
@@ -47,7 +51,8 @@ public class MedusaProjectile extends ThrowableItemProjectile
             SynchedEntityData.defineId(MedusaProjectile.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> RADIUS =
             SynchedEntityData.defineId(MedusaProjectile.class, EntityDataSerializers.FLOAT);
-
+    private static final EntityDataAccessor<String> TARGET_TYPE =
+            SynchedEntityData.defineId(MedusaProjectile.class, EntityDataSerializers.STRING);
 
     private int energy = 0;
     private float targetRadius = 0;
@@ -74,7 +79,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         super(EntityInit.MEDUSA.get(), living, level);
     }
 
-    public MedusaProjectile(Level level, LivingEntity living, int energy, float radius, int delay, boolean countingDown, boolean isActive)
+    public MedusaProjectile(Level level, LivingEntity living, int energy, float radius, int delay, boolean countingDown, boolean isActive, @Nullable ResourceKey<EntityType<?>> targetType)
     {
         super(EntityInit.MEDUSA.get(), living, level);
         this.energy = energy;
@@ -82,9 +87,10 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.delay = delay;
         this.countingDown = countingDown;
         this.setActive(isActive);
+        this.setTargetType(targetType);
     }
 
-    public MedusaProjectile(Level level, int energy, float radius, int delay, boolean countingDown, boolean isActive)
+    public MedusaProjectile(Level level, int energy, float radius, int delay, boolean countingDown, boolean isActive, @Nullable ResourceKey<EntityType<?>> targetType)
     {
         super(EntityInit.MEDUSA.get(), level);
         this.energy = energy;
@@ -92,6 +98,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.delay = delay;
         this.countingDown = countingDown;
         this.setActive(isActive);
+        this.setTargetType(targetType);
     }
 
     @Override
@@ -100,6 +107,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         super.defineSynchedData();
         this.entityData.define(ACTIVE, false);
         this.entityData.define(RADIUS, 0F);
+        this.entityData.define(TARGET_TYPE, "");
     }
 
     @Override
@@ -111,6 +119,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.entityData.set(RADIUS, tag.getFloat(CURRENT_RADIUS));
         this.delay = tag.getInt(DELAY);
         this.entityData.set(ACTIVE, tag.getBoolean(IS_ACTIVE));
+        this.entityData.set(TARGET_TYPE, tag.getString("targetType"));
         this.countingDown = tag.getBoolean(IS_COUNTINDOWN_ACTIVE);
     }
 
@@ -123,6 +132,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         tag.putFloat(CURRENT_RADIUS, this.entityData.get(RADIUS));
         tag.putInt(DELAY, this.delay);
         tag.putBoolean(IS_ACTIVE, this.entityData.get(ACTIVE));
+        tag.putString("targetType", this.entityData.get(TARGET_TYPE));
         tag.putBoolean(IS_COUNTINDOWN_ACTIVE, this.countingDown);
     }
 
@@ -204,20 +214,23 @@ public class MedusaProjectile extends ThrowableItemProjectile
     public void petrify()
     {
         List<Entity> targets = this.level().getEntities(this,
-                new AABB(this.blockPosition().getX()-(this.getCurrentRadius()*1.5f), this.blockPosition().getY()-(this.getCurrentRadius()*1.3f),
-                        this.blockPosition().getZ()-(this.getCurrentRadius()*1.5f), this.blockPosition().getX()+(this.getCurrentRadius()*1.3f),
-                        this.blockPosition().getY()+(this.getCurrentRadius()*1.5f), this.blockPosition().getZ()+(this.getCurrentRadius()*1.3f)),
+                new AABB(this.blockPosition().getX()-(this.getCurrentRadius()*1.5f), this.blockPosition().getY()-(this.getCurrentRadius()*1.5f),
+                        this.blockPosition().getZ()-(this.getCurrentRadius()*1.5f), this.blockPosition().getX()+(this.getCurrentRadius()*1.5f),
+                        this.blockPosition().getY()+(this.getCurrentRadius()*1.5f), this.blockPosition().getZ()+(this.getCurrentRadius()*1.5f)),
                 entity -> entity instanceof LivingEntity);
 
         for(Entity entity : targets)
         {
+            if(this.getTargetType() != null && entity.getType() != ForgeRegistries.ENTITY_TYPES.getValue(this.getTargetType().location()))
+                continue;
+
             if(entity instanceof Player player)
             {
                 if(player.isCreative() || player.isSpectator())
-                    return;
+                    continue;
             }
             if (entity instanceof LivingEntity living)
-                if (!living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()) && living.blockPosition().distSqr(new Vec3i(this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ())) < this.getCurrentRadius() * this.getCurrentRadius() * 2.5f)
+                if (!living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()) && Math.sqrt(living.blockPosition().distSqr(new Vec3i(this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ()))) < this.getCurrentRadius()*1.5f)
                 {
                     living.addEffect(new MobEffectInstance(EffectInit.PETRIFICATION.get(), 4000, 0, false, false, true), living);
                     living.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> cap.setPetrified(true));
@@ -279,6 +292,19 @@ public class MedusaProjectile extends ThrowableItemProjectile
         return countingDown;
     }
 
+    public ResourceKey<EntityType<?>> getTargetType()
+    {
+        String type = this.entityData.get(TARGET_TYPE);
+
+        if(type.isBlank())
+            return null;
+
+        if(ResourceLocation.tryParse(type) == null)
+            return null;
+
+        return ResourceKey.create(ForgeRegistries.ENTITY_TYPES.getRegistryKey(), ResourceLocation.tryParse(type));
+    }
+
     public void setEnergy(int energy)
     {
         this.energy = energy;
@@ -307,5 +333,12 @@ public class MedusaProjectile extends ThrowableItemProjectile
     public void setCountingDown(boolean countingDown)
     {
         this.countingDown = countingDown;
+    }
+
+    public void setTargetType(@Nullable ResourceKey<EntityType<?>> type)
+    {
+        if(type != null)
+            this.entityData.set(TARGET_TYPE, type.location().toString());
+        else this.entityData.set(TARGET_TYPE, "");
     }
 }
