@@ -2,6 +2,7 @@ package net.mistersecret312.stonemedusa.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
@@ -60,7 +61,7 @@ public class MedusaItem extends Item
         return stack;
     }
 
-    public static ItemStack getMedusa(MedusaItem item, int energy, float radius, int delay, int startDelay, boolean active, boolean countdown)
+    public static ItemStack getMedusa(MedusaItem item, int energy, float radius, int delay, int startDelay, boolean active, boolean countdown, @Nullable ResourceKey<EntityType<?>> targetType)
     {
         ItemStack stack = new ItemStack(ItemInit.MEDUSA.get());
         item.setEnergy(stack, energy);
@@ -81,7 +82,10 @@ public class MedusaItem extends Item
         if(player.level().isClientSide())
             return InteractionResult.PASS;
 
-        this.setTargetEntityType(stack,target.getType().builtInRegistryHolder().key());
+        System.out.println(ForgeRegistries.ENTITY_TYPES.getKey(target.getType()));
+        this.setTargetEntityType(stack,
+                ResourceKey.create(ForgeRegistries.ENTITY_TYPES.getRegistryKey(),
+                        ForgeRegistries.ENTITY_TYPES.getKey(target.getType())));
 
         return InteractionResult.SUCCESS;
     }

@@ -255,7 +255,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
     @Override
     protected void onHit(HitResult pResult)
     {
-        ItemStack stack = MedusaItem.getMedusa(ItemInit.MEDUSA.get(), this.getEnergy(), this.getTargetRadius(), this.getDelay(), ((MedusaItem) this.getItem().getItem()).getStartDelay(this.getItem()), this.isActive(), this.isCountingDown());
+        ItemStack stack = MedusaItem.getMedusa(ItemInit.MEDUSA.get(), this.getEnergy(), this.getTargetRadius(), this.getDelay(), ((MedusaItem) this.getItem().getItem()).getStartDelay(this.getItem()), this.isActive(), this.isCountingDown(), this.getTargetType());
 
         this.level().addFreshEntity(new ItemEntity(this.level(), this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ(), stack));
 
