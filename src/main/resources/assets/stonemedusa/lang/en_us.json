@@ -4,5 +4,7 @@
   "item.stonemedusa.empty_flask": "Empty Flask",
   "effect.stonemedusa.petrification": "Petrification",
 
+  "stonemedusa.target_type.set": "Target type set to - ",
+
   "creativetab.main_tab": "Dr.STONE - Medusa"
 }

@@ -9,7 +9,7 @@
     ],
     "client": [
         "MouseHandlerMixin",
-        "PlayerModelMixin"
+        "EntityModelMixin"
     ],
     "injectors": {
         "defaultRequire": 1

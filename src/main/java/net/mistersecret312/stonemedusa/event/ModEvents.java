@@ -1,11 +1,21 @@
 package net.mistersecret312.stonemedusa.event;
 
+import net.minecraft.client.renderer.entity.LeashKnotRenderer;
+import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
@@ -16,16 +26,61 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.minecraftforge.fml.common.Mod;
 import net.mistersecret312.stonemedusa.capability.GenericProvider;
 import net.mistersecret312.stonemedusa.capability.PetrifiedCapability;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import net.mistersecret312.stonemedusa.init.EffectInit;
+import net.mistersecret312.stonemedusa.item.MedusaItem;
+
+import java.util.List;
 
 @Mod.EventBusSubscriber(modid = StoneMedusa.MOD_ID)
 public class ModEvents
 {
+    @SubscribeEvent
+    public static void chatEvent(ServerChatEvent event)
+    {
+        String message = event.getRawText();
+        ServerPlayer player = event.getPlayer();
+        Level level = player.level();
+
+        if(!level.isClientSide() && (message.toLowerCase().contains("meter") || message.toLowerCase().contains("metre")) && message.toLowerCase().contains("second"))
+        {
+            String[] parts = message.replace("'", "").replace("seconds", "").replace("meter", "-").replace("meters", "-").replace("metre", "-").replace("metres", "-").split("-");
+            float meters = Float.parseFloat(parts[0].replaceAll("[^1234567890.]", ""));
+            int seconds = Integer.parseInt(parts[1].replaceAll("[^1234567890]", ""))*20;
+
+            if(meters > 0f && seconds > 0)
+            {
+                List<ItemEntity> fallenItems = level.getEntities(EntityType.ITEM, new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3, 3, 3))), item -> item.getItem().getItem() instanceof MedusaItem);
+                List<Player> nearbyPlayers = level.getEntities(EntityType.PLAYER, new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3, 3, 3))), playerEntity -> playerEntity.getInventory().hasAnyMatching(item -> item.getItem() instanceof MedusaItem));
+
+                for(ItemEntity item : fallenItems)
+                {
+                    MedusaItem medusa = ((MedusaItem) item.getItem().getItem());
+                    medusa.setStartDelay(item.getItem(), seconds);
+                    medusa.setDelay(item.getItem(), seconds);
+                    medusa.setRadius(item.getItem(), meters);
+                    medusa.setCountdownActive(item.getItem(), true);
+                }
+                for(Player playerEntity : nearbyPlayers)
+                {
+                    for(ItemStack stack : playerEntity.getInventory().items)
+                    {
+                        MedusaItem medusa = ((MedusaItem) stack.getItem());
+                        medusa.setStartDelay(stack, seconds);
+                        medusa.setDelay(stack, seconds);
+                        medusa.setRadius(stack, meters);
+                        medusa.setCountdownActive(stack, true);
+                    }
+                }
+            }
+        }
+    }
+
     @SubscribeEvent
     public static void attachCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof LivingEntity) {
@@ -56,6 +111,17 @@ public class ModEvents
     @SubscribeEvent
     public static void playerInteract(PlayerInteractEvent.EntityInteractSpecific event)
     {
+        ItemStack stack = event.getEntity().getItemInHand(event.getHand());
+        if(stack.getItem() instanceof MedusaItem item)
+        {
+            if (ForgeRegistries.ENTITY_TYPES.containsValue(event.getTarget().getType()))
+            {
+                item.setTargetEntityType(stack, ForgeRegistries.ENTITY_TYPES.getKey(event.getTarget().getType()).toString());
+                event.getEntity().displayClientMessage(Component.translatable("stonemedusa.target_type.set")
+                        .append(Component.literal(item.getTargetEntityType(stack))), true);
+            }
+
+        }
         if(event.getEntity().getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
         {
             event.setCancellationResult(InteractionResult.FAIL);

@@ -1,32 +1,19 @@
 package net.mistersecret312.stonemedusa.item;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.TickTask;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.init.ItemInit;
-
-import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
 public class MedusaItem extends Item
 {
@@ -38,6 +25,7 @@ public class MedusaItem extends Item
     public static final String IS_ACTIVE = "isActive";
     public static final String IS_COUNTINDOWN_ACTIVE= "isCountdownActive";
     public static final String TARGET_ENTITY_TYPE = "targetType";
+    public static final String LEASHED = "leashed";
     public static final int maxEnergy = 1000000;
     public static final float maxRadius = 200F;
 
@@ -56,12 +44,12 @@ public class MedusaItem extends Item
         item.setActive(stack, false);
         item.setCountdownActive(stack, false);
         item.setActiveTicks(stack, 0);
-        item.setTargetEntityType(stack, null);
+        item.setTargetEntityType(stack, "");
 
         return stack;
     }
 
-    public static ItemStack getMedusa(MedusaItem item, int energy, float radius, int delay, int startDelay, boolean active, boolean countdown, @Nullable ResourceKey<EntityType<?>> targetType)
+    public static ItemStack getMedusa(MedusaItem item, int energy, float radius, int delay, int startDelay, boolean active, boolean countdown, String targetType)
     {
         ItemStack stack = new ItemStack(ItemInit.MEDUSA.get());
         item.setEnergy(stack, energy);
@@ -71,23 +59,9 @@ public class MedusaItem extends Item
         item.setActive(stack, active);
         item.setCountdownActive(stack, countdown);
         item.setActiveTicks(stack, 0);
-        item.setTargetEntityType(stack, null);
+        item.setTargetEntityType(stack, targetType);
 
         return stack;
-    }
-
-    @Override
-    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand)
-    {
-        if(player.level().isClientSide())
-            return InteractionResult.PASS;
-
-        System.out.println(ForgeRegistries.ENTITY_TYPES.getKey(target.getType()));
-        this.setTargetEntityType(stack,
-                ResourceKey.create(ForgeRegistries.ENTITY_TYPES.getRegistryKey(),
-                        ForgeRegistries.ENTITY_TYPES.getKey(target.getType())));
-
-        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -255,74 +229,50 @@ public class MedusaItem extends Item
         else return 0;
     }
 
-    public ResourceKey<EntityType<?>> getTargetEntityType(ItemStack stack)
+    public String getTargetEntityType(ItemStack stack)
     {
-        String type = "";
         if(stack.getTag() != null && stack.getTag().contains(TARGET_ENTITY_TYPE))
-            type = stack.getTag().getString(TARGET_ENTITY_TYPE);
-
-        if(!type.isBlank() && ResourceLocation.tryParse(type) != null)
-        {
-            return ResourceKey.create(ForgeRegistries.ENTITY_TYPES.getRegistryKey(), ResourceLocation.tryParse(type));
-        }
-        else return null;
+            return stack.getTag().getString(TARGET_ENTITY_TYPE);
+        else return "";
     }
 
     public void setEnergy(ItemStack stack, int energy)
     {
-        if(stack.getTag() != null)
-            stack.getTag().putInt(ENERGY, Math.min(energy, maxEnergy));
-        else stack.getOrCreateTag().putInt(ENERGY, Math.min(energy, maxEnergy));
+        stack.getOrCreateTag().putInt(ENERGY, Math.min(energy, maxEnergy));
     }
 
     public void setRadius(ItemStack stack, float radius)
     {
-        if (stack.getTag() != null)
-            stack.getTag().putFloat(RADIUS, Math.min(radius, maxRadius));
-        else stack.getOrCreateTag().putFloat(RADIUS, Math.min(radius, maxRadius));
+        stack.getOrCreateTag().putFloat(RADIUS, Math.min(radius, maxRadius));
     }
 
     public void setDelay(ItemStack stack, int delay)
     {
-        if(stack.getTag() != null)
-            stack.getTag().putInt(DELAY, delay);
-        else stack.getOrCreateTag().putInt(DELAY, delay);
+        stack.getOrCreateTag().putInt(DELAY, delay);
     }
 
     public void setStartDelay(ItemStack stack, int delay)
     {
-        if(stack.getTag() != null)
-            stack.getTag().putInt(START_DELAY, delay);
-        else stack.getOrCreateTag().putInt(START_DELAY, delay);
+        stack.getOrCreateTag().putInt(START_DELAY, delay);
     }
 
     public void setActive(ItemStack stack, boolean active)
     {
-        if(stack.getTag() != null)
-            stack.getTag().putBoolean(IS_ACTIVE, active);
-        else stack.getOrCreateTag().putBoolean(IS_ACTIVE, active);
+        stack.getOrCreateTag().putBoolean(IS_ACTIVE, active);
     }
 
     public void setCountdownActive(ItemStack stack, boolean active)
     {
-        if(stack.getTag() != null)
-            stack.getTag().putBoolean(IS_COUNTINDOWN_ACTIVE, active);
-        else stack.getOrCreateTag().putBoolean(IS_COUNTINDOWN_ACTIVE, active);
+        stack.getOrCreateTag().putBoolean(IS_COUNTINDOWN_ACTIVE, active);
     }
 
     public void setActiveTicks(ItemStack stack, int delay)
     {
-        if(stack.getTag() != null)
-            stack.getTag().putInt(ACTIVE_COUNTER, delay);
-        else stack.getOrCreateTag().putInt(ACTIVE_COUNTER, delay);
+        stack.getOrCreateTag().putInt(ACTIVE_COUNTER, delay);
     }
 
-    public void setTargetEntityType(ItemStack stack, @Nullable ResourceKey<EntityType<?>> type)
+    public void setTargetEntityType(ItemStack stack, String type)
     {
-        String targetType = type == null ? "" : type.location().toString();
-
-        if(stack.getTag() != null)
-            stack.getTag().putString(TARGET_ENTITY_TYPE, targetType);
-        else stack.getOrCreateTag().putString(TARGET_ENTITY_TYPE, targetType);
+        stack.getOrCreateTag().putString(TARGET_ENTITY_TYPE, type);
     }
 }

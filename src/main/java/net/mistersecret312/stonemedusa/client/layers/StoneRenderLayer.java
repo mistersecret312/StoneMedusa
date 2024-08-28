@@ -1,7 +1,9 @@
 package net.mistersecret312.stonemedusa.client.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.BatModel;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -29,6 +31,7 @@ public class StoneRenderLayer<T extends LivingEntity, M extends EntityModel<T>> 
             {
                 poseStack.pushPose();
                 poseStack.scale(1.3f, 1.3f, 1.3f);
+                this.getParentModel().prepareMobModel(livingEntity, pLimbSwing, pLimbSwingAmount, 0f);
                 poseStack.popPose();
                 this.getParentModel().renderToBuffer(poseStack,
                         buffer.getBuffer(RenderType.entityTranslucent(new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrified_player.png"))),
