@@ -25,7 +25,6 @@ public class MedusaItem extends Item
     public static final String IS_ACTIVE = "isActive";
     public static final String IS_COUNTINDOWN_ACTIVE= "isCountdownActive";
     public static final String TARGET_ENTITY_TYPE = "targetType";
-    public static final String LEASHED = "leashed";
     public static final int maxEnergy = 1000000;
     public static final float maxRadius = 200F;
 

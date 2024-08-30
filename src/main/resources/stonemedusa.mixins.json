@@ -4,12 +4,13 @@
     "package": "net.mistersecret312.mixin",
     "compatibilityLevel": "JAVA_17",
     "mixins": [
+        "BatMixin",
         "EntityMixin",
         "MobMixin"
     ],
     "client": [
-        "MouseHandlerMixin",
-        "EntityModelMixin"
+        "EntityModelMixin",
+        "MouseHandlerMixin"
     ],
     "injectors": {
         "defaultRequire": 1

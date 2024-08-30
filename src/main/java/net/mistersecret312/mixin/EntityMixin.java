@@ -17,6 +17,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public class EntityMixin
 {
+    @Inject(method = "onFlap()V", at = @At("HEAD"), cancellable = true)
+    public void dontFlap(CallbackInfo ci)
+    {
+        if(((Entity) (Object) this) instanceof LivingEntity living)
+            if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
+                ci.cancel();
+    }
+
     @Inject(method = "getBlockJumpFactor()F", at = @At("HEAD"), cancellable = true)
     public void jumpPetrified(CallbackInfoReturnable<Float> cir)
     {
@@ -39,5 +47,13 @@ public class EntityMixin
         if(((Entity) (Object) this) instanceof LivingEntity living)
             if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
                 pDeltaMovement = new Vec3(0, 0,0);
+    }
+
+    @Inject(method = "hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z", at = @At("HEAD"), cancellable = true)
+    public void dontHurtAnimate(DamageSource pSource, float pAmount, CallbackInfoReturnable<Boolean> cir)
+    {
+        if(((Entity) (Object) this) instanceof LivingEntity living)
+            if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
+                cir.setReturnValue(false);
     }
 }

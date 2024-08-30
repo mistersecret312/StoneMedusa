@@ -19,6 +19,7 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -95,7 +96,7 @@ public class ModEvents
     }
 
     @SubscribeEvent
-    public static void entityHurt(LivingHurtEvent event)
+    public static void entityHurt(LivingAttackEvent event)
     {
         if(event.getEntity().getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
             event.setCanceled(true);
