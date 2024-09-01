@@ -92,7 +92,10 @@ public class ModEvents
     @SubscribeEvent
     public static void livingTick(LivingEvent.LivingTickEvent event)
     {
-        event.getEntity().getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> cap.tick(event.getEntity().level(), event.getEntity()));
+        event.getEntity().getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
+        {
+            cap.tick(event.getEntity().level(), event.getEntity());
+        });
     }
 
     @SubscribeEvent

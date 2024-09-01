@@ -1,43 +1,31 @@
 package net.mistersecret312.stonemedusa.entity;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.decoration.HangingEntity;
-import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
-import net.mistersecret312.stonemedusa.init.EffectInit;
-import net.mistersecret312.stonemedusa.init.EntityInit;
-import net.mistersecret312.stonemedusa.init.ItemInit;
+import net.mistersecret312.stonemedusa.init.*;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 
 import static net.mistersecret312.stonemedusa.item.MedusaItem.maxEnergy;
 
@@ -49,6 +37,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
     public static final String DELAY = "delay";
     public static final String IS_ACTIVE = "isActive";
     public static final String IS_COUNTINDOWN_ACTIVE = "isCountdownActive";
+    public static final String IS_GENERATED = "isGenerated";
     public static final String SPEED = "speed";
 
     private static final EntityDataAccessor<Boolean> ACTIVE =
@@ -65,6 +54,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
     private int delay = 0;
     private boolean countingDown = false;
     private int speed = 5;
+    private boolean generated = false;
 
     private int activeTicker = 0;
     private int expansionTicker = 0;
@@ -86,7 +76,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         super(EntityInit.MEDUSA.get(), living, level);
     }
 
-    public MedusaProjectile(Level level, LivingEntity living, int energy, float radius, int delay, boolean countingDown, boolean isActive, String targetType)
+    public MedusaProjectile(Level level, LivingEntity living, int energy, float radius, int delay, boolean countingDown, boolean isActive, String targetType, boolean generated)
     {
         super(EntityInit.MEDUSA.get(), living, level);
         this.energy = energy;
@@ -97,7 +87,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.setTargetType(targetType);
     }
 
-    public MedusaProjectile(Level level, int energy, float radius, int delay, boolean countingDown, boolean isActive, String targetType)
+    public MedusaProjectile(Level level, int energy, float radius, int delay, boolean countingDown, boolean isActive, String targetType, boolean generated)
     {
         super(EntityInit.MEDUSA.get(), level);
         this.energy = energy;
@@ -128,6 +118,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.entityData.set(ACTIVE, tag.getBoolean(IS_ACTIVE));
         this.entityData.set(TARGET_TYPE, tag.getString("targetType"));
         this.countingDown = tag.getBoolean(IS_COUNTINDOWN_ACTIVE);
+        this.generated = tag.getBoolean(IS_GENERATED);
         this.speed = tag.getInt(SPEED);
     }
 
@@ -142,6 +133,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         tag.putBoolean(IS_ACTIVE, this.entityData.get(ACTIVE));
         tag.putString("targetType", this.entityData.get(TARGET_TYPE));
         tag.putBoolean(IS_COUNTINDOWN_ACTIVE, this.countingDown);
+        tag.putBoolean(IS_GENERATED, this.generated);
         tag.putInt(SPEED, this.speed);
     }
 
@@ -218,8 +210,6 @@ public class MedusaProjectile extends ThrowableItemProjectile
             if(shrinkingTicker > 0 && activeTicker > (this.targetRadius*this.speed)+IDLE_TIME && activeTicker <= this.targetRadius*10+IDLE_TIME)
                 this.setCurrentRadius(Mth.lerp(shrinkingTicker/(this.targetRadius*this.speed), this.targetRadius, 0));
 
-            System.out.println("Active Ticks: " + activeTicker + ", Expansion Ticks: " + expansionTicker + ", Shrinking Ticks: " + shrinkingTicker);
-
             if(this.getCurrentRadius() > 0f)
                 petrify();
         }
@@ -239,15 +229,17 @@ public class MedusaProjectile extends ThrowableItemProjectile
             if(ForgeRegistries.ENTITY_TYPES.containsKey(targetType) && ForgeRegistries.ENTITY_TYPES.getValue(targetType) != entity.getType())
                 continue;
 
+            if(entity.isEyeInFluidType(FluidTypeInit.REVIVAL_FLUID_TYPE.get()))
+                continue;
+
             if(entity instanceof Player player)
-            {
                 if(player.isCreative() || player.isSpectator())
                     continue;
-            }
+
             if (entity instanceof LivingEntity living)
                 if (!living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()) && Math.sqrt(living.blockPosition().distSqr(new Vec3i(this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ()))) < this.getCurrentRadius()*1.5f)
                 {
-                    living.addEffect(new MobEffectInstance(EffectInit.PETRIFICATION.get(), 4000, 0, false, false, true), living);
+                    living.addEffect(new MobEffectInstance(EffectInit.PETRIFICATION.get(), 12000, 0, false, false, true), living);
                     living.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> cap.setPetrified(true));
                 }
         }
@@ -271,6 +263,19 @@ public class MedusaProjectile extends ThrowableItemProjectile
     @Override
     protected void onHit(HitResult pResult)
     {
+        Random random = new Random();
+        if(this.isGenerated())
+        {
+            this.teleportRelative(0, 1.5, 0);
+            this.setTargetRadius(random.nextFloat(5, 25));
+            this.setEnergy(random.nextInt(maxEnergy/10, maxEnergy));
+            if(random.nextFloat() > 0.75)
+                this.setTargetType("minecraft:player");
+            this.activate();
+            this.setGenerated(false);
+            return;
+        }
+        
         ItemStack stack = MedusaItem.getMedusa(ItemInit.MEDUSA.get(), this.getEnergy(), this.getTargetRadius(), this.getDelay(), ((MedusaItem) this.getItem().getItem()).getStartDelay(this.getItem()), this.isActive(), this.isCountingDown(), this.getTargetType());
 
         this.level().addFreshEntity(new ItemEntity(this.level(), this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ(), stack));
@@ -320,6 +325,11 @@ public class MedusaProjectile extends ThrowableItemProjectile
         return speed;
     }
 
+    public boolean isGenerated()
+    {
+        return generated;
+    }
+
     public void setEnergy(int energy)
     {
         this.energy = energy;
@@ -358,5 +368,10 @@ public class MedusaProjectile extends ThrowableItemProjectile
     public void setSpeed(int speed)
     {
         this.speed = speed;
+    }
+
+    public void setGenerated(boolean generated)
+    {
+        this.generated = generated;
     }
 }

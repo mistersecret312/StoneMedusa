@@ -142,7 +142,7 @@ public class MedusaItem extends Item
         if(entity instanceof LivingEntity living)
         {
             MedusaProjectile medusaProjectile = new MedusaProjectile(level, living,
-                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), true, this.isActive(stack), this.getTargetEntityType(stack));
+                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), true, this.isActive(stack), this.getTargetEntityType(stack), false);
             medusaProjectile.setItem(stack);
             medusaProjectile.setDelay(this.getDelay(stack));
             medusaProjectile.shootFromRotation(living, living.getXRot(), living.getYRot(), 0.0F, shoot? 1F : 0f, 0F);
@@ -151,7 +151,7 @@ public class MedusaItem extends Item
         else
         {
             MedusaProjectile medusaProjectile = new MedusaProjectile(level,
-                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), true, this.isActive(stack), this.getTargetEntityType(stack));
+                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), true, this.isActive(stack), this.getTargetEntityType(stack), false);
             medusaProjectile.setItem(stack);
             medusaProjectile.setDelay(this.getDelay(stack));
             medusaProjectile.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.0F, shoot ? 1F : 0F, 0F);

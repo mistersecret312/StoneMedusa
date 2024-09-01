@@ -1,6 +1,8 @@
 package net.mistersecret312.stonemedusa;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -45,6 +47,9 @@ public class StoneMedusa
         EntityInit.register(modEventBus);
         EffectInit.register(modEventBus);
 
+        FluidInit.register(modEventBus);
+        FluidTypeInit.register(modEventBus);
+
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(Layers::registerLayers);
 
@@ -67,6 +72,9 @@ public class StoneMedusa
             event.enqueueWork(() -> {
                 EntityRenderers.register(EntityInit.MEDUSA.get(), MedusaProjectileRenderer::new);
                 EntityRenderers.register(EntityInit.REVIVAL_FLUIID.get(), ThrownItemRenderer::new);
+
+                ItemBlockRenderTypes.setRenderLayer(FluidInit.SOURCE_REVIVAL_FLUID.get(), RenderType.translucent());
+                ItemBlockRenderTypes.setRenderLayer(FluidInit.FLOWING_REVIVAL_FLUID.get(), RenderType.translucent());
 
                 ItemProperties.register(ItemInit.MEDUSA.get(), new ResourceLocation(MOD_ID, "is_active"), new ActiveMedusaItemProperty());
             });
