@@ -15,6 +15,7 @@ public class ClientPacketHandler
             getEntity(packet.entityId).getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
             {
                 cap.setPetrified(packet.petrified);
+                cap.setAge(packet.age);
             });
     }
 

@@ -8,8 +8,11 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -37,6 +40,8 @@ public class StoneMedusa
 {
     public static final String MOD_ID = "stonemedusa";
     public static final Logger LOGGER = LogUtils.getLogger();
+
+    public static final TagKey<EntityType<?>> PETRIFICATION_IMMUNE = new TagKey<>(Registries.ENTITY_TYPE, new ResourceLocation(StoneMedusa.MOD_ID, "petrification_immune"));
 
     public StoneMedusa() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

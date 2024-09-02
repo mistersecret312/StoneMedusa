@@ -10,6 +10,7 @@
     ],
     "client": [
         "EntityModelMixin",
+        "LivingEntityRendererMixin",
         "MouseHandlerMixin"
     ],
     "injectors": {

@@ -11,8 +11,10 @@ import net.mistersecret312.stonemedusa.network.packets.PetrifiedEntityUpdatePack
 public class PetrifiedCapability implements INBTSerializable<CompoundTag>
 {
     public static final String PETRIFIED = "petrified";
+    public static final String AGE = "age";
 
     public boolean petrified = false;
+    public float age = 0f;
 
     public void tick(Level level, LivingEntity living)
     {
@@ -21,7 +23,7 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
 
         petrified = living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get());
 
-        NetworkInit.sendToTracking(living, new PetrifiedEntityUpdatePacket(petrified, living.getId()));
+        NetworkInit.sendToTracking(living, new PetrifiedEntityUpdatePacket(petrified, age, living.getId()));
     }
 
     public boolean isPetrified()
@@ -29,9 +31,19 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         return petrified;
     }
 
+    public float getAge()
+    {
+        return age;
+    }
+
     public void setPetrified(boolean petrified)
     {
         this.petrified = petrified;
+    }
+
+    public void setAge(float age)
+    {
+        this.age = age;
     }
 
     @Override
@@ -40,6 +52,7 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         CompoundTag tag = new CompoundTag();
 
         tag.putBoolean(PETRIFIED, petrified);
+        tag.putFloat(AGE, age);
 
         return tag;
     }
@@ -48,5 +61,6 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
     public void deserializeNBT(CompoundTag nbt)
     {
         this.petrified = nbt.getBoolean(PETRIFIED);
+        this.age = nbt.getFloat(AGE);
     }
 }

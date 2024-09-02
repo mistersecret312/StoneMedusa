@@ -41,6 +41,7 @@ public class ThrownRevivalFluidEntity extends ThrowableItemProjectile
     protected void onHit(HitResult pResult)
     {
         AABB aabb = this.getBoundingBox().inflate(2.0D, 2.0D, 2.0D);
+        this.level().levelEvent(2002, this.blockPosition(), 13409380);
         List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, aabb);
         for (LivingEntity living : list)
             if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))

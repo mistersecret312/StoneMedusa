@@ -1,11 +1,13 @@
 package net.mistersecret312.stonemedusa.entity;
 
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -20,7 +22,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.VanillaGameEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.mistersecret312.stonemedusa.init.*;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
 
@@ -232,6 +236,9 @@ public class MedusaProjectile extends ThrowableItemProjectile
             if(entity.isEyeInFluidType(FluidTypeInit.REVIVAL_FLUID_TYPE.get()))
                 continue;
 
+            if(entity.getType().is(StoneMedusa.PETRIFICATION_IMMUNE))
+                continue;
+
             if(entity instanceof Player player)
                 if(player.isCreative() || player.isSpectator())
                     continue;
@@ -240,7 +247,12 @@ public class MedusaProjectile extends ThrowableItemProjectile
                 if (!living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()) && Math.sqrt(living.blockPosition().distSqr(new Vec3i(this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ()))) < this.getCurrentRadius()*1.5f)
                 {
                     living.addEffect(new MobEffectInstance(EffectInit.PETRIFICATION.get(), 12000, 0, false, false, true), living);
-                    living.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> cap.setPetrified(true));
+                    living.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
+                    {
+                        cap.setPetrified(true);
+
+                        cap.setAge(Integer.valueOf(living.tickCount).floatValue());
+                    });
                 }
         }
     }
@@ -266,6 +278,12 @@ public class MedusaProjectile extends ThrowableItemProjectile
         Random random = new Random();
         if(this.isGenerated())
         {
+            if(random.nextFloat() > 0.95)
+            {
+                this.discard();
+                return;
+            }
+
             this.teleportRelative(0, 1.5, 0);
             this.setTargetRadius(random.nextFloat(5, 25));
             this.setEnergy(random.nextInt(maxEnergy/10, maxEnergy));

@@ -8,9 +8,11 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.entity.ThrownRevivalFluidEntity;
+import org.jetbrains.annotations.Nullable;
 
 public class RevivalFluidItem extends Item
 {
@@ -39,4 +41,11 @@ public class RevivalFluidItem extends Item
 
         return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
     }
+
+    @Override
+    public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType)
+    {
+        return 2400;
+    }
+
 }

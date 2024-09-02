@@ -22,6 +22,7 @@ public class ItemTabInit
                         output.accept(MedusaItem.getMedusa(ItemInit.MEDUSA.get(), MedusaItem.maxEnergy, 5, 200));
                         output.accept(ItemInit.REVIVAL_FLUID.get());
                         output.accept(ItemInit.EMPTY_FLASK.get());
+                        output.accept(ItemInit.REVIVAL_FLUID_BUCKET.get());
                     })
                     .build());
 
