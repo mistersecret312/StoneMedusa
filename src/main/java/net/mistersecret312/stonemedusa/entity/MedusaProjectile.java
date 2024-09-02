@@ -199,8 +199,8 @@ public class MedusaProjectile extends ThrowableItemProjectile
         }
         else
         {
-            if(this.energy > 250)
-                this.energy -= 250;
+            if(this.energy > 100)
+                this.energy -= 100;
             else this.energy = 0;
 
             activeTicker++;
