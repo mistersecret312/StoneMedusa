@@ -1,5 +1,7 @@
 package net.mistersecret312.stonemedusa.effects;
 
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -53,6 +55,8 @@ public class PetrificationEffect extends MobEffect
             pLivingEntity.setInvulnerable(false);
             pLivingEntity.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> cap.setPetrified(false));
         }
+        if(petrification.endsWithin(1))
+            pLivingEntity.level().playLocalSound(pLivingEntity.blockPosition(), SoundEvents.DEEPSLATE_BREAK, SoundSource.NEUTRAL, 1f, 1f, false);
 
 
         super.applyEffectTick(pLivingEntity, pAmplifier);

@@ -12,7 +12,13 @@ public class ActiveMedusaItemProperty implements ClampedItemPropertyFunction
     public float unclampedCall(ItemStack pStack, @Nullable ClientLevel pLevel, @Nullable LivingEntity pEntity, int pSeed)
     {
         if(pEntity != null && pStack.getItem() instanceof MedusaItem medusa)
-            return medusa.isActive(pStack) ? 0 : 1;
+        {
+            if(medusa.isCountdownActive(pStack) && !medusa.isActive(pStack))
+                return 0;
+            else if(medusa.isActive(pStack) && !medusa.isCountdownActive(pStack))
+                return 0;
+            else return 1;
+        }
 
         return 0;
     }

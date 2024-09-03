@@ -7,6 +7,8 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -179,6 +181,8 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.noPhysics = true;
         this.setDeltaMovement(Vec3.ZERO);
         this.setNoGravity(true);
+
+        this.level().playLocalSound(this.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.MASTER, 1f, 1f, true);
     }
 
     @Override
@@ -250,6 +254,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
                     living.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
                     {
                         cap.setPetrified(true);
+                        this.level().playLocalSound(entity.blockPosition(), SoundEvents.DRIPSTONE_BLOCK_PLACE, SoundSource.PLAYERS, 1F, 1F, true);
 
                         cap.setAge(Integer.valueOf(living.tickCount).floatValue());
                     });
