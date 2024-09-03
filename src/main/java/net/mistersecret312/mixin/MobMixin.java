@@ -23,4 +23,11 @@ public abstract class MobMixin
         if(((Mob) (Object) this).getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
             ci.cancel();
     }
+
+    @Inject(method = "playAmbientSound()V", at = @At("HEAD"), cancellable = true)
+    public void dontPlayAmbientSound(CallbackInfo ci)
+    {
+        if(((Mob) (Object) this).getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
+            ci.cancel();
+    }
 }

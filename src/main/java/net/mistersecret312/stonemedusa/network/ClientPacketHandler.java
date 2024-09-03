@@ -3,8 +3,12 @@ package net.mistersecret312.stonemedusa.network;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
+import net.mistersecret312.stonemedusa.network.packets.EntityPetrifiedPacket;
+import net.mistersecret312.stonemedusa.network.packets.MedusaActivatedPacket;
 import net.mistersecret312.stonemedusa.network.packets.PetrifiedEntityUpdatePacket;
 
 public class ClientPacketHandler
@@ -15,8 +19,29 @@ public class ClientPacketHandler
             getEntity(packet.entityId).getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
             {
                 cap.setPetrified(packet.petrified);
+                cap.setBreakStage(packet.breakStage);
                 cap.setAge(packet.age);
             });
+    }
+
+    public static void handleMedusaActivationSound(MedusaActivatedPacket packet)
+    {
+        Entity entity = getEntity(packet.entityID);
+        if(entity != null)
+        {
+            entity.level().playSound(null, entity.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.MASTER, 1F, 1F);
+        }
+
+    }
+
+    public static void handlePetrifcationSound(EntityPetrifiedPacket packet)
+    {
+        Entity entity = getEntity(packet.entityID);
+        if(entity != null)
+        {
+            entity.level().playSound(null, entity.blockPosition(), SoundEvents.DRIPSTONE_BLOCK_PLACE, SoundSource.MASTER, 1F, 1F);
+        }
+
     }
 
     @SuppressWarnings("unchecked")

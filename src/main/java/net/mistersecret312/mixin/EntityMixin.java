@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Pig;
@@ -30,6 +31,14 @@ public class EntityMixin
         DamageSource source = new DamageSource(Holder.direct(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getOrThrow(ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(StoneMedusa.MOD_ID, "nitric_acid")))),
                 null, null, null);
         if(entity.isInFluidType(FluidTypeInit.REVIVAL_FLUID_TYPE.get()) && entity.level().getGameTime() % 20 == 0)
+        {
             entity.hurt(source, 1);
+
+            if(entity instanceof LivingEntity living)
+            {
+                if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()) && !living.getActiveEffectsMap().get(EffectInit.PETRIFICATION.get()).endsWithin(100))
+                    living.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), 100, 0, false, false, true));
+            }
+        }
     }
 }

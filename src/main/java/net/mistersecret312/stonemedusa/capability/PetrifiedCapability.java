@@ -11,9 +11,11 @@ import net.mistersecret312.stonemedusa.network.packets.PetrifiedEntityUpdatePack
 public class PetrifiedCapability implements INBTSerializable<CompoundTag>
 {
     public static final String PETRIFIED = "petrified";
+    public static final String BREAK_STAGE = "";
     public static final String AGE = "age";
 
     public boolean petrified = false;
+    public int breakStage = -1;
     public float age = 0f;
 
     public void tick(Level level, LivingEntity living)
@@ -23,12 +25,17 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
 
         petrified = living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get());
 
-        NetworkInit.sendToTracking(living, new PetrifiedEntityUpdatePacket(petrified, age, living.getId()));
+        NetworkInit.sendToTracking(living, new PetrifiedEntityUpdatePacket(petrified, breakStage, age, living.getId()));
     }
 
     public boolean isPetrified()
     {
         return petrified;
+    }
+
+    public int getBreakStage()
+    {
+        return breakStage;
     }
 
     public float getAge()
@@ -39,6 +46,15 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
     public void setPetrified(boolean petrified)
     {
         this.petrified = petrified;
+    }
+
+    public void setBreakStage(int breakStage)
+    {
+        if(breakStage < -1)
+            breakStage = -1;
+        if(breakStage > 9)
+            breakStage = 9;
+        this.breakStage = breakStage;
     }
 
     public void setAge(float age)
@@ -52,6 +68,7 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         CompoundTag tag = new CompoundTag();
 
         tag.putBoolean(PETRIFIED, petrified);
+        tag.putInt(BREAK_STAGE, breakStage);
         tag.putFloat(AGE, age);
 
         return tag;
@@ -61,6 +78,7 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
     public void deserializeNBT(CompoundTag nbt)
     {
         this.petrified = nbt.getBoolean(PETRIFIED);
+        this.breakStage = nbt.getInt(BREAK_STAGE);
         this.age = nbt.getFloat(AGE);
     }
 }

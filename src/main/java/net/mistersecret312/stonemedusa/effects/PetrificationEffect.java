@@ -1,5 +1,7 @@
 package net.mistersecret312.stonemedusa.effects;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
@@ -7,12 +9,15 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SplashPotionItem;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import net.mistersecret312.stonemedusa.init.EffectInit;
 
+import java.lang.ref.Reference;
 import java.util.List;
 
 public class PetrificationEffect extends MobEffect
@@ -38,7 +43,7 @@ public class PetrificationEffect extends MobEffect
 
         if(petrification.endsWithin(20))
         {
-            MobEffectInstance depetrification = new MobEffectInstance(MobEffects.HEAL,20, 0, false, false, false);
+            MobEffectInstance depetrification = new MobEffectInstance(MobEffects.REGENERATION,20, 4, false, false, false);
             pLivingEntity.addEffect(depetrification);
         }
         else
@@ -56,8 +61,10 @@ public class PetrificationEffect extends MobEffect
             pLivingEntity.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> cap.setPetrified(false));
         }
         if(petrification.endsWithin(1))
-            pLivingEntity.level().playLocalSound(pLivingEntity.blockPosition(), SoundEvents.DEEPSLATE_BREAK, SoundSource.NEUTRAL, 1f, 1f, false);
-
+        {
+            pLivingEntity.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> cap.setBreakStage(-1));
+            pLivingEntity.level().playSound(null, pLivingEntity.blockPosition(), SoundEvents.DEEPSLATE_BREAK, SoundSource.NEUTRAL, 1f, 1f);
+        }
 
         super.applyEffectTick(pLivingEntity, pAmplifier);
     }
