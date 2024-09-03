@@ -20,7 +20,7 @@ public class FluidTypeInit
             DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, StoneMedusa.MOD_ID);
 
     public static final RegistryObject<FluidType> REVIVAL_FLUID_TYPE = registerFluidType("revival_fluid",
-            new BaseFluidType(WATER_STILL_RL, WATER_FLOWING_RL, WATER_OVERLAY_RL, 0xCC9C64A6,
+            new BaseFluidType(WATER_STILL_RL, WATER_FLOWING_RL, WATER_OVERLAY_RL, 0xA6CC9C64,
                     new Vector3f(204f / 255f, 156f / 255f, 100f / 255f),
                     FluidType.Properties.create().lightLevel(0).viscosity(5).density(10)));
 

@@ -32,44 +32,4 @@ public class EntityMixin
         if(entity.isInFluidType(FluidTypeInit.REVIVAL_FLUID_TYPE.get()) && entity.level().getGameTime() % 20 == 0)
             entity.hurt(source, 1);
     }
-
-    @Inject(method = "onFlap()V", at = @At("HEAD"), cancellable = true)
-    public void dontFlap(CallbackInfo ci)
-    {
-        if(((Entity) (Object) this) instanceof LivingEntity living)
-            if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
-                ci.cancel();
-    }
-
-    @Inject(method = "getBlockJumpFactor()F", at = @At("HEAD"), cancellable = true)
-    public void jumpPetrified(CallbackInfoReturnable<Float> cir)
-    {
-        if(((Entity) (Object) this) instanceof LivingEntity living)
-            if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
-                cir.setReturnValue(0f);
-    }
-
-    @Inject(method = "turn(DD)V", at = @At("HEAD"), cancellable = true)
-    public void dontTurnIfPetrified(double pYRot, double pXRot, CallbackInfo ci)
-    {
-        if(((Entity) (Object) this) instanceof LivingEntity living)
-            if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
-                ci.cancel();
-    }
-
-    @Inject(method = "setDeltaMovement(Lnet/minecraft/world/phys/Vec3;)V", at = @At("HEAD"))
-    public void dontMovePetrified(Vec3 pDeltaMovement, CallbackInfo ci)
-    {
-        if(((Entity) (Object) this) instanceof LivingEntity living)
-            if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
-                pDeltaMovement = new Vec3(0, 0,0);
-    }
-
-    @Inject(method = "hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z", at = @At("HEAD"), cancellable = true)
-    public void dontHurtAnimate(DamageSource pSource, float pAmount, CallbackInfoReturnable<Boolean> cir)
-    {
-        if(((Entity) (Object) this) instanceof LivingEntity living)
-            if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
-                cir.setReturnValue(false);
-    }
 }
