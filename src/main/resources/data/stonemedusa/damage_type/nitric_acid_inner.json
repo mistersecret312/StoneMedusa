@@ -1,0 +1,7 @@
+{
+    "message_id": "nitric_acid_inner",
+    "exhaustion": 0,
+    "scaling": "never",
+    "effects": "hurt",
+    "death_message_type": "default"
+}

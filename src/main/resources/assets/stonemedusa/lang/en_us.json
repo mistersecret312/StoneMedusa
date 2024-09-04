@@ -2,12 +2,15 @@
   "item.stonemedusa.medusa": "Medusa",
   "item.stonemedusa.revival_fluid_flask": "Revival Fluid",
   "item.stonemedusa.revival_fluid_bucket": "Bucket of Revivel Fluid",
+  "item.stonemedusa.nitric_acid_bottle": "Nitric Acid Bottle",
   "item.stonemedusa.empty_flask": "Empty Flask",
   "effect.stonemedusa.petrification": "Petrification",
 
   "stonemedusa.target_type.set": "Target type set to - ",
   "death.attack.nitric_acid": "%1$s tried to swim in nitric acid",
   "death.attack.nitric_acid.player": "%1$s tried to swim in nitric acid to escape %2$s",
+  "death.attack.nitric_acid_inner": "%1$s burnt their insides with nitric acid",
+  "death.attack.nitric_acid_inner.player": "%1$s burnt their insides with nitric acid while fighting %2$s",
 
   "creativetab.main_tab": "Dr.STONE - Medusa"
 }

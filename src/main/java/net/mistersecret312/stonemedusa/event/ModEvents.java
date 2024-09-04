@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -42,6 +43,7 @@ import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import net.mistersecret312.stonemedusa.init.EffectInit;
 import net.mistersecret312.stonemedusa.init.ItemInit;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
+import net.mistersecret312.stonemedusa.item.NitricAcidBottleItem;
 
 import java.util.List;
 import java.util.Random;
@@ -118,7 +120,7 @@ public class ModEvents
         if(level.isClientSide())
             return;
 
-        if(level.getGameTime() % 200 == 0 && random.nextFloat() > 0.75)
+        if(level.getGameTime() % 159999*20 == 0 && random.nextFloat() > 0.75)
         {
             for (int i = 0; i < random.nextInt(2, 5); i++)
             {
@@ -157,21 +159,33 @@ public class ModEvents
     @SubscribeEvent
     public static void playerInteract(PlayerInteractEvent.EntityInteractSpecific event)
     {
-        ItemStack stack = event.getEntity().getItemInHand(event.getHand());
-        if(stack.getItem() instanceof MedusaItem item)
+        if(event.getTarget() instanceof LivingEntity living)
         {
-            if (ForgeRegistries.ENTITY_TYPES.containsValue(event.getTarget().getType()))
+            ItemStack stack = event.getEntity().getItemInHand(event.getHand());
+            if (stack.getItem() instanceof MedusaItem item)
             {
-                item.setTargetEntityType(stack, ForgeRegistries.ENTITY_TYPES.getKey(event.getTarget().getType()).toString());
-                event.getEntity().displayClientMessage(Component.translatable("stonemedusa.target_type.set")
-                        .append(Component.literal(item.getTargetEntityType(stack))), true);
-            }
+                if (ForgeRegistries.ENTITY_TYPES.containsValue(event.getTarget().getType()))
+                {
+                    item.setTargetEntityType(stack, ForgeRegistries.ENTITY_TYPES.getKey(event.getTarget().getType()).toString());
+                    event.getEntity().displayClientMessage(Component.translatable("stonemedusa.target_type.set").append(Component.literal(item.getTargetEntityType(stack))), true);
+                }
 
-        }
-        if(event.getEntity().getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
-        {
-            event.setCancellationResult(InteractionResult.FAIL);
-            event.setCanceled(true);
+            }
+            if (stack.getItem() instanceof NitricAcidBottleItem acid)
+            {
+                living.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
+                {
+                    if (cap.getTimePetrified() < 1200 && living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
+                        living.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), 100, 0, false, false, true));
+                    else if(cap.getTimePetrified() > 10000 && living instanceof Player player)
+                        player.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), 100, 0, false, false, true));
+                });
+            }
+            if (event.getEntity().getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
+            {
+                event.setCancellationResult(InteractionResult.FAIL);
+                event.setCanceled(true);
+            }
         }
     }
 

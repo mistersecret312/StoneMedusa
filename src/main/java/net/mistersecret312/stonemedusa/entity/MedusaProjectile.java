@@ -93,6 +93,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.countingDown = countingDown;
         this.setActive(isActive);
         this.setTargetType(targetType);
+        this.generated = generated;
     }
 
     public MedusaProjectile(Level level, int energy, float radius, int delay, boolean countingDown, boolean isActive, String targetType, boolean generated)
@@ -104,6 +105,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.countingDown = countingDown;
         this.setActive(isActive);
         this.setTargetType(targetType);
+        this.generated = generated;
     }
 
     @Override
@@ -293,7 +295,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
             }
 
             this.teleportRelative(0, 1.5, 0);
-            this.setTargetRadius(random.nextFloat(5, 25));
+            this.setTargetRadius(random.nextFloat(3, 8));
             this.setEnergy(random.nextInt(maxEnergy/10, maxEnergy));
             if(random.nextFloat() > 0.75)
                 this.setTargetType("minecraft:player");

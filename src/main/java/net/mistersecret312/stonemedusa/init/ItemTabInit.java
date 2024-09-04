@@ -23,6 +23,7 @@ public class ItemTabInit
                         output.accept(ItemInit.REVIVAL_FLUID.get());
                         output.accept(ItemInit.EMPTY_FLASK.get());
                         output.accept(ItemInit.REVIVAL_FLUID_BUCKET.get());
+                        output.accept(ItemInit.NITRIC_ACID_BOTTLE.get());
                     })
                     .build());
 

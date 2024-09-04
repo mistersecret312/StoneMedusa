@@ -1,9 +1,9 @@
 package net.mistersecret312.stonemedusa.init;
 
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -11,6 +11,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
+import net.mistersecret312.stonemedusa.item.NitricAcidBottleItem;
 import net.mistersecret312.stonemedusa.item.RevivalFluidBucketItem;
 import net.mistersecret312.stonemedusa.item.RevivalFluidItem;
 
@@ -23,6 +24,9 @@ public class ItemInit
 
     public static final RegistryObject<Item> EMPTY_FLASK = ITEMS.register("empty_flask",
             () -> new Item(new Item.Properties().stacksTo(16).rarity(Rarity.COMMON)));
+    public static final RegistryObject<Item> NITRIC_ACID_BOTTLE = ITEMS.register("nitric_acid_bottle",
+            () -> new NitricAcidBottleItem(new Item.Properties().stacksTo(16)
+                    .craftRemainder(Items.GLASS_BOTTLE)));
 
     public static final RegistryObject<RevivalFluidItem> REVIVAL_FLUID = ITEMS.register("revival_fluid_flask",
             () -> new RevivalFluidItem(new Item.Properties().stacksTo(16).craftRemainder(ItemInit.EMPTY_FLASK.get()).rarity(Rarity.UNCOMMON)));
