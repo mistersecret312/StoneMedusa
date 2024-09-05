@@ -17,6 +17,9 @@ public class BlockInit
 
     public static RegistryObject<LiquidBlock> REVIVAL_FLUID = BLOCKS.register("revival_fluid",
             () -> new LiquidBlock(FluidInit.SOURCE_REVIVAL_FLUID, BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
+    public static RegistryObject<LiquidBlock> NITRIC_ACID = BLOCKS.register("nitric_acid",
+            () -> new LiquidBlock(FluidInit.SOURCE_NITRIC_ACID, BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
+
 
     public static void register(IEventBus bus)
     {

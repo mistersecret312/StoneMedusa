@@ -19,11 +19,21 @@ public class FluidInit
     public static final RegistryObject<FlowingFluid> FLOWING_REVIVAL_FLUID = FLUIDS.register("flowing_revival_fluid",
             () -> new ForgeFlowingFluid.Flowing(FluidInit.REVIVAL_FLUID_PROPERTIES));
 
+    public static final RegistryObject<FlowingFluid> SOURCE_NITRIC_ACID = FLUIDS.register("nitric_acid",
+            () -> new ForgeFlowingFluid.Source(FluidInit.NITRIC_ACID_PROPERTIES));
+    public static final RegistryObject<FlowingFluid> FLOWING_NITRIC_ACID = FLUIDS.register("flowing_nitric_acid",
+            () -> new ForgeFlowingFluid.Flowing(FluidInit.NITRIC_ACID_PROPERTIES));
+
 
     public static final ForgeFlowingFluid.Properties REVIVAL_FLUID_PROPERTIES = new ForgeFlowingFluid.Properties(
             FluidTypeInit.REVIVAL_FLUID_TYPE, SOURCE_REVIVAL_FLUID, FLOWING_REVIVAL_FLUID)
             .slopeFindDistance(2).levelDecreasePerBlock(1).block(BlockInit.REVIVAL_FLUID)
             .bucket(ItemInit.REVIVAL_FLUID_BUCKET);
+
+    public static final ForgeFlowingFluid.Properties NITRIC_ACID_PROPERTIES = new ForgeFlowingFluid.Properties(
+            FluidTypeInit.NITRIC_ACID_TYPE, SOURCE_NITRIC_ACID, FLOWING_NITRIC_ACID)
+            .slopeFindDistance(2).levelDecreasePerBlock(1).block(BlockInit.NITRIC_ACID)
+            .bucket(ItemInit.NITRIC_ACID_BUCKET);
 
     public static void register(IEventBus eventBus) {
         FLUIDS.register(eventBus);

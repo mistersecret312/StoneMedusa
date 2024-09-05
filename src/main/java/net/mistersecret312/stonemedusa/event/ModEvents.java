@@ -1,9 +1,12 @@
 package net.mistersecret312.stonemedusa.event;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.LeashKnotRenderer;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -13,11 +16,15 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BottleItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -120,7 +127,7 @@ public class ModEvents
         if(level.isClientSide())
             return;
 
-        if(level.getGameTime() % 159999*20 == 0 && random.nextFloat() > 0.75)
+        if(level.getGameTime() % 159999*20 == 0 && random.nextFloat() > 0.95)
         {
             for (int i = 0; i < random.nextInt(2, 5); i++)
             {
@@ -143,7 +150,14 @@ public class ModEvents
             if(event.getAmount() > 5)
             {
                 event.getEntity().level().playSound(null, event.getEntity().blockPosition(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1f, 1f);
-                entity.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> cap.setBreakStage(cap.getBreakStage() + 1));
+                entity.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> {
+                    cap.setBreakStage((int) (cap.getBreakStage() + (event.getAmount()/5)));
+                    if(cap.getBreakStage() >= 9)
+                    {
+                        entity.discard();
+                        Minecraft.getInstance().particleEngine.destroy(entity.blockPosition(), Blocks.STONE.defaultBlockState());
+                    }
+                });
             }
             event.setCanceled(true);
         }
@@ -180,6 +194,14 @@ public class ModEvents
                     else if(cap.getTimePetrified() > 10000 && living instanceof Player player)
                         player.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), 100, 0, false, false, true));
                 });
+            }
+            if(stack.getItem().equals(ItemInit.EMPTY_FLASK.get()))
+            {
+                if(living instanceof Bat)
+                {
+                    stack.shrink(1);
+                    event.getEntity().getInventory().add(new ItemStack(ItemInit.NITRIC_ACID_FLASK.get()));
+                }
             }
             if (event.getEntity().getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
             {

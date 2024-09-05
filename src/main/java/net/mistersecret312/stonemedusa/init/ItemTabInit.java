@@ -16,14 +16,15 @@ public class ItemTabInit
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, StoneMedusa.MOD_ID);
 
     public static final RegistryObject<CreativeModeTab> MAIN_TAB = TABS.register("main_tab",
-            () -> CreativeModeTab.builder().icon(() -> new ItemStack(ItemInit.REVIVAL_FLUID.get()))
+            () -> CreativeModeTab.builder().icon(() -> MedusaItem.getMedusa(ItemInit.MEDUSA.get(), MedusaItem.maxEnergy, 5, 20))
                     .title(Component.translatable("creativetab.main_tab"))
                     .displayItems((parameters, output) -> {
-                        output.accept(MedusaItem.getMedusa(ItemInit.MEDUSA.get(), MedusaItem.maxEnergy, 5, 200));
-                        output.accept(ItemInit.REVIVAL_FLUID.get());
+                        output.accept(MedusaItem.getMedusa(ItemInit.MEDUSA.get(), MedusaItem.maxEnergy, 5, 20));
                         output.accept(ItemInit.EMPTY_FLASK.get());
+                        output.accept(ItemInit.REVIVAL_FLUID.get());
                         output.accept(ItemInit.REVIVAL_FLUID_BUCKET.get());
-                        output.accept(ItemInit.NITRIC_ACID_BOTTLE.get());
+                        output.accept(ItemInit.NITRIC_ACID_FLASK.get());
+                        output.accept(ItemInit.NITRIC_ACID_BUCKET.get());
                     })
                     .build());
 

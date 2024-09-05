@@ -11,12 +11,13 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.mistersecret312.stonemedusa.client.Layers;
 import net.mistersecret312.stonemedusa.client.layers.StoneRenderLayer;
 import net.mistersecret312.stonemedusa.client.renderer.MedusaProjectileRenderer;
@@ -65,6 +66,8 @@ public class StoneMedusa
         event.enqueueWork(
         () -> {
             NetworkInit.registerPackets();
+
+            BrewingRecipeRegistry.addRecipe(Ingredient.of(new ItemStack(ItemInit.NITRIC_ACID_FLASK.get())), Ingredient.of(Items.SUGAR), new ItemStack(ItemInit.REVIVAL_FLUID.get()));
         });
     }
 

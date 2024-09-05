@@ -24,6 +24,11 @@ public class FluidTypeInit
                     new Vector3f(204f / 255f, 156f / 255f, 100f / 255f),
                     FluidType.Properties.create().lightLevel(0).viscosity(5).density(10)));
 
+    public static final RegistryObject<FluidType> NITRIC_ACID_TYPE = registerFluidType("nitric_acid",
+            new BaseFluidType(WATER_STILL_RL, WATER_FLOWING_RL, WATER_OVERLAY_RL, 0xA6CC9C64,
+                    new Vector3f(204f / 255f, 156f / 255f, 100f / 255f),
+                    FluidType.Properties.create().lightLevel(0).viscosity(5).density(10)));
+
 
     private static RegistryObject<FluidType> registerFluidType(String name, FluidType fluidType) {
         return FLUID_TYPES.register(name, () -> fluidType);
