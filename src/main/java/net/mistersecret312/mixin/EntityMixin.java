@@ -30,7 +30,7 @@ public class EntityMixin
         Entity entity = ((Entity) (Object) this);
         DamageSource source = new DamageSource(Holder.direct(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getOrThrow(ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(StoneMedusa.MOD_ID, "nitric_acid")))),
                 null, null, null);
-        if(entity.isInFluidType(FluidTypeInit.REVIVAL_FLUID_TYPE.get()) && entity.level().getGameTime() % 20 == 0)
+        if((entity.isInFluidType(FluidTypeInit.REVIVAL_FLUID_TYPE.get()) || entity.isInFluidType(FluidTypeInit.NITRIC_ACID_TYPE.get())) && entity.level().getGameTime() % 20 == 0)
         {
             entity.hurt(source, 1);
 
