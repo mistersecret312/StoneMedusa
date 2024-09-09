@@ -32,7 +32,7 @@ public class EntityMixin
                 null, null, null);
         if((entity.isInFluidType(FluidTypeInit.REVIVAL_FLUID_TYPE.get()) || entity.isInFluidType(FluidTypeInit.NITRIC_ACID_TYPE.get())) && entity.level().getGameTime() % 20 == 0)
         {
-            entity.hurt(source, 1);
+            entity.hurt(source, entity.isInFluidType(FluidTypeInit.REVIVAL_FLUID_TYPE.get()) ? 1 : 2);
 
             if(entity instanceof LivingEntity living)
             {
