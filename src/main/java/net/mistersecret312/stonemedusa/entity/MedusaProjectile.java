@@ -27,6 +27,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.VanillaGameEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.mistersecret312.stonemedusa.StoneMedusa;
+import net.mistersecret312.stonemedusa.config.PetrificationConfig;
 import net.mistersecret312.stonemedusa.init.*;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
 import net.mistersecret312.stonemedusa.network.packets.EntityPetrifiedPacket;
@@ -255,7 +256,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
             if (entity instanceof LivingEntity living)
                 if (!living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()) && Math.sqrt(living.blockPosition().distSqr(new Vec3i(this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ()))) < this.getCurrentRadius()*1.5f)
                 {
-                    living.addEffect(new MobEffectInstance(EffectInit.PETRIFICATION.get(), living instanceof Player ? 12000 : -1, 0, false, false, true), living);
+                    living.addEffect(new MobEffectInstance(EffectInit.PETRIFICATION.get(), living instanceof Player ? PetrificationConfig.player_petrification_time.get() : PetrificationConfig.entity_petrification_time.get(), 0, false, false, true), living);
                     living.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
                     {
                         cap.setPetrified(true);

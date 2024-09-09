@@ -14,6 +14,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.mistersecret312.stonemedusa.config.RevivalConfig;
 import net.mistersecret312.stonemedusa.init.EffectInit;
 import net.mistersecret312.stonemedusa.init.EntityInit;
 import net.mistersecret312.stonemedusa.init.ItemInit;
@@ -47,7 +48,7 @@ public class ThrownRevivalFluidEntity extends ThrowableItemProjectile
         List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, aabb);
         for (LivingEntity living : list)
             if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
-                living.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), 100, 0, false, false, true));
+                living.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), RevivalConfig.revival_time.get(), 0, false, false, true));
     }
 
     @Override
@@ -55,6 +56,6 @@ public class ThrownRevivalFluidEntity extends ThrowableItemProjectile
     {
         if(result.getEntity() instanceof LivingEntity living)
             if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
-                living.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), 100, 0, false, false, true));
+                living.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), RevivalConfig.revival_time.get(), 0, false, false, true));
     }
 }

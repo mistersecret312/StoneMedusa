@@ -45,6 +45,7 @@ import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.minecraftforge.fml.common.Mod;
 import net.mistersecret312.stonemedusa.capability.GenericProvider;
 import net.mistersecret312.stonemedusa.capability.PetrifiedCapability;
+import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import net.mistersecret312.stonemedusa.init.EffectInit;
@@ -127,9 +128,9 @@ public class ModEvents
         if(level.isClientSide())
             return;
 
-        if(level.getGameTime() % 159999*20 == 0 && random.nextFloat() > 0.95)
+        if(level.getGameTime() % MedusaConfig.generation_period.get()*20 == 0 && random.nextFloat() > 1-MedusaConfig.generation_chance.get())
         {
-            for (int i = 0; i < random.nextInt(2, 5); i++)
+            for (int i = 0; i < random.nextInt(MedusaConfig.min_generated_amount.get(), MedusaConfig.max_generated_amount.get()); i++)
             {
                 ItemStack stack = MedusaItem.getMedusa(ItemInit.MEDUSA.get(), MedusaItem.maxEnergy, 5f, 20);
                 MedusaProjectile medusa = new MedusaProjectile(level, MedusaItem.maxEnergy, 5f, 20, false, false, "", true);

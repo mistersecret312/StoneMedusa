@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.SpyglassItem;
 import net.minecraft.world.phys.Vec3;
 import net.mistersecret312.stonemedusa.StoneMedusa;
+import net.mistersecret312.stonemedusa.config.RevivalConfig;
 import net.mistersecret312.stonemedusa.init.EffectInit;
 import net.mistersecret312.stonemedusa.init.FluidTypeInit;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,12 +33,12 @@ public class EntityMixin
                 null, null, null);
         if((entity.isInFluidType(FluidTypeInit.REVIVAL_FLUID_TYPE.get()) || entity.isInFluidType(FluidTypeInit.NITRIC_ACID_TYPE.get())) && entity.level().getGameTime() % 20 == 0)
         {
-            entity.hurt(source, entity.isInFluidType(FluidTypeInit.REVIVAL_FLUID_TYPE.get()) ? 1 : 2);
+            entity.hurt(source, entity.isInFluidType(FluidTypeInit.REVIVAL_FLUID_TYPE.get()) ? RevivalConfig.revival_damage.get() : RevivalConfig.nitric_damage.get());
 
             if(entity instanceof LivingEntity living)
             {
-                if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()) && !living.getActiveEffectsMap().get(EffectInit.PETRIFICATION.get()).endsWithin(100))
-                    living.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), 100, 0, false, false, true));
+                if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()) && !living.getActiveEffectsMap().get(EffectInit.PETRIFICATION.get()).endsWithin(RevivalConfig.revival_time.get()))
+                    living.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), RevivalConfig.revival_time.get(), 0, false, false, true));
             }
         }
     }

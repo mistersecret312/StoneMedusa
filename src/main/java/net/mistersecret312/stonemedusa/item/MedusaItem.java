@@ -12,6 +12,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.init.ItemInit;
 
@@ -25,8 +26,8 @@ public class MedusaItem extends Item
     public static final String IS_ACTIVE = "isActive";
     public static final String IS_COUNTINDOWN_ACTIVE= "isCountdownActive";
     public static final String TARGET_ENTITY_TYPE = "targetType";
-    public static final int maxEnergy = 1000000;
-    public static final float maxRadius = 200F;
+    public static final int maxEnergy = MedusaConfig.max_energy.get();
+    public static final float maxRadius = MedusaConfig.max_radius.get().floatValue();
 
     public MedusaItem(Properties pProperties)
     {
