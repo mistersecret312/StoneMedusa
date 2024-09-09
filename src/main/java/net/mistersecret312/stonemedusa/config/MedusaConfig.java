@@ -17,7 +17,7 @@ public class MedusaConfig
     {
         max_energy = builder
                 .comment("The maximum energy that the Medusa can hold")
-                .defineInRange("server.medusa_max_energy", 1000000, 1000, Integer.MIN_VALUE);
+                .defineInRange("server.medusa_max_energy", 1000000, 1000, Integer.MAX_VALUE);
 
         max_radius = builder
                 .comment("The maximum radius that the Medusa can reach")

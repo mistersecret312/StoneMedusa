@@ -27,6 +27,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.VanillaGameEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.mistersecret312.stonemedusa.StoneMedusa;
+import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.config.PetrificationConfig;
 import net.mistersecret312.stonemedusa.init.*;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
@@ -35,8 +36,6 @@ import net.mistersecret312.stonemedusa.network.packets.MedusaActivatedPacket;
 
 import java.util.List;
 import java.util.Random;
-
-import static net.mistersecret312.stonemedusa.item.MedusaItem.maxEnergy;
 
 public class MedusaProjectile extends ThrowableItemProjectile
 {
@@ -299,7 +298,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
 
             this.teleportRelative(0, 1.5, 0);
             this.setTargetRadius(random.nextFloat(3, 8));
-            this.setEnergy(random.nextInt(maxEnergy/10, maxEnergy));
+            this.setEnergy(random.nextInt(MedusaConfig.max_energy.get()/10, MedusaConfig.max_energy.get()));
             if(random.nextFloat() > 0.75)
                 this.setTargetType("minecraft:player");
             this.activate();

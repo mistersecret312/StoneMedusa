@@ -132,8 +132,8 @@ public class ModEvents
         {
             for (int i = 0; i < random.nextInt(MedusaConfig.min_generated_amount.get(), MedusaConfig.max_generated_amount.get()); i++)
             {
-                ItemStack stack = MedusaItem.getMedusa(ItemInit.MEDUSA.get(), MedusaItem.maxEnergy, 5f, 20);
-                MedusaProjectile medusa = new MedusaProjectile(level, MedusaItem.maxEnergy, 5f, 20, false, false, "", true);
+                ItemStack stack = MedusaItem.getMedusa(ItemInit.MEDUSA.get(), MedusaConfig.max_energy.get(), 5f, 20);
+                MedusaProjectile medusa = new MedusaProjectile(level, MedusaConfig.max_energy.get(), 5f, 20, false, false, "", true);
                 medusa.setItem(stack);
                 medusa.setPos(player.blockPosition().getX()+random.nextInt(-15, 15), player.blockPosition().getY()+350+random.nextInt(-5, 5), player.blockPosition().getZ()+random.nextInt(-15, 15));
                 medusa.setDeltaMovement(new Vec3(0, -3f, 0));

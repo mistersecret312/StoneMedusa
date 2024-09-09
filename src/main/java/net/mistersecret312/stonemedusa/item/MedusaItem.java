@@ -26,8 +26,6 @@ public class MedusaItem extends Item
     public static final String IS_ACTIVE = "isActive";
     public static final String IS_COUNTINDOWN_ACTIVE= "isCountdownActive";
     public static final String TARGET_ENTITY_TYPE = "targetType";
-    public static final int maxEnergy = MedusaConfig.max_energy.get();
-    public static final float maxRadius = MedusaConfig.max_radius.get().floatValue();
 
     public MedusaItem(Properties pProperties)
     {
@@ -165,7 +163,7 @@ public class MedusaItem extends Item
     @Override
     public int getBarWidth(ItemStack pStack)
     {
-        return Math.round(13.0F * (float)this.getEnergy(pStack) / (float)maxEnergy);
+        return Math.round(13.0F * (float)this.getEnergy(pStack) / (float)MedusaConfig.max_energy.get());
     }
 
     @Override
@@ -177,7 +175,7 @@ public class MedusaItem extends Item
     @Override
     public boolean isBarVisible(ItemStack pStack)
     {
-        return this.getEnergy(pStack) != maxEnergy;
+        return this.getEnergy(pStack) != MedusaConfig.max_energy.get();
     }
 
     public int getEnergy(ItemStack stack)
@@ -238,12 +236,12 @@ public class MedusaItem extends Item
 
     public void setEnergy(ItemStack stack, int energy)
     {
-        stack.getOrCreateTag().putInt(ENERGY, Math.min(energy, maxEnergy));
+        stack.getOrCreateTag().putInt(ENERGY, Math.min(energy, MedusaConfig.max_energy.get()));
     }
 
     public void setRadius(ItemStack stack, float radius)
     {
-        stack.getOrCreateTag().putFloat(RADIUS, Math.min(radius, maxRadius));
+        stack.getOrCreateTag().putFloat(RADIUS, Math.min(radius, MedusaConfig.max_radius.get().floatValue()));
     }
 
     public void setDelay(ItemStack stack, int delay)
