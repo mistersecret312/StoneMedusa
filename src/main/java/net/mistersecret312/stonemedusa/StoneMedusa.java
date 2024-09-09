@@ -18,6 +18,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
 import net.mistersecret312.stonemedusa.client.Layers;
 import net.mistersecret312.stonemedusa.client.layers.StoneRenderLayer;
 import net.mistersecret312.stonemedusa.client.renderer.MedusaProjectileRenderer;
@@ -58,6 +60,8 @@ public class StoneMedusa
 
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(Layers::registerLayers);
+
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigInit.COMMON_CONFIG, "stonemedusa-common.toml");
 
         MinecraftForge.EVENT_BUS.register(this);
     }
