@@ -7,6 +7,8 @@ public class MedusaConfig
 {
     public static ForgeConfigSpec.IntValue max_energy;
     public static ForgeConfigSpec.DoubleValue max_radius;
+    public static ForgeConfigSpec.DoubleValue base_speed;
+    public static ForgeConfigSpec.BooleanValue can_set_target;
 
     public static ForgeConfigSpec.IntValue generation_period;
     public static ForgeConfigSpec.DoubleValue generation_chance;
@@ -22,6 +24,14 @@ public class MedusaConfig
         max_radius = builder
                 .comment("The maximum radius that the Medusa can reach")
                 .defineInRange("server.medusa_max_radius", 200f, 2.5f, Float.MAX_VALUE);
+
+        base_speed = builder
+                .comment("The base speed of expansion of the Petrification Beam, in ticks per meter")
+                .defineInRange("server.medusa_base_speed", 5, 0.01, Double.MAX_VALUE);
+
+        can_set_target = builder
+                .comment("Should it be possible to target specific species with the Medusa or not")
+                .define("server.medusa_can_set_target", true);
 
         builder.push("Medusa Generation");
 

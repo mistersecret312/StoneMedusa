@@ -46,6 +46,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.mistersecret312.stonemedusa.capability.GenericProvider;
 import net.mistersecret312.stonemedusa.capability.PetrifiedCapability;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
+import net.mistersecret312.stonemedusa.config.RevivalConfig;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import net.mistersecret312.stonemedusa.init.EffectInit;
@@ -69,7 +70,7 @@ public class ModEvents
         if(!level.isClientSide() && (message.toLowerCase().contains("meter") || message.toLowerCase().contains("metre")) && message.toLowerCase().contains("second"))
         {
             String[] parts = message.replace("'", "").replace("seconds", "").replace("meter", "-").replace("meters", "-").replace("metre", "-").replace("metres", "-").split("-");
-            float meters = Float.parseFloat(parts[0].replaceAll("[^1234567890.]", ""));
+            float meters = (float) (Float.parseFloat(parts[0].replaceAll("[^1234567890.]", ""))/1.5);
             int seconds = Integer.parseInt(parts[1].replaceAll("[^1234567890]", ""))*20;
 
             if(seconds <= 0)
@@ -186,13 +187,13 @@ public class ModEvents
                 }
 
             }
-            if (stack.getItem() instanceof NitricAcidBottleItem acid)
+            if (RevivalConfig.nitric_revival.get() && stack.getItem() instanceof NitricAcidBottleItem acid)
             {
                 living.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
                 {
-                    if (cap.getTimePetrified() < 1200 && living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
+                    if (RevivalConfig.nitric_revival_early.get() && cap.getTimePetrified() < RevivalConfig.nitric_revival_early_time.get()*20 && living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
                         living.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), 100, 0, false, false, true));
-                    else if(cap.getTimePetrified() > 10000 && living instanceof Player player)
+                    else if(RevivalConfig.nitric_revival_late.get() && cap.getTimePetrified() > RevivalConfig.nitric_revival_late_time.get() && living instanceof Player player)
                         player.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), 100, 0, false, false, true));
                 });
             }

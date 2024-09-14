@@ -61,7 +61,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
     private float targetRadius = 0;
     private int delay = 0;
     private boolean countingDown = false;
-    private int speed = 5;
+    private double speed = MedusaConfig.base_speed.get();
     private boolean generated = false;
 
     private int activeTicker = 0;
@@ -144,7 +144,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         tag.putString("targetType", this.entityData.get(TARGET_TYPE));
         tag.putBoolean(IS_COUNTINDOWN_ACTIVE, this.countingDown);
         tag.putBoolean(IS_GENERATED, this.generated);
-        tag.putInt(SPEED, this.speed);
+        tag.putDouble(SPEED, this.speed);
     }
 
     @Override
@@ -186,6 +186,14 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.setDeltaMovement(Vec3.ZERO);
         this.setNoGravity(true);
 
+        int demandedEnergy = (int) ((this.targetRadius*this.speed*2+IDLE_TIME)*25);
+        double energyPercentage = (double) this.energy /MedusaConfig.max_energy.get();
+        if(demandedEnergy > this.energy)
+        {
+            this.targetRadius = Math.max(1f, (float) ((this.energy - 20000) / (25 * this.speed * 2)));
+            this.speed = Math.max(0.05f, this.speed/(1.2*Math.atan((energyPercentage/30)-2)+1.4));
+        }
+
         this.level().playSound(null, this.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.MASTER, 1F, 1F);
         NetworkInit.sendToTracking(this, new MedusaActivatedPacket(this.getId()));
     }
@@ -199,7 +207,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
     public void activeTick()
     {
 
-        if(activeTicker >= this.targetRadius*10+IDLE_TIME)
+        if(activeTicker >= this.targetRadius*this.speed*2+IDLE_TIME)
         {
             deactivate();
             activeTicker = 0;
@@ -213,15 +221,15 @@ public class MedusaProjectile extends ThrowableItemProjectile
             else this.energy = 0;
 
             activeTicker++;
-            if(activeTicker <= this.targetRadius*this.speed && !(activeTicker > this.targetRadius*5))
+            if(activeTicker <= this.targetRadius*this.speed && !(activeTicker > this.targetRadius*this.speed))
                 expansionTicker++;
-            if(activeTicker > (this.targetRadius*this.speed)+IDLE_TIME && activeTicker <= this.targetRadius*10+IDLE_TIME)
+            if(activeTicker > (this.targetRadius*this.speed)+IDLE_TIME && activeTicker <= this.targetRadius*this.speed*2+IDLE_TIME)
                 shrinkingTicker++;
 
             if(expansionTicker > 0 && activeTicker <= this.targetRadius*this.speed)
-                this.setCurrentRadius(Mth.lerp(expansionTicker/(this.targetRadius*this.speed), 0, this.targetRadius));
-            if(shrinkingTicker > 0 && activeTicker > (this.targetRadius*this.speed)+IDLE_TIME && activeTicker <= this.targetRadius*10+IDLE_TIME)
-                this.setCurrentRadius(Mth.lerp(shrinkingTicker/(this.targetRadius*this.speed), this.targetRadius, 0));
+                this.setCurrentRadius((float) Mth.lerp(expansionTicker/(this.targetRadius*this.speed), 0, this.targetRadius));
+            if(shrinkingTicker > 0 && activeTicker > (this.targetRadius*this.speed)+IDLE_TIME && activeTicker <= this.targetRadius*this.speed*2+IDLE_TIME)
+                this.setCurrentRadius((float) Mth.lerp(shrinkingTicker/(this.targetRadius*this.speed), this.targetRadius, 0));
 
             if(this.getCurrentRadius() > 0f)
                 petrify();
@@ -276,6 +284,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.setNoGravity(false);
         this.noPhysics = false;
         this.setDeltaMovement(Vec3.ZERO);
+        this.setSpeed(5);
     }
 
     @Override
@@ -290,7 +299,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         Random random = new Random();
         if(this.isGenerated())
         {
-            if(random.nextFloat() > 0.95)
+            if(random.nextFloat() > 0.2)
             {
                 this.discard();
                 return;
@@ -350,7 +359,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         return type;
     }
 
-    public int getSpeed()
+    public double getSpeed()
     {
         return speed;
     }
@@ -395,7 +404,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.entityData.set(TARGET_TYPE, type);
     }
 
-    public void setSpeed(int speed)
+    public void setSpeed(double speed)
     {
         this.speed = speed;
     }

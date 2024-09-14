@@ -2,6 +2,8 @@ package net.mistersecret312.stonemedusa.network;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -29,7 +31,7 @@ public class ClientPacketHandler
         Entity entity = getEntity(packet.entityID);
         if(entity != null)
         {
-            entity.level().playSound(null, entity.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.MASTER, 1F, 1F);
+            entity.level().playSound(getPlayer(), entity.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.MASTER, 1F, 1F);
         }
 
     }
@@ -39,7 +41,7 @@ public class ClientPacketHandler
         Entity entity = getEntity(packet.entityID);
         if(entity != null)
         {
-            entity.level().playSound(null, entity.blockPosition(), SoundEvents.DRIPSTONE_BLOCK_PLACE, SoundSource.MASTER, 1F, 1F);
+            entity.level().playSound(getPlayer(), entity.blockPosition(), SoundEvents.DRIPSTONE_BLOCK_PLACE, SoundSource.MASTER, 1F, 1F);
         }
 
     }
@@ -51,5 +53,10 @@ public class ClientPacketHandler
             return null;
         Entity entity = level.getEntity(entityId);
         return (T) entity;
+    }
+
+    public static LocalPlayer getPlayer()
+    {
+        return Minecraft.getInstance().player;
     }
 }
