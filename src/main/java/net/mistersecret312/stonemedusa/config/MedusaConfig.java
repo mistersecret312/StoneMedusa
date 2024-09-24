@@ -14,6 +14,12 @@ public class MedusaConfig
     public static ForgeConfigSpec.DoubleValue generation_chance;
     public static ForgeConfigSpec.IntValue min_generated_amount;
     public static ForgeConfigSpec.IntValue max_generated_amount;
+    public static ForgeConfigSpec.DoubleValue break_chance;
+    public static ForgeConfigSpec.DoubleValue min_generated_energy;
+    public static ForgeConfigSpec.DoubleValue max_generated_energy;
+    public static ForgeConfigSpec.DoubleValue player_target_chance;
+    public static ForgeConfigSpec.DoubleValue min_generated_radius;
+    public static ForgeConfigSpec.DoubleValue max_generated_radius;
 
     public static void init(ForgeConfigSpec.Builder builder)
     {
@@ -37,7 +43,7 @@ public class MedusaConfig
 
         generation_period = builder
                 .comment("The amount of time that should pass to try generate falling Medusa's once more, in seconds")
-                .defineInRange("server.medusa_generation_period", 3000, 0, Integer.MAX_VALUE);
+                .defineInRange("server.medusa_generation_period", 3600, 0, Integer.MAX_VALUE);
 
         generation_chance = builder
                 .comment("The chance for it to actually generate Medusa's once the generation period passes")
@@ -50,6 +56,30 @@ public class MedusaConfig
         max_generated_amount = builder
                 .comment("The maximum amount of Medusa's that can generate at once, has to be above minimum")
                 .defineInRange("server.medusa_generation_max", 5, 0, Integer.MAX_VALUE);
+
+        break_chance = builder
+                .comment("The chance of a generated Medusa to break on impact with the ground")
+                .defineInRange("server.medusa_break_chance", 0.2f, 0f, 1f);
+
+        min_generated_energy = builder
+                .comment("The minimal energy percentage stored in the Medusa when it's generated")
+                .defineInRange("server.medusa_min_generated_energy", 0.5f, 0f, 1f);
+
+        max_generated_energy = builder
+                .comment("The maximum energy percentage stored in the Medusa when it's generated")
+                .defineInRange("server.medusa_max_generated_energy", 1.0f, 0f, 1f);
+
+        player_target_chance = builder
+                .comment("The chance of a generated Medusa to be targetted onto Players")
+                .defineInRange("server.medusa_player_target_chance", 0.75f, 0f, 1f);
+
+        min_generated_radius = builder
+                .comment("The minimal target radius of a generated Medusa")
+                .defineInRange("server.medusa_min_generated_radius", 3f, 0f, Integer.MAX_VALUE);
+
+        max_generated_radius = builder
+                .comment("The maximum target radius of a generated Medusa")
+                .defineInRange("server.medusa_max_generated_radius", 8f, 0f, Integer.MAX_VALUE);
     }
 
 }

@@ -130,6 +130,9 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.countingDown = tag.getBoolean(IS_COUNTINDOWN_ACTIVE);
         this.generated = tag.getBoolean(IS_GENERATED);
         this.speed = tag.getInt(SPEED);
+        this.activeTicker = tag.getInt("activeTicker");
+        this.expansionTicker = tag.getInt("expansionTicker");
+        this.shrinkingTicker = tag.getInt("shrinkingTicker");
     }
 
     @Override
@@ -145,6 +148,9 @@ public class MedusaProjectile extends ThrowableItemProjectile
         tag.putBoolean(IS_COUNTINDOWN_ACTIVE, this.countingDown);
         tag.putBoolean(IS_GENERATED, this.generated);
         tag.putDouble(SPEED, this.speed);
+        tag.putInt("activeTicker", activeTicker);
+        tag.putInt("expansionTicker", expansionTicker);
+        tag.putInt("shrinkingTicker", shrinkingTicker);
     }
 
     @Override
@@ -299,16 +305,16 @@ public class MedusaProjectile extends ThrowableItemProjectile
         Random random = new Random();
         if(this.isGenerated())
         {
-            if(random.nextFloat() > 0.2)
+            if(random.nextFloat() > MedusaConfig.break_chance.get())
             {
                 this.discard();
                 return;
             }
 
             this.teleportRelative(0, 1.5, 0);
-            this.setTargetRadius(random.nextFloat(3, 8));
-            this.setEnergy(random.nextInt(MedusaConfig.max_energy.get()/10, MedusaConfig.max_energy.get()));
-            if(random.nextFloat() > 0.75)
+            this.setTargetRadius((float) random.nextDouble(MedusaConfig.min_generated_radius.get(), MedusaConfig.max_generated_radius.get()));
+            this.setEnergy(random.nextInt((int) (MedusaConfig.min_generated_energy.get()*MedusaConfig.max_energy.get()), (int) (MedusaConfig.max_generated_energy.get()*MedusaConfig.max_energy.get())));
+            if(random.nextFloat() > MedusaConfig.player_target_chance.get())
                 this.setTargetType("minecraft:player");
             this.activate();
             this.setGenerated(false);

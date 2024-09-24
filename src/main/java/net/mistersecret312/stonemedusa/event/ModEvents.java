@@ -1,29 +1,22 @@
 package net.mistersecret312.stonemedusa.event;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.entity.LeashKnotRenderer;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BottleItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -34,7 +27,6 @@ import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -126,7 +118,7 @@ public class ModEvents
         Level level = event.player.level();
         Player player = event.player;
         Random random = new Random();
-        if(level.isClientSide())
+        if(level.isClientSide() && event.side.isClient())
             return;
 
         if(level.getGameTime() % MedusaConfig.generation_period.get()*20 == 0 && random.nextFloat() > 1-MedusaConfig.generation_chance.get())
@@ -136,8 +128,8 @@ public class ModEvents
                 ItemStack stack = MedusaItem.getMedusa(ItemInit.MEDUSA.get(), MedusaConfig.max_energy.get(), 5f, 20);
                 MedusaProjectile medusa = new MedusaProjectile(level, MedusaConfig.max_energy.get(), 5f, 20, false, false, "", true);
                 medusa.setItem(stack);
-                medusa.setPos(player.blockPosition().getX()+random.nextInt(-15, 15), player.blockPosition().getY()+350+random.nextInt(-5, 5), player.blockPosition().getZ()+random.nextInt(-15, 15));
-                medusa.setDeltaMovement(new Vec3(0, -3f, 0));
+                medusa.setPos(player.blockPosition().getX()+random.nextFloat(-72, 72), player.blockPosition().getY()+350+random.nextFloat(-72, 72), player.blockPosition().getZ()+random.nextInt(-72, 72));
+                medusa.setDeltaMovement(new Vec3(random.nextFloat(0, 0.01f), random.nextFloat(-0.25f, -3f), random.nextFloat(0, 0.01f)));
                 level.addFreshEntity(medusa);
             }
         }
