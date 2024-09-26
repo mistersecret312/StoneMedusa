@@ -154,7 +154,7 @@ public class MedusaItem extends Item
             medusaProjectile.setItem(stack);
             medusaProjectile.setDelay(this.getDelay(stack));
             medusaProjectile.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.0F, shoot ? 1F : 0F, 0F);
-            medusaProjectile.setPos(entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ());
+            medusaProjectile.setPos(entity.position().x, entity.position().y, entity.position().z);
             level.addFreshEntity(medusaProjectile);
         }
 

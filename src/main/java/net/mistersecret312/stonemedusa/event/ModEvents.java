@@ -38,6 +38,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.mistersecret312.stonemedusa.capability.GenericProvider;
 import net.mistersecret312.stonemedusa.capability.PetrifiedCapability;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
+import net.mistersecret312.stonemedusa.config.PetrificationConfig;
 import net.mistersecret312.stonemedusa.config.RevivalConfig;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
@@ -128,7 +129,7 @@ public class ModEvents
                 ItemStack stack = MedusaItem.getMedusa(ItemInit.MEDUSA.get(), MedusaConfig.max_energy.get(), 5f, 20);
                 MedusaProjectile medusa = new MedusaProjectile(level, MedusaConfig.max_energy.get(), 5f, 20, false, false, "", true);
                 medusa.setItem(stack);
-                medusa.setPos(player.blockPosition().getX()+random.nextFloat(-72, 72), player.blockPosition().getY()+350+random.nextFloat(-72, 72), player.blockPosition().getZ()+random.nextInt(-72, 72));
+                medusa.setPos(player.position().x+random.nextFloat(-72, 72), player.position().y+350+random.nextFloat(-72, 72), player.position().z+random.nextInt(-72, 72));
                 medusa.setDeltaMovement(new Vec3(random.nextFloat(0, 0.01f), random.nextFloat(-0.25f, -3f), random.nextFloat(0, 0.01f)));
                 level.addFreshEntity(medusa);
             }
@@ -141,12 +142,12 @@ public class ModEvents
         LivingEntity entity = event.getEntity();
         if(entity.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
         {
-            if(event.getAmount() > 5)
+            if(event.getAmount() > 5 && PetrificationConfig.petrified_entity_damage.get())
             {
                 event.getEntity().level().playSound(null, event.getEntity().blockPosition(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1f, 1f);
                 entity.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> {
                     cap.setBreakStage((int) (cap.getBreakStage() + (event.getAmount()/5)));
-                    if(cap.getBreakStage() >= 9)
+                    if(cap.getBreakStage() >= 9 && PetrificationConfig.petrified_entity_destroy.get())
                     {
                         entity.discard();
                         Minecraft.getInstance().particleEngine.destroy(entity.blockPosition(), Blocks.STONE.defaultBlockState());
