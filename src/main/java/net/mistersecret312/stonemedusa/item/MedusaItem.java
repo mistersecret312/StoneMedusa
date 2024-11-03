@@ -92,8 +92,7 @@ public class MedusaItem extends Item
             summonMedusa(itemstack, pLevel, pPlayer, true);
 
         pPlayer.awardStat(Stats.ITEM_USED.get(this));
-        itemstack.shrink(1);
-
+        pPlayer.setItemInHand(pUsedHand, ItemStack.EMPTY);
 
         return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
     }
