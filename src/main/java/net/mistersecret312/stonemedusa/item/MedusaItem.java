@@ -1,6 +1,9 @@
 package net.mistersecret312.stonemedusa.item;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -15,6 +18,10 @@ import net.minecraft.world.level.Level;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.init.ItemInit;
+import org.jetbrains.annotations.Nullable;
+
+import java.text.NumberFormat;
+import java.util.List;
 
 public class MedusaItem extends Item
 {
@@ -39,7 +46,7 @@ public class MedusaItem extends Item
         item.setRadius(stack, radius);
         item.setDelay(stack, delay);
         item.setStartDelay(stack, delay);
-        item.setActive(stack, false);
+        setActive(stack, false);
         item.setCountdownActive(stack, false);
         item.setActiveTicks(stack, 0);
         item.setTargetEntityType(stack, "");
@@ -54,12 +61,22 @@ public class MedusaItem extends Item
         item.setRadius(stack, radius);
         item.setDelay(stack, delay);
         item.setStartDelay(stack, startDelay);
-        item.setActive(stack, active);
+        setActive(stack, active);
         item.setCountdownActive(stack, countdown);
         item.setActiveTicks(stack, 0);
         item.setTargetEntityType(stack, targetType);
 
         return stack;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced)
+    {
+        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+        NumberFormat percentage = NumberFormat.getPercentInstance();
+        percentage.setMaximumFractionDigits(1);
+        percentage.setMinimumFractionDigits(0);
+        pTooltipComponents.add(Component.translatable("medusa.charge").withStyle(ChatFormatting.GREEN).append(percentage.format((double)this.getEnergy(pStack) / (double)MedusaConfig.max_energy.get())));
     }
 
     @Override
@@ -87,7 +104,7 @@ public class MedusaItem extends Item
         if(level.isClientSide())
             return;
 
-        if(this.isActive(stack) && this.getActiveTicks(stack) <= this.getRadius(stack)*45)
+        if(isActive(stack) && this.getActiveTicks(stack) <= this.getRadius(stack)*45)
         {
             this.setActiveTicks(stack, this.getActiveTicks(stack)+1);
         } else this.setActiveTicks(stack, 0);
@@ -95,13 +112,13 @@ public class MedusaItem extends Item
         if(this.getActiveTicks(stack) == this.getRadius(stack)*45)
             stack.shrink(1);
 
-        if(this.isCountdownActive(stack))
+        if(isCountdownActive(stack))
         {
             this.setDelay(stack, this.getDelay(stack)-1);
             if(this.getDelay(stack) <= 0)
             {
                 this.setCountdownActive(stack, false);
-                this.setActive(stack, true);
+                setActive(stack, true);
 
                 summonMedusa(stack, level, entity, false);
             }
@@ -115,13 +132,13 @@ public class MedusaItem extends Item
         if(entity.level().isClientSide())
             return false;
 
-        if(this.isCountdownActive(stack))
+        if(isCountdownActive(stack))
         {
             this.setDelay(stack, this.getDelay(stack)-1);
             if(this.getDelay(stack) <= 0)
             {
                 this.setCountdownActive(stack, false);
-                this.setActive(stack, true);
+                setActive(stack, true);
 
                 entity.discard();
                 summonMedusa(stack, entity.level(), entity, false);
@@ -141,7 +158,7 @@ public class MedusaItem extends Item
         if(entity instanceof LivingEntity living)
         {
             MedusaProjectile medusaProjectile = new MedusaProjectile(level, living,
-                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), this.isCountdownActive(stack), this.isActive(stack), this.getTargetEntityType(stack), false);
+                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), isCountdownActive(stack), isActive(stack), this.getTargetEntityType(stack), false);
             medusaProjectile.setItem(stack);
             medusaProjectile.setDelay(this.getDelay(stack));
             medusaProjectile.shootFromRotation(living, living.getXRot(), living.getYRot(), 0.0F, shoot? 1F : 0f, 0F);
@@ -150,7 +167,7 @@ public class MedusaItem extends Item
         else
         {
             MedusaProjectile medusaProjectile = new MedusaProjectile(level,
-                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), this.isCountdownActive(stack), this.isActive(stack), this.getTargetEntityType(stack), false);
+                    this.getEnergy(stack), this.getRadius(stack), this.getDelay(stack), isCountdownActive(stack), isActive(stack), this.getTargetEntityType(stack), false);
             medusaProjectile.setItem(stack);
             medusaProjectile.setDelay(this.getDelay(stack));
             medusaProjectile.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.0F, shoot ? 1F : 0F, 0F);
@@ -206,14 +223,14 @@ public class MedusaItem extends Item
         else return 0;
     }
 
-    public boolean isActive(ItemStack stack)
+    public static boolean isActive(ItemStack stack)
     {
         if(stack.getTag() != null && stack.getTag().contains(IS_ACTIVE))
             return stack.getTag().getBoolean(IS_ACTIVE);
         else return false;
     }
 
-    public boolean isCountdownActive(ItemStack stack)
+    public static boolean isCountdownActive(ItemStack stack)
     {
         if(stack.getTag() != null && stack.getTag().contains(IS_COUNTINDOWN_ACTIVE))
             return stack.getTag().getBoolean(IS_COUNTINDOWN_ACTIVE);
@@ -254,7 +271,7 @@ public class MedusaItem extends Item
         stack.getOrCreateTag().putInt(START_DELAY, delay);
     }
 
-    public void setActive(ItemStack stack, boolean active)
+    public static void setActive(ItemStack stack, boolean active)
     {
         stack.getOrCreateTag().putBoolean(IS_ACTIVE, active);
     }

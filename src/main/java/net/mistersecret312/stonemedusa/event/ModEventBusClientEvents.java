@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,7 +20,7 @@ public class ModEventBusClientEvents
     public static void dontScroll(InputEvent.MouseScrollingEvent event)
     {
         Minecraft minecraft = Minecraft.getInstance();
-        if(minecraft.player != null && minecraft.player.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
+        if(minecraft.screen == null && minecraft.player != null && minecraft.player.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
             event.setCanceled(true);
     }
 
@@ -27,7 +28,7 @@ public class ModEventBusClientEvents
     public static void dontClick(InputEvent.MouseButton.Pre event)
     {
         Minecraft minecraft = Minecraft.getInstance();
-        if(minecraft.player != null && minecraft.player.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
+        if(minecraft.screen == null && minecraft.player != null && minecraft.player.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
             event.setCanceled(true);
     }
 
@@ -35,7 +36,7 @@ public class ModEventBusClientEvents
     public static void dontPress(InputEvent.Key.InteractionKeyMappingTriggered event)
     {
         Minecraft minecraft = Minecraft.getInstance();
-        if (!event.getKeyMapping().getKey().equals(InputConstants.Type.KEYSYM.getOrCreate(InputConstants.KEY_ESCAPE)) && minecraft.player != null && minecraft.player.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
+        if (minecraft.screen == null && !event.getKeyMapping().getKey().equals(InputConstants.Type.KEYSYM.getOrCreate(InputConstants.KEY_ESCAPE)) && minecraft.player != null && minecraft.player.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
             event.setCanceled(true);
 
     }

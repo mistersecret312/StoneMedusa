@@ -13,5 +13,6 @@
   "death.attack.nitric_acid_inner": "%1$s burnt their insides with nitric acid",
   "death.attack.nitric_acid_inner.player": "%1$s burnt their insides with nitric acid while fighting %2$s",
 
-  "creativetab.main_tab": "Dr.STONE - Medusa"
+  "creativetab.main_tab": "Dr.STONE - Medusa",
+  "medusa.charge": "Charge: "
 }

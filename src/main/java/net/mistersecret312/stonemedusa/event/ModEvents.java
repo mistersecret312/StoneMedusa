@@ -1,6 +1,7 @@
 package net.mistersecret312.stonemedusa.event;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -122,6 +123,9 @@ public class ModEvents
         if(level.isClientSide() && event.side.isClient())
             return;
 
+        if(!level.dimension().location().equals(Level.OVERWORLD.location()))
+            return;
+
         if(level.getGameTime() % MedusaConfig.generation_period.get()*20 == 0 && random.nextFloat() > 1-MedusaConfig.generation_chance.get())
         {
             for (int i = 0; i < random.nextInt(MedusaConfig.min_generated_amount.get(), MedusaConfig.max_generated_amount.get()); i++)
@@ -130,7 +134,7 @@ public class ModEvents
                 MedusaProjectile medusa = new MedusaProjectile(level, MedusaConfig.max_energy.get(), 5f, 20, false, false, "", true);
                 medusa.setItem(stack);
                 medusa.setPos(player.position().x+random.nextFloat(-72, 72), player.position().y+350+random.nextFloat(-72, 72), player.position().z+random.nextInt(-72, 72));
-                medusa.setDeltaMovement(new Vec3(random.nextFloat(0, 0.01f), random.nextFloat(-0.25f, -3f), random.nextFloat(0, 0.01f)));
+                medusa.setDeltaMovement(new Vec3(random.nextFloat(0, 0.01f), random.nextFloat(-3f, -0.25f), random.nextFloat(0, 0.01f)));
                 level.addFreshEntity(medusa);
             }
         }

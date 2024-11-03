@@ -8,6 +8,7 @@
         "MobMixin"
     ],
     "client": [
+        "KeyboardHandlerMixin",
         "LivingEntityRendererMixin",
         "MouseHandlerMixin"
     ],

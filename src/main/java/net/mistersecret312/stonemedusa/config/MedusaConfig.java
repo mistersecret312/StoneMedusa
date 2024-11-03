@@ -71,7 +71,7 @@ public class MedusaConfig
 
         player_target_chance = builder
                 .comment("The chance of a generated Medusa to be targetted onto Players")
-                .defineInRange("server.medusa_player_target_chance", 0.75f, 0f, 1f);
+                .defineInRange("server.medusa_player_target_chance", 0.99f, 0f, 1f);
 
         min_generated_radius = builder
                 .comment("The minimal target radius of a generated Medusa")

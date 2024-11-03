@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -45,6 +46,8 @@ public class StoneMedusa
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final TagKey<EntityType<?>> PETRIFICATION_IMMUNE = new TagKey<>(Registries.ENTITY_TYPE, new ResourceLocation(StoneMedusa.MOD_ID, "petrification_immune"));
+    public static final TagKey<Level> MEDUSA_SPAWN = new TagKey<>(Registries.DIMENSION, new ResourceLocation(StoneMedusa.MOD_ID, "medusa_spawn"));
+
 
     public StoneMedusa() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
