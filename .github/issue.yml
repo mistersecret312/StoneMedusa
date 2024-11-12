@@ -1,0 +1,42 @@
+name: Issue Template
+description: If you have any problem with the mod working, you should select this template.
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Attention: If you have submitted an invalid issue, the developers are not obligated to review it.
+  - type: input
+    id: mod-version
+    attributes:
+      label: Mod version
+      description: Enter the version of the mod used.
+      placeholder: Example - stonemedusa-1.20.1-0.0.1
+    validations:
+      required: true
+  - type: checkboxes
+    id: other-mods
+    attributes:
+      label: Other mods
+      description: Check this box if you have any other mods installed than Dr.Stone - Medusa
+      options:
+        - label: There are other mods present in the installation.
+          required: false
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Describe the issue
+      description: Please describe the issue you have with the mod, and steps on how to replicate it.
+      placeholder: You have to attach a log here. You can also attach screenshots if necessary.
+    validations:
+      required: true
+  - type: checkboxes
+    id: i-am-not-an-idiot-check
+    attributes:
+      label: Required confirmation
+      description: Please confirm that you have provided logs AND are sure this issue is not known.
+      options:
+        - label: I confirm that I have provided a log and this issue is not repeated.
+          required: true
+    validations:
+      required: true
