@@ -22,7 +22,7 @@ public class ItemInit
 
     public static final RegistryObject<Item> EMPTY_FLASK = ITEMS.register("empty_flask",
             () -> new Item(new Item.Properties().stacksTo(16).rarity(Rarity.COMMON)));
-    public static final RegistryObject<Item> NITRIC_ACID_FLASK = ITEMS.register("nitric_acid_flask",
+    public static final RegistryObject<Item> NITRIC_ACID_FLASK = ITEMS.register("nitric_acid_jar",
             () -> new NitricAcidBottleItem(new Item.Properties().stacksTo(16)
                     .craftRemainder(ItemInit.EMPTY_FLASK.get())));
 

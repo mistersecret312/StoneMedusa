@@ -17,6 +17,7 @@ import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -194,7 +195,7 @@ public class ModEvents
                         player.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), 100, 0, false, false, true));
                 });
             }
-            if(stack.getItem().equals(ItemInit.EMPTY_FLASK.get()))
+            if(stack.getItem().equals(Items.GLASS_BOTTLE))
             {
                 if(living instanceof Bat)
                 {
