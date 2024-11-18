@@ -25,5 +25,6 @@
   "advancement.stonemedusa.revive.desc": "Break out of petrification",
 
   "creativetab.main_tab": "Dr.STONE - Medusa",
-  "medusa.charge": "Charge: "
+  "medusa.charge": "Charge: ",
+  "medusa.target": "Target Species: "
 }

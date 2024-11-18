@@ -3,6 +3,7 @@ package net.mistersecret312.stonemedusa.event;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -195,7 +196,7 @@ public class ModEvents
                 if (ForgeRegistries.ENTITY_TYPES.containsValue(event.getTarget().getType()))
                 {
                     item.setTargetEntityType(stack, ForgeRegistries.ENTITY_TYPES.getKey(event.getTarget().getType()).toString());
-                    event.getEntity().displayClientMessage(Component.translatable("stonemedusa.target_type.set").append(Component.literal(item.getTargetEntityType(stack))), true);
+                    event.getEntity().displayClientMessage(Component.translatable("stonemedusa.target_type.set").append(Component.translatable(BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.tryParse(item.getTargetEntityType(stack))).getDescriptionId())), true);
                 }
 
             }

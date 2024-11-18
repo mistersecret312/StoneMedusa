@@ -2,8 +2,10 @@ package net.mistersecret312.stonemedusa.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -15,6 +17,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SpawnerBlock;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.init.ItemInit;
@@ -22,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.Objects;
 
 public class MedusaItem extends Item
 {
@@ -77,6 +81,10 @@ public class MedusaItem extends Item
         percentage.setMaximumFractionDigits(1);
         percentage.setMinimumFractionDigits(0);
         pTooltipComponents.add(Component.translatable("medusa.charge").withStyle(ChatFormatting.GREEN).append(percentage.format((double)this.getEnergy(pStack) / (double)MedusaConfig.max_energy.get())));
+        if(!this.getTargetEntityType(pStack).isEmpty() && !this.getTargetEntityType(pStack).equals("minecraft:player"))
+        {
+            pTooltipComponents.add(Component.translatable("medusa.target").withStyle(ChatFormatting.DARK_GREEN).append(Component.translatable(BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.tryParse(this.getTargetEntityType(pStack))).getDescriptionId()).withStyle(ChatFormatting.DARK_GREEN)));
+        }
     }
 
     @Override
@@ -103,13 +111,14 @@ public class MedusaItem extends Item
         if(level.isClientSide())
             return;
 
-        if(isActive(stack) && this.getActiveTicks(stack) <= this.getRadius(stack)*45)
+        if(isActive(stack))
+            stack.shrink(1);
+
+        if(isActive(stack) && this.getActiveTicks(stack) <= (this.getRadius(stack)*MedusaConfig.base_speed.get())+MedusaProjectile.IDLE_TIME)
         {
             this.setActiveTicks(stack, this.getActiveTicks(stack)+1);
         } else this.setActiveTicks(stack, 0);
 
-        if(this.getActiveTicks(stack) == this.getRadius(stack)*45)
-            stack.shrink(1);
 
         if(isCountdownActive(stack))
         {
@@ -130,6 +139,9 @@ public class MedusaItem extends Item
     {
         if(entity.level().isClientSide())
             return false;
+
+        if(isActive(stack) && !isCountdownActive(stack))
+            entity.discard();
 
         if(isCountdownActive(stack))
         {

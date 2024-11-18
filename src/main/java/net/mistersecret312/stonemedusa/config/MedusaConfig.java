@@ -29,7 +29,7 @@ public class MedusaConfig
 
         max_radius = builder
                 .comment("The maximum radius that the Medusa can reach")
-                .defineInRange("server.medusa_max_radius", 200f, 2.5f, Float.MAX_VALUE);
+                .defineInRange("server.medusa_max_radius", 200d, 2.5d, Float.MAX_VALUE);
 
         base_speed = builder
                 .comment("The base speed of expansion of the Petrification Beam, in ticks per meter")
@@ -47,7 +47,7 @@ public class MedusaConfig
 
         generation_chance = builder
                 .comment("The chance for it to actually generate Medusa's once the generation period passes")
-                .defineInRange("server.medusa_generation_chance", 0.05f, 0f, 1f);
+                .defineInRange("server.medusa_generation_chance", 0.05d, 0d, 1d);
 
         min_generated_amount = builder
                 .comment("The minimal amount of Medusa's that can generate at once")
@@ -59,23 +59,23 @@ public class MedusaConfig
 
         break_chance = builder
                 .comment("The chance of a generated Medusa to break on impact with the ground")
-                .defineInRange("server.medusa_break_chance", 0.2f, 0f, 1f);
+                .defineInRange("server.medusa_break_chance", 0.2d, 0f, 1d);
 
         min_generated_energy = builder
                 .comment("The minimal energy percentage stored in the Medusa when it's generated")
-                .defineInRange("server.medusa_min_generated_energy", 0.5f, 0f, 1f);
+                .defineInRange("server.medusa_min_generated_energy", 0.5d, 0f, 1d);
 
         max_generated_energy = builder
                 .comment("The maximum energy percentage stored in the Medusa when it's generated")
-                .defineInRange("server.medusa_max_generated_energy", 1.0f, 0f, 1f);
+                .defineInRange("server.medusa_max_generated_energy", 1.0d, 0f, 1d);
 
         player_target_chance = builder
                 .comment("The chance of a generated Medusa to be targetted onto Players")
-                .defineInRange("server.medusa_player_target_chance", 0.99f, 0f, 1f);
+                .defineInRange("server.medusa_player_target_chance", 0.99d, 0f, 1f);
 
         min_generated_radius = builder
                 .comment("The minimal target radius of a generated Medusa")
-                .defineInRange("server.medusa_min_generated_radius", 3f, 0f, Integer.MAX_VALUE);
+                .defineInRange("server.medusa_min_generated_radius", 3d, 0d, Integer.MAX_VALUE);
 
         max_generated_radius = builder
                 .comment("The maximum target radius of a generated Medusa")
