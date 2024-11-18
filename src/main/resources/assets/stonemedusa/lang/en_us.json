@@ -13,6 +13,17 @@
   "death.attack.nitric_acid_inner": "%1$s burnt their insides with nitric acid",
   "death.attack.nitric_acid_inner.player": "%1$s burnt their insides with nitric acid while fighting %2$s",
 
+  "advancement.stonemedusa.root": "Dr.STONE - Medusa",
+  "advancement.stonemedusa.root.desc": "Begin your petrifying adventure",
+  "advancement.stonemedusa.medusa": "The Medusa's True Face",
+  "advancement.stonemedusa.medusa.desc": "Obtain the Medusa",
+  "advancement.stonemedusa.petrified": "Flicker of Doom",
+  "advancement.stonemedusa.petrified.desc": "Get petrified by the Medusa",
+  "advancement.stonemedusa.revival_fluid": "Miracle Fluid",
+  "advancement.stonemedusa.revival_fluid.desc": "Obtain Revival Fluid",
+  "advancement.stonemedusa.revive": "Last Man Standing",
+  "advancement.stonemedusa.revive.desc": "Break out of petrification",
+
   "creativetab.main_tab": "Dr.STONE - Medusa",
   "medusa.charge": "Charge: "
 }

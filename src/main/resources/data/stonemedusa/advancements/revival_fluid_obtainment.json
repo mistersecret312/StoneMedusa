@@ -1,0 +1,39 @@
+{
+    "display": {
+        "icon": {
+            "item": "stonemedusa:revival_fluid_flask"
+        },
+        "title": {
+            "translate": "advancement.stonemedusa.revival_fluid"
+        },
+        "description": {
+            "translate": "advancement.stonemedusa.revival_fluid.desc"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": true
+    },
+    "parent": "stonemedusa:medusa_obtainment",
+    "criteria": {
+        "revival_fluid": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": [
+                            "stonemedusa:revival_fluid_flask"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "requirements": [
+        [
+            "revival_fluid"
+        ]
+    ],
+    "rewards": {
+        "experience": 150
+    }
+}

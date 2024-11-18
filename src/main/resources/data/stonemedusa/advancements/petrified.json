@@ -1,0 +1,34 @@
+{
+    "display": {
+        "icon": {
+            "item": "minecraft:stone"
+        },
+        "title": {
+            "translate": "advancement.stonemedusa.petrified"
+        },
+        "description": {
+            "translate": "advancement.stonemedusa.petrified.desc"
+        },
+        "show_toast": true,
+        "announce_to_chat": false
+    },
+    "parent": "stonemedusa:medusa_obtainment",
+    "criteria": {
+        "revive": {
+            "trigger": "minecraft:effects_changed",
+            "conditions": {
+                "effects": {
+                    "stonemedusa:petrification": {}
+                }
+            }
+        }
+    },
+    "requirements": [
+        [
+            "revive"
+        ]
+    ],
+    "rewards": {
+        "experience": 100
+    }
+}

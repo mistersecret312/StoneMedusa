@@ -1,0 +1,39 @@
+{
+    "display": {
+        "icon": {
+            "item": "minecraft:cobblestone"
+        },
+        "title": {
+            "translate": "advancement.stonemedusa.revive"
+        },
+        "description": {
+            "translate": "advancement.stonemedusa.revive.desc"
+        },
+        "show_toast": true,
+        "announce_to_chat": false
+    },
+    "parent": "stonemedusa:revival_fluid_obtainment",
+    "criteria": {
+        "revive": {
+            "trigger": "minecraft:effects_changed",
+            "conditions": {
+                "effects": {
+                    "stonemedusa:petrification": {
+                        "duration": {
+                            "min": 0,
+                            "max": 100
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "requirements": [
+        [
+            "revive"
+        ]
+    ],
+    "rewards": {
+        "experience": 100
+    }
+}

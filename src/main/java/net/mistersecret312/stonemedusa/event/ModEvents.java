@@ -29,6 +29,7 @@ import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -79,6 +80,8 @@ public class ModEvents
                 for(ItemEntity item : fallenItems)
                 {
                     MedusaItem medusa = ((MedusaItem) item.getItem().getItem());
+                    if(medusa.getEnergy(item.getItem()) == 0)
+                        continue;
                     medusa.setStartDelay(item.getItem(), seconds);
                     medusa.setDelay(item.getItem(), seconds);
                     medusa.setRadius(item.getItem(), meters);
@@ -89,6 +92,8 @@ public class ModEvents
                     for (ItemStack stack : playerEntity.getInventory().items)
                         if (stack.getItem() instanceof MedusaItem medusa)
                         {
+                            if(medusa.getEnergy(stack) == 0)
+                                continue;
                             medusa.setStartDelay(stack, seconds);
                             medusa.setDelay(stack, seconds);
                             medusa.setRadius(stack, meters);
@@ -96,6 +101,15 @@ public class ModEvents
                         }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void effectClearing(MobEffectEvent.Remove event)
+    {
+        if(event.getEffect().equals(EffectInit.PETRIFICATION.get()))
+        {
+            event.getEntity().getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> cap.setPetrified(false));
         }
     }
 

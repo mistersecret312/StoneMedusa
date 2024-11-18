@@ -1,0 +1,40 @@
+{
+    "display": {
+        "icon": {
+            "item": "stonemedusa:medusa"
+        },
+        "title": {
+            "translate": "advancement.stonemedusa.medusa"
+        },
+        "description": {
+            "translate": "advancement.stonemedusa.medusa.desc"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": true
+    },
+    "parent": "stonemedusa:root",
+    "criteria": {
+        "medusa": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": [
+                            "stonemedusa:medusa"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "requirements": [
+        [
+            "medusa"
+        ]
+    ],
+    "rewards": {
+        "experience": 150
+    }
+}

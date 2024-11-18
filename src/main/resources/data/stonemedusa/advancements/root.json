@@ -1,0 +1,30 @@
+{
+    "display": {
+        "icon": {
+            "item": "stonemedusa:medusa"
+        },
+        "title": {
+            "translate": "advancement.stonemedusa.root"
+        },
+        "description": {
+            "translate": "advancement.stonemedusa.root.desc"
+        },
+        "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+        "frame": "goal",
+        "show_toast": false,
+        "announce_to_chat": false,
+        "hidden": true
+    },
+    "criteria": {
+        "root": {
+            "trigger": "minecraft:tick",
+            "conditions": {}
+        }
+    },
+    "requirements": [
+        [
+            "root"
+        ]
+    ]
+}
+
