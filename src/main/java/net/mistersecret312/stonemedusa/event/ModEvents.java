@@ -30,6 +30,7 @@ import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
@@ -142,7 +143,7 @@ public class ModEvents
         if(!level.dimension().location().equals(Level.OVERWORLD.location()))
             return;
 
-        if(level.getGameTime() % MedusaConfig.generation_period.get()*20 == 0 && random.nextFloat() > 1-MedusaConfig.generation_chance.get())
+        if(level.getGameTime() % MedusaConfig.generation_period.get()*20 == 0 && random.nextDouble() > 1-MedusaConfig.generation_chance.get())
         {
             for (int i = 0; i < random.nextInt(MedusaConfig.min_generated_amount.get(), MedusaConfig.max_generated_amount.get()); i++)
             {

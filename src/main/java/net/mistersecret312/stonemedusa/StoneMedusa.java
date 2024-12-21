@@ -61,6 +61,8 @@ public class StoneMedusa
         FluidInit.register(modEventBus);
         FluidTypeInit.register(modEventBus);
 
+        LootModifiersInit.register(modEventBus);
+
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(Layers::registerLayers);
 
