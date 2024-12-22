@@ -1,11 +1,13 @@
 package net.mistersecret312.stonemedusa.event;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -163,15 +165,16 @@ public class ModEvents
         LivingEntity entity = event.getEntity();
         if(entity.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
         {
-            if(event.getAmount() > 5 && PetrificationConfig.petrified_entity_damage.get())
+            if(PetrificationConfig.petrified_entity_damage.get())
             {
                 event.getEntity().level().playSound(null, event.getEntity().blockPosition(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1f, 1f);
                 entity.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> {
-                    cap.setBreakStage((int) (cap.getBreakStage() + (event.getAmount()/5)));
+                    if(!entity.level().isClientSide())
+                        cap.setBreakStage((int) (cap.getBreakStage() + 1));
                     if(cap.getBreakStage() >= 9 && PetrificationConfig.petrified_entity_destroy.get())
                     {
                         entity.discard();
-                        Minecraft.getInstance().particleEngine.destroy(entity.blockPosition(), Blocks.STONE.defaultBlockState());
+                        entity.level().addDestroyBlockEffect(entity.blockPosition(), Blocks.STONE.defaultBlockState());
                     }
                 });
             }

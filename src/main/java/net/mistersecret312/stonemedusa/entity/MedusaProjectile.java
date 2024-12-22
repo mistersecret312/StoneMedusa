@@ -189,13 +189,12 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.setDeltaMovement(Vec3.ZERO);
         this.setNoGravity(true);
 
-        int demandedEnergy = (int) ((this.targetRadius*this.speed*2+IDLE_TIME)*25);
+        int demandedEnergy = (int) ((this.targetRadius*this.speed*2+IDLE_TIME)*100);
         double energyPercentage = (double) this.energy /MedusaConfig.max_energy.get();
+        if(energyPercentage < 0.05)
+            this.speed = Math.max(3, (100-(energyPercentage*100))+101);
         if(demandedEnergy > this.energy)
-        {
             this.targetRadius = Math.max(1f, (float) ((this.energy - 20000) / (25 * this.speed * 2)));
-            this.speed = Math.max(0.05f, this.speed/(1.2*Math.atan((energyPercentage/30)-2)+1.4));
-        }
 
         this.level().playSound(null, this.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.MASTER, 1F, 1F);
         NetworkInit.sendToTracking(this, new MedusaActivatedPacket(this.getId()));
@@ -287,7 +286,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.setNoGravity(false);
         this.noPhysics = false;
         this.setDeltaMovement(Vec3.ZERO);
-        this.setSpeed(5);
+        this.setSpeed(MedusaConfig.base_speed.get());
     }
 
     @Override
