@@ -39,6 +39,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
     public static final String ENERGY = "energy";
     public static final String TARGET_RADIUS = "targetRadius";
     public static final String CURRENT_RADIUS = "currentRadius";
+    public static final String FADE = "fade";
     public static final String DELAY = "delay";
     public static final String IS_ACTIVE = "isActive";
     public static final String IS_COUNTINDOWN_ACTIVE = "isCountdownActive";
@@ -48,6 +49,8 @@ public class MedusaProjectile extends ThrowableItemProjectile
     private static final EntityDataAccessor<Boolean> ACTIVE =
             SynchedEntityData.defineId(MedusaProjectile.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> RADIUS =
+            SynchedEntityData.defineId(MedusaProjectile.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> FADING =
             SynchedEntityData.defineId(MedusaProjectile.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<String> TARGET_TYPE =
             SynchedEntityData.defineId(MedusaProjectile.class, EntityDataSerializers.STRING);
@@ -63,7 +66,6 @@ public class MedusaProjectile extends ThrowableItemProjectile
 
     private int activeTicker = 0;
     private int expansionTicker = 0;
-    private int shrinkingTicker = 0;
 
 
     public MedusaProjectile(EntityType<? extends ThrowableItemProjectile> pEntityType, Level pLevel)
@@ -112,6 +114,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.entityData.define(ACTIVE, false);
         this.entityData.define(RADIUS, 0F);
         this.entityData.define(TARGET_TYPE, "");
+        this.entityData.define(FADING, 0F);
     }
 
     @Override
@@ -121,6 +124,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.energy = tag.getInt(ENERGY);
         this.targetRadius = tag.getFloat(TARGET_RADIUS);
         this.entityData.set(RADIUS, tag.getFloat(CURRENT_RADIUS));
+        this.entityData.set(FADING, tag.getFloat(FADE));
         this.delay = tag.getInt(DELAY);
         this.entityData.set(ACTIVE, tag.getBoolean(IS_ACTIVE));
         this.entityData.set(TARGET_TYPE, tag.getString("targetType"));
@@ -129,7 +133,6 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.speed = tag.getInt(SPEED);
         this.activeTicker = tag.getInt("activeTicker");
         this.expansionTicker = tag.getInt("expansionTicker");
-        this.shrinkingTicker = tag.getInt("shrinkingTicker");
     }
 
     @Override
@@ -139,6 +142,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
         tag.putInt(ENERGY, this.energy);
         tag.putFloat(TARGET_RADIUS, this.targetRadius);
         tag.putFloat(CURRENT_RADIUS, this.entityData.get(RADIUS));
+        tag.putFloat(FADE, this.entityData.get(FADING));
         tag.putInt(DELAY, this.delay);
         tag.putBoolean(IS_ACTIVE, this.entityData.get(ACTIVE));
         tag.putString("targetType", this.entityData.get(TARGET_TYPE));
@@ -147,7 +151,6 @@ public class MedusaProjectile extends ThrowableItemProjectile
         tag.putDouble(SPEED, this.speed);
         tag.putInt("activeTicker", activeTicker);
         tag.putInt("expansionTicker", expansionTicker);
-        tag.putInt("shrinkingTicker", shrinkingTicker);
     }
 
     @Override
@@ -209,12 +212,11 @@ public class MedusaProjectile extends ThrowableItemProjectile
     public void activeTick()
     {
 
-        if(activeTicker >= this.targetRadius*this.speed*2+IDLE_TIME)
+        if(activeTicker >= this.targetRadius*this.speed+2*IDLE_TIME)
         {
             deactivate();
             activeTicker = 0;
             expansionTicker = 0;
-            shrinkingTicker = 0;
         }
         else
         {
@@ -225,15 +227,14 @@ public class MedusaProjectile extends ThrowableItemProjectile
             activeTicker++;
             if(activeTicker <= this.targetRadius*this.speed && !(activeTicker > this.targetRadius*this.speed))
                 expansionTicker++;
-            if(activeTicker > (this.targetRadius*this.speed)+IDLE_TIME && activeTicker <= this.targetRadius*this.speed*2+IDLE_TIME)
-                shrinkingTicker++;
+            if(activeTicker <= this.targetRadius*this.speed+2*IDLE_TIME && !(activeTicker > this.targetRadius*this.speed+2*IDLE_TIME))
+                this.setFading(this.getFading()+0.0023f);
+
 
             if(expansionTicker > 0 && activeTicker <= this.targetRadius*this.speed)
                 this.setCurrentRadius((float) Mth.lerp(expansionTicker/(this.targetRadius*this.speed), 0, this.targetRadius));
-            if(shrinkingTicker > 0 && activeTicker > (this.targetRadius*this.speed)+IDLE_TIME && activeTicker <= this.targetRadius*this.speed*2+IDLE_TIME)
-                this.setCurrentRadius((float) Mth.lerp(shrinkingTicker/(this.targetRadius*this.speed), this.targetRadius, 0));
 
-            if(this.getCurrentRadius() > 0f)
+            if(this.getCurrentRadius() > 0f && this.getFading() < 0.9f)
                 petrify();
         }
     }
@@ -244,8 +245,15 @@ public class MedusaProjectile extends ThrowableItemProjectile
                 new AABB(this.blockPosition().getX()-(this.getCurrentRadius()*1.5f), this.blockPosition().getY()-(this.getCurrentRadius()*1.5f),
                         this.blockPosition().getZ()-(this.getCurrentRadius()*1.5f), this.blockPosition().getX()+(this.getCurrentRadius()*1.5f),
                         this.blockPosition().getY()+(this.getCurrentRadius()*1.5f), this.blockPosition().getZ()+(this.getCurrentRadius()*1.5f)),
-                entity -> entity instanceof LivingEntity);
-
+                entity ->
+                {
+                    if(entity instanceof LivingEntity living)
+                    {
+                        double distance = this.distanceTo(living);
+                        return distance - 1 < this.getCurrentRadius() && distance >= this.getCurrentRadius();
+                    }
+                    return false;
+                });
         for(Entity entity : targets)
         {
             ResourceLocation targetType = new ResourceLocation(this.getTargetType());
@@ -339,6 +347,11 @@ public class MedusaProjectile extends ThrowableItemProjectile
         return this.entityData.get(RADIUS);
     }
 
+    public float getFading()
+    {
+        return this.entityData.get(FADING);
+    }
+
     public int getDelay()
     {
         return delay;
@@ -384,6 +397,11 @@ public class MedusaProjectile extends ThrowableItemProjectile
     public void setCurrentRadius(float currentRadius)
     {
         this.entityData.set(RADIUS, currentRadius);
+    }
+
+    public void setFading(float fading)
+    {
+        this.entityData.set(FADING, fading);
     }
 
     public void setDelay(int delay)

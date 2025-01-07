@@ -91,6 +91,22 @@ public class MedusaItem extends Item
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand)
     {
         ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
+        if(pUsedHand.equals(InteractionHand.OFF_HAND) && pPlayer.isShiftKeyDown())
+        {
+            if(pPlayer.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
+            {
+                pPlayer.setItemInHand(InteractionHand.MAIN_HAND, DiamondBatteryItem.getBattery(ItemInit.BATTERY.get(), this.getEnergy(itemstack)));
+                this.setEnergy(itemstack, 0);
+            }
+            else if(pPlayer.getItemInHand(InteractionHand.MAIN_HAND).is(ItemInit.BATTERY.get()))
+            {
+                this.setEnergy(itemstack, DiamondBatteryItem.getEnergy(pPlayer.getItemInHand(InteractionHand.MAIN_HAND)));
+                pPlayer.setItemInHand(InteractionHand.MAIN_HAND, Items.AIR.getDefaultInstance());
+            }
+
+            return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
+        }
+
         if(Screen.hasShiftDown())
             return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
 

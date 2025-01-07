@@ -2,11 +2,9 @@ package net.mistersecret312.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.minecraft.client.model.BatModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.material.LavaFluid;
 import net.minecraftforge.common.util.LazyOptional;
 import net.mistersecret312.stonemedusa.capability.PetrifiedCapability;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;

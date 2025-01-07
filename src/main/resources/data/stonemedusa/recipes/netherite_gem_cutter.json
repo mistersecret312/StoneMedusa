@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": [
+        "  s",
+        " s",
+        "n"
+    ],
+    "key": {
+        "s": {
+            "item": "minecraft:stick"
+        },
+        "n": {
+            "item": "minecraft:netherite_ingot"
+        }
+    },
+    "result": {
+        "item": "stonemedusa:netherite_gem_cutter",
+        "count": 1
+    }
+}

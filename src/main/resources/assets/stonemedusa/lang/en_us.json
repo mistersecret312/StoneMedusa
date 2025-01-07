@@ -1,5 +1,8 @@
 {
   "item.stonemedusa.medusa": "Medusa",
+  "item.stonemedusa.diamond_battery": "Diamond Battery",
+  "item.stonemedusa.diamond_gem_cutter": "Diamond Gem Cutter",
+  "item.stonemedusa.netherite_gem_cutter": "Netherite Gem Cutter",
   "item.stonemedusa.revival_fluid_flask": "Revival Fluid",
   "item.stonemedusa.revival_fluid_bucket": "Revival Fluid Bucket",
   "item.stonemedusa.nitric_acid_bucket": "Nitric Acid Bucket",

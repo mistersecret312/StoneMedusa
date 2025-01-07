@@ -1,0 +1,40 @@
+{
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "stonemedusa:item/diamond_battery_1"
+    },
+    "overrides":
+    [
+        {
+            "predicate": {
+                "stonemedusa:battery": 1
+            },
+            "model": "stonemedusa:item/battery_full"
+
+        },
+        {
+            "predicate": {
+                "stonemedusa:battery": 0.75
+            },
+            "model": "stonemedusa:item/battery_third"
+        },
+        {
+            "predicate": {
+                "stonemedusa:battery": 0.5
+            },
+            "model": "stonemedusa:item/battery_half"
+        },
+        {
+            "predicate": {
+                "stonemedusa:battery": 0.25
+            },
+            "model": "stonemedusa:item/battery_quarter"
+        },
+        {
+            "predicate": {
+                "stonemedusa:battery": 0
+            },
+            "model": "stonemedusa:item/battery_empty"
+        }
+    ]
+}

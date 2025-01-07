@@ -162,24 +162,7 @@ public class ModEvents
     @SubscribeEvent
     public static void entityHurt(LivingAttackEvent event)
     {
-        LivingEntity entity = event.getEntity();
-        if(entity.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
-        {
-            if(PetrificationConfig.petrified_entity_damage.get())
-            {
-                event.getEntity().level().playSound(null, event.getEntity().blockPosition(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1f, 1f);
-                entity.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> {
-                    if(!entity.level().isClientSide())
-                        cap.setBreakStage((int) (cap.getBreakStage() + 1));
-                    if(cap.getBreakStage() >= 9 && PetrificationConfig.petrified_entity_destroy.get())
-                    {
-                        entity.discard();
-                        entity.level().addDestroyBlockEffect(entity.blockPosition(), Blocks.STONE.defaultBlockState());
-                    }
-                });
-            }
-            event.setCanceled(true);
-        }
+
     }
 
     @SubscribeEvent

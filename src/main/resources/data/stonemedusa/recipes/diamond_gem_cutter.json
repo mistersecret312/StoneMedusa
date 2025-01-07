@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": [
+        "  s",
+        " s",
+        "d"
+    ],
+    "key": {
+        "s": {
+            "item": "minecraft:stick"
+        },
+        "d": {
+            "item": "minecraft:diamond"
+        }
+    },
+    "result": {
+        "item": "stonemedusa:diamond_gem_cutter",
+        "count": 1
+    }
+}

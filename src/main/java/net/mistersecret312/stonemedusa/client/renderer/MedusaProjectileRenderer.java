@@ -33,12 +33,12 @@ public class MedusaProjectileRenderer extends EntityRenderer<MedusaProjectile>
                 SphereUtils.drawTexturedSphere(pMatrixStack, pBuffer,
                     new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"),
                     medusa.getCurrentRadius()/1300f, 32, 0.0F, 0.0F, pPackedLight, false,
-                    OverlayTexture.NO_OVERLAY, new float[]{0.0f, 1.0f, 0.0f, 0.25f});
+                    OverlayTexture.NO_OVERLAY, new float[]{0.0f, 1.0f, 0.0f, (0.25f*(1-Math.min(medusa.getFading(), 1)))});
         if(medusa.getTargetType().isBlank() && medusa.isActive())
             SphereUtils.drawTexturedSphere(pMatrixStack, pBuffer,
                     new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"),
                     medusa.getCurrentRadius()/1300f, 32, 0.0F, 0.0F, pPackedLight, false,
-                    OverlayTexture.NO_OVERLAY, new float[]{0.0f, 1.0f, 0.0f, 0.25f});
+                    OverlayTexture.NO_OVERLAY, new float[]{0.0f, 1.0f, 0.0f, (0.25f*(1-Math.min(medusa.getFading(), 1)))});
 
         pMatrixStack.popPose();
         this.itemRenderer.renderStatic(medusa.getItem(), ItemDisplayContext.GROUND, pPackedLight, OverlayTexture.NO_OVERLAY, pMatrixStack, pBuffer, medusa.level(), medusa.getId());

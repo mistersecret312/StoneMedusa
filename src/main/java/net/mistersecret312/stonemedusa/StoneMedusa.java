@@ -34,6 +34,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.mistersecret312.stonemedusa.item.ActiveMedusaItemProperty;
+import net.mistersecret312.stonemedusa.item.DiamondBatteryItemProperty;
 import org.slf4j.Logger;
 
 import static net.minecraft.client.renderer.entity.LivingEntityRenderer.isEntityUpsideDown;
@@ -94,6 +95,7 @@ public class StoneMedusa
                 ItemBlockRenderTypes.setRenderLayer(FluidInit.FLOWING_REVIVAL_FLUID.get(), RenderType.translucent());
 
                 ItemProperties.register(ItemInit.MEDUSA.get(), new ResourceLocation(MOD_ID, "is_active"), new ActiveMedusaItemProperty());
+                ItemProperties.register(ItemInit.BATTERY.get(), new ResourceLocation(MOD_ID, "battery"), new DiamondBatteryItemProperty());
             });
         }
 

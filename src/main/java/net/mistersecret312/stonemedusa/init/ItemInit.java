@@ -1,11 +1,6 @@
 package net.mistersecret312.stonemedusa.init;
 
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.block.BrewingStandBlock;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -19,6 +14,14 @@ public class ItemInit
 
     public static final RegistryObject<MedusaItem> MEDUSA = ITEMS.register("medusa",
             () -> new MedusaItem(new Item.Properties().stacksTo(1).fireResistant().rarity(Rarity.EPIC)));
+
+    public static final RegistryObject<DiamondBatteryItem> BATTERY = ITEMS.register("diamond_battery",
+            () -> new DiamondBatteryItem(new Item.Properties().stacksTo(1).fireResistant().rarity(Rarity.EPIC)));
+
+    public static final RegistryObject<Item> DIAMOND_GEM_CUTTER = ITEMS.register("diamond_gem_cutter",
+            () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.COMMON)));
+    public static final RegistryObject<Item> NETHERITE_GEM_CUTTER = ITEMS.register("netherite_gem_cutter",
+            () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.COMMON)));
 
     public static final RegistryObject<Item> EMPTY_FLASK = ITEMS.register("empty_flask",
             () -> new Item(new Item.Properties().stacksTo(16).rarity(Rarity.COMMON)));

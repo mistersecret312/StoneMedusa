@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "stonemedusa:diamond_gem_cutter"
+        },
+        {
+            "item": "minecraft:diamond_block"
+        }
+    ],
+    "result": {
+        "item": "stonemedusa:diamond_battery",
+        "nbt": "{energy:500000}",
+        "count": 1
+    }
+}
