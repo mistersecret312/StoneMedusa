@@ -25,7 +25,6 @@ public class ItemTabInit
                         output.accept(DiamondBatteryItem.getBattery(ItemInit.BATTERY.get(), MedusaConfig.max_energy.get()));
                         output.accept(ItemInit.DIAMOND_GEM_CUTTER.get());
                         output.accept(ItemInit.NETHERITE_GEM_CUTTER.get());
-                        output.accept(ItemInit.EMPTY_FLASK.get());
                         output.accept(ItemInit.REVIVAL_FLUID.get());
                         output.accept(ItemInit.REVIVAL_FLUID_BUCKET.get());
                         output.accept(ItemInit.NITRIC_ACID_FLASK.get());

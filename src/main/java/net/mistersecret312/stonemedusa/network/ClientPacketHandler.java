@@ -8,7 +8,9 @@ import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.Blocks;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
+import net.mistersecret312.stonemedusa.network.packets.EntityPetrifiedBrokenPacket;
 import net.mistersecret312.stonemedusa.network.packets.EntityPetrifiedPacket;
 import net.mistersecret312.stonemedusa.network.packets.MedusaActivatedPacket;
 import net.mistersecret312.stonemedusa.network.packets.PetrifiedEntityUpdatePacket;
@@ -43,7 +45,18 @@ public class ClientPacketHandler
         {
             entity.level().playSound(getPlayer(), entity.blockPosition(), SoundEvents.DRIPSTONE_BLOCK_PLACE, SoundSource.MASTER, 1F, 1F);
         }
+    }
 
+    public static void handlePetrificationBreak(EntityPetrifiedBrokenPacket packet)
+    {
+        Entity entity = getEntity(packet.entityID);
+        if(entity != null)
+        {
+            Minecraft.getInstance().particleEngine.destroy(entity.blockPosition(), Blocks.STONE.defaultBlockState());
+            entity.level().playSound(null, entity.blockPosition(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1f, 1f);
+
+
+        }
     }
 
     @SuppressWarnings("unchecked")

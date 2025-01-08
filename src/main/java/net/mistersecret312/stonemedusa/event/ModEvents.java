@@ -103,6 +103,16 @@ public class ModEvents
                             medusa.setRadius(stack, meters);
                             medusa.setCountdownActive(stack, true);
                         }
+                    for (ItemStack stack : playerEntity.getInventory().offhand)
+                        if (stack.getItem() instanceof MedusaItem medusa)
+                        {
+                            if(medusa.getEnergy(stack) == 0)
+                                continue;
+                            medusa.setStartDelay(stack, seconds);
+                            medusa.setDelay(stack, seconds);
+                            medusa.setRadius(stack, meters);
+                            medusa.setCountdownActive(stack, true);
+                        }
                 }
             }
         }

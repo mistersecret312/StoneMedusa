@@ -16,21 +16,18 @@ public class ItemInit
             () -> new MedusaItem(new Item.Properties().stacksTo(1).fireResistant().rarity(Rarity.EPIC)));
 
     public static final RegistryObject<DiamondBatteryItem> BATTERY = ITEMS.register("diamond_battery",
-            () -> new DiamondBatteryItem(new Item.Properties().stacksTo(1).fireResistant().rarity(Rarity.EPIC)));
+            () -> new DiamondBatteryItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
     public static final RegistryObject<Item> DIAMOND_GEM_CUTTER = ITEMS.register("diamond_gem_cutter",
             () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.COMMON)));
     public static final RegistryObject<Item> NETHERITE_GEM_CUTTER = ITEMS.register("netherite_gem_cutter",
             () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.COMMON)));
 
-    public static final RegistryObject<Item> EMPTY_FLASK = ITEMS.register("empty_flask",
-            () -> new Item(new Item.Properties().stacksTo(16).rarity(Rarity.COMMON)));
     public static final RegistryObject<Item> NITRIC_ACID_FLASK = ITEMS.register("nitric_acid_jar",
-            () -> new NitricAcidBottleItem(new Item.Properties().stacksTo(16)
-                    .craftRemainder(ItemInit.EMPTY_FLASK.get())));
+            () -> new NitricAcidBottleItem(new Item.Properties().stacksTo(16)));
 
     public static final RegistryObject<RevivalFluidItem> REVIVAL_FLUID = ITEMS.register("revival_fluid_flask",
-            () -> new RevivalFluidItem(new Item.Properties().stacksTo(16).craftRemainder(ItemInit.EMPTY_FLASK.get()).rarity(Rarity.UNCOMMON)));
+            () -> new RevivalFluidItem(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON)));
 
     public static final RegistryObject<Item> REVIVAL_FLUID_BUCKET = ITEMS.register("revival_fluid_bucket",
             () -> new RevivalFluidBucketItem(FluidInit.SOURCE_REVIVAL_FLUID,

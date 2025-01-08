@@ -10,9 +10,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.mistersecret312.stonemedusa.StoneMedusa;
-import net.mistersecret312.stonemedusa.network.packets.EntityPetrifiedPacket;
-import net.mistersecret312.stonemedusa.network.packets.MedusaActivatedPacket;
-import net.mistersecret312.stonemedusa.network.packets.PetrifiedEntityUpdatePacket;
+import net.mistersecret312.stonemedusa.network.packets.*;
 
 public class NetworkInit
 {
@@ -25,6 +23,8 @@ public class NetworkInit
         INSTANCE.registerMessage(id(), PetrifiedEntityUpdatePacket.class, PetrifiedEntityUpdatePacket::write, PetrifiedEntityUpdatePacket::read, PetrifiedEntityUpdatePacket::handle);
         INSTANCE.registerMessage(id(), EntityPetrifiedPacket.class, EntityPetrifiedPacket::write, EntityPetrifiedPacket::read, EntityPetrifiedPacket::handle);
         INSTANCE.registerMessage(id(), MedusaActivatedPacket.class, MedusaActivatedPacket::write, MedusaActivatedPacket::read, MedusaActivatedPacket::handle);
+        INSTANCE.registerMessage(id(), BreakingEntityPetrifiedPacket.class, BreakingEntityPetrifiedPacket::write, BreakingEntityPetrifiedPacket::read, BreakingEntityPetrifiedPacket::handle);
+        INSTANCE.registerMessage(id(), EntityPetrifiedBrokenPacket.class, EntityPetrifiedBrokenPacket::write, EntityPetrifiedBrokenPacket::read, EntityPetrifiedBrokenPacket::handle);
     }
 
     public static void sendPacketToAll(Object message){

@@ -2,16 +2,16 @@
     "type": "minecraft:crafting_shapeless",
     "ingredients": [
         {
-            "item": "stonemedusa:empty_flask"
+            "item": "minecraft:glass_bottle"
         },
         {
-            "item": "stonemedusa:empty_flask"
+            "item": "minecraft:glass_bottle"
         },
         {
-            "item": "stonemedusa:empty_flask"
+            "item": "minecraft:glass_bottle"
         },
         {
-            "item": "stonemedusa:empty_flask"
+            "item": "minecraft:glass_bottle"
         },
         {
             "item": "stonemedusa:revival_fluid_bucket"

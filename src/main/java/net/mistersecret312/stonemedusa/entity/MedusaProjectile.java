@@ -234,7 +234,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
             if(expansionTicker > 0 && activeTicker <= this.targetRadius*this.speed)
                 this.setCurrentRadius((float) Mth.lerp(expansionTicker/(this.targetRadius*this.speed), 0, this.targetRadius));
 
-            if(this.getCurrentRadius() > 0f && this.getFading() < 0.9f)
+            if(this.getCurrentRadius() > 0f && this.getFading() < 0.4f)
                 petrify();
         }
     }
@@ -250,7 +250,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
                     if(entity instanceof LivingEntity living)
                     {
                         double distance = this.distanceTo(living);
-                        return distance - 1 < this.getCurrentRadius() && distance >= this.getCurrentRadius();
+                        return 1.5f*distance - 1.5f < (this.getCurrentRadius()*1.5f) && 1.5f*distance >= (this.getCurrentRadius()*1.5f);
                     }
                     return false;
                 });

@@ -7,22 +7,9 @@
     [
         {
             "predicate": {
-                "stonemedusa:battery": 1
+                "stonemedusa:battery": 0
             },
-            "model": "stonemedusa:item/battery_full"
-
-        },
-        {
-            "predicate": {
-                "stonemedusa:battery": 0.75
-            },
-            "model": "stonemedusa:item/battery_third"
-        },
-        {
-            "predicate": {
-                "stonemedusa:battery": 0.5
-            },
-            "model": "stonemedusa:item/battery_half"
+            "model": "stonemedusa:item/battery_empty"
         },
         {
             "predicate": {
@@ -32,9 +19,21 @@
         },
         {
             "predicate": {
-                "stonemedusa:battery": 0
+                "stonemedusa:battery": 0.5
             },
-            "model": "stonemedusa:item/battery_empty"
+            "model": "stonemedusa:item/battery_half"
+        },
+        {
+            "predicate": {
+                "stonemedusa:battery": 0.75
+            },
+            "model": "stonemedusa:item/battery_third"
+        },
+        {
+            "predicate": {
+                "stonemedusa:battery": 1
+            },
+            "model": "stonemedusa:item/battery_full"
         }
     ]
 }

@@ -4,12 +4,13 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DiamondBatteryItemProperty implements ClampedItemPropertyFunction
 {
     @Override
-    public float unclampedCall(ItemStack stack, @Nullable ClientLevel pLevel, @Nullable LivingEntity pEntity, int pSeed)
+    public float unclampedCall(@NotNull ItemStack stack, @Nullable ClientLevel pLevel, @Nullable LivingEntity pEntity, int pSeed)
     {
         int energy = DiamondBatteryItem.getEnergy(stack);
         if(energy > 750000 && energy <= 1000000)
