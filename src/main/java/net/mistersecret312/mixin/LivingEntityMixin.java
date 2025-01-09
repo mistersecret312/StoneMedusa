@@ -36,9 +36,9 @@ public class LivingEntityMixin
                 }
                 if (cap.getBreakStage() >= 9 && PetrificationConfig.petrified_entity_destroy.get())
                 {
-                    if(entity.level().isClientSide)
-                        NetworkInit.sendToTracking(entity, new EntityPetrifiedBrokenPacket(entity.getId()));
-
+                    entity.level().playLocalSound(entity.blockPosition(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.3f, 1f, false);
+                    entity.level().playSound(entity, entity.blockPosition(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1f, 1f);
+                    entity.level().addDestroyBlockEffect(entity.blockPosition(), Blocks.STONE.defaultBlockState());
                     entity.discard();
                 }
                 cir.setReturnValue(false);
