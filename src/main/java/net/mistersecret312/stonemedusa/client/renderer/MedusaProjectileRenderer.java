@@ -7,21 +7,16 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.util.SphereUtils;
 
-public class MedusaProjectileRenderer extends EntityRenderer<MedusaProjectile>
+public class MedusaProjectileRenderer extends ThrownItemRenderer<MedusaProjectile>
 {
-    private final ItemRenderer itemRenderer;
-
     public MedusaProjectileRenderer(EntityRendererProvider.Context context)
     {
         super(context);
-        this.itemRenderer = context.getItemRenderer();
     }
 
     @Override
@@ -41,16 +36,7 @@ public class MedusaProjectileRenderer extends EntityRenderer<MedusaProjectile>
                     OverlayTexture.NO_OVERLAY, new float[]{0.0f, 1.0f, 0.0f, (0.25f*(1-Math.min(medusa.getFading(), 1)))});
 
         pMatrixStack.popPose();
-        this.itemRenderer.renderStatic(medusa.getItem(), ItemDisplayContext.GROUND, pPackedLight, OverlayTexture.NO_OVERLAY, pMatrixStack, pBuffer, medusa.level(), medusa.getId());
         super.render(medusa, pEntityYaw, pPartialTicks, pMatrixStack, pBuffer, pPackedLight);
-    }
-
-    @Override
-    public ResourceLocation getTextureLocation(MedusaProjectile entity)
-    {
-        if(entity.isActive())
-            return new ResourceLocation(StoneMedusa.MOD_ID, "textures/item/medusa_activated.png");
-        else return new ResourceLocation(StoneMedusa.MOD_ID, "textures/item/medusa.png");
     }
 
     @Override

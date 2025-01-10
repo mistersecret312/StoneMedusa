@@ -82,8 +82,6 @@ public class ModEvents
             {
                 List<ItemEntity> fallenItems = level.getEntities(EntityType.ITEM, new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3, 3, 3))), item -> item.getItem().getItem() instanceof MedusaItem);
                 List<Player> nearbyPlayers = level.getEntities(EntityType.PLAYER, new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3, 3, 3))), playerEntity -> playerEntity.getInventory().hasAnyMatching(item -> item.getItem() instanceof MedusaItem));
-                List<ItemFrame> itemFrames = level.getEntities(EntityType.ITEM_FRAME, new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3, 3, 3))), frame -> frame.getItem().getItem() instanceof MedusaItem);
-                List<GlowItemFrame> glowFrames = level.getEntities(EntityType.GLOW_ITEM_FRAME, new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3, 3, 3))), frame -> frame.getItem().getItem() instanceof MedusaItem);
 
                 for(ItemEntity item : fallenItems)
                 {
@@ -94,26 +92,6 @@ public class ModEvents
                     medusa.setDelay(item.getItem(), seconds);
                     medusa.setRadius(item.getItem(), meters);
                     medusa.setCountdownActive(item.getItem(), true);
-                }
-                for(ItemFrame frame : itemFrames)
-                {
-                    MedusaItem medusa = ((MedusaItem) frame.getItem().getItem());
-                    if(medusa.getEnergy(frame.getItem()) == 0)
-                        continue;
-                    medusa.setStartDelay(frame.getItem(), seconds);
-                    medusa.setDelay(frame.getItem(), seconds);
-                    medusa.setRadius(frame.getItem(), meters);
-                    medusa.setCountdownActive(frame.getItem(), true);
-                }
-                for(GlowItemFrame frame : glowFrames)
-                {
-                    MedusaItem medusa = ((MedusaItem) frame.getItem().getItem());
-                    if(medusa.getEnergy(frame.getItem()) == 0)
-                        continue;
-                    medusa.setStartDelay(frame.getItem(), seconds);
-                    medusa.setDelay(frame.getItem(), seconds);
-                    medusa.setRadius(frame.getItem(), meters);
-                    medusa.setCountdownActive(frame.getItem(), true);
                 }
 
                 for(Player playerEntity : nearbyPlayers)
