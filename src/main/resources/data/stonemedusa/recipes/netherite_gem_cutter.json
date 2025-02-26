@@ -3,8 +3,8 @@
     "category": "equipment",
     "pattern": [
         "  s",
-        " s",
-        "n"
+        " s ",
+        "n  "
     ],
     "key": {
         "s": {
