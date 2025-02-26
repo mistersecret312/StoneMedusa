@@ -31,6 +31,7 @@ public class DiamondBatteryItem extends Item
         pTooltipComponents.add(Component.translatable("medusa.charge").withStyle(ChatFormatting.GREEN).append(percentage.format((double)this.getEnergy(pStack) / (double)MedusaConfig.max_energy.get())));
     }
 
+
     public static ItemStack getBattery(DiamondBatteryItem item, int energy)
     {
         ItemStack stack = new ItemStack(item);
