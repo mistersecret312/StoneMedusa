@@ -5,7 +5,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.network.NetworkEvent;
+import net.mistersecret312.stonemedusa.config.PetrificationConfig;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import net.mistersecret312.stonemedusa.network.ClientPacketHandler;
 
@@ -37,8 +39,13 @@ public class BreakingEntityPetrifiedPacket
             ServerPlayer player = context.get().getSender();
             if(player.level() != null)
             {
-                player.level().getEntity(packet.entityID).getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> {
+                LivingEntity entity = (LivingEntity) player.level().getEntity(packet.entityID);
+                entity.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> {
                     cap.setBreakStage(cap.getBreakStage()+1);
+                    if(cap.getBreakStage() >= 9 && PetrificationConfig.petrified_entity_destroy.get())
+                    {
+                        entity.kill();
+                    }
                 });
             }
         });

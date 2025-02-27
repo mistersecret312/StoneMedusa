@@ -39,18 +39,21 @@ public class LivingEntityMixin
                 PetrifiedCapability capability = capOp.get();
                 if (capability.isPetrified() && PetrificationConfig.petrified_entity_damage.get())
                 {
-                    capability.setBreakStage(capability.getBreakStage() + (pAmount > 5f ? 1 : 0));
-                    if(entity.level().isClientSide)
+                    if(pAmount > 5)
                     {
-                        NetworkInit.sendToServer(new BreakingEntityPetrifiedPacket(entity.getId()));
-                    }
-                    if (capability.getBreakStage() >= 9 && PetrificationConfig.petrified_entity_destroy.get())
-                    {
-                        entity.level().playLocalSound(entity.blockPosition(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.3f, 1f, false);
-                        entity.level().playSound(entity, entity.blockPosition(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1f, 1f);
-                        entity.level().addDestroyBlockEffect(entity.blockPosition(), Blocks.STONE.defaultBlockState());
-                        pAmount = Float.MAX_VALUE;
-                        return;
+                        capability.setBreakStage(capability.getBreakStage() + 1);
+                        if (capability.getBreakStage() >= 9 && PetrificationConfig.petrified_entity_destroy.get())
+                        {
+                            entity.level().playLocalSound(entity.blockPosition(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.3f, 1f, false);
+                            entity.level().playSound(entity, entity.blockPosition(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1f, 1f);
+                            entity.level().addDestroyBlockEffect(entity.blockPosition(), Blocks.STONE.defaultBlockState());
+                            pAmount = Float.MAX_VALUE;
+                            return;
+                        }
+                        if(entity.level().isClientSide)
+                        {
+                            NetworkInit.sendToServer(new BreakingEntityPetrifiedPacket(entity.getId()));
+                        }
                     }
                     cir.setReturnValue(false);
                 }

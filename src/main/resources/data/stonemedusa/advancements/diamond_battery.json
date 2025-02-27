@@ -1,0 +1,40 @@
+{
+  "display": {
+    "icon": {
+      "item": "stonemedusa:diamond_battery",
+      "nbt": "{energy:1000000}"
+    },
+    "title": {
+      "translate": "advancement.stonemedusa.battery"
+    },
+    "description": {
+      "translate": "advancement.stonemedusa.battery.desc"
+    },
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "stonemedusa:revive",
+  "criteria": {
+    "battery": {
+      "trigger": "minecraft:recipe_crafted",
+      "conditions": {
+        "recipe_id": "stonemedusa:battery_diamond_half"
+      }
+    },
+    "battery_full": {
+      "trigger": "minecraft:recipe_crafted",
+      "conditions": {
+        "recipe_id": "stonemedusa:battery_diamond_full"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "battery",
+      "battery_full"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

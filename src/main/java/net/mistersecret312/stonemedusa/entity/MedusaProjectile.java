@@ -227,30 +227,33 @@ public class MedusaProjectile extends ThrowableItemProjectile
             activeTicker++;
             if(activeTicker <= this.targetRadius*this.speed && !(activeTicker > this.targetRadius*this.speed))
                 expansionTicker++;
-            if(activeTicker <= this.targetRadius*this.speed+2*IDLE_TIME && !(activeTicker > this.targetRadius*this.speed+2*IDLE_TIME))
-                this.setFading(this.getFading()+0.0023f);
+            if(activeTicker > (this.targetRadius*this.speed)+IDLE_TIME && !(activeTicker > this.targetRadius*this.speed+2*IDLE_TIME))
+                this.setFading(this.getFading()+0.0048f);
 
 
             if(expansionTicker > 0 && activeTicker <= this.targetRadius*this.speed)
                 this.setCurrentRadius((float) Mth.lerp(expansionTicker/(this.targetRadius*this.speed), 0, this.targetRadius));
 
             if(this.getCurrentRadius() > 0f && this.getFading() < 0.4f)
-                petrify();
+                petrify(this.getCurrentRadius()*1.5F+2.5f);
         }
     }
 
-    public void petrify()
+    public void petrify(float radius)
     {
         List<Entity> targets = this.level().getEntities(this,
-                new AABB(this.blockPosition().getX()-(this.getCurrentRadius()*1.5f), this.blockPosition().getY()-(this.getCurrentRadius()*1.5f),
-                        this.blockPosition().getZ()-(this.getCurrentRadius()*1.5f), this.blockPosition().getX()+(this.getCurrentRadius()*1.5f),
-                        this.blockPosition().getY()+(this.getCurrentRadius()*1.5f), this.blockPosition().getZ()+(this.getCurrentRadius()*1.5f)),
+                new AABB(this.blockPosition().getX()- radius, this.blockPosition().getY()- radius,
+                        this.blockPosition().getZ()- radius, this.blockPosition().getX()+ radius,
+                        this.blockPosition().getY()+ radius, this.blockPosition().getZ()+ radius),
                 entity ->
                 {
                     if(entity instanceof LivingEntity living)
                     {
+                        if(living.getEffect(EffectInit.PETRIFICATION.get()) != null)
+                            return false;
+
                         double distance = this.distanceTo(living);
-                        return 1.5f*distance - 1.5f < (this.getCurrentRadius()*1.5f) && 1.5f*distance >= (this.getCurrentRadius()*1.5f);
+                        return distance-2 < radius && distance+2 >= radius;
                     }
                     return false;
                 });
@@ -271,7 +274,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
                     continue;
 
             if (entity instanceof LivingEntity living)
-                if (!living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()) && Math.sqrt(living.blockPosition().distSqr(new Vec3i(this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ()))) < this.getCurrentRadius()*1.5f)
+                if (!living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()) && Math.sqrt(living.blockPosition().distSqr(new Vec3i(this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ()))) < radius)
                 {
                     living.addEffect(new MobEffectInstance(EffectInit.PETRIFICATION.get(), living instanceof Player ? PetrificationConfig.player_petrification_time.get() : PetrificationConfig.entity_petrification_time.get(), 0, false, false, true), living);
                     living.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->

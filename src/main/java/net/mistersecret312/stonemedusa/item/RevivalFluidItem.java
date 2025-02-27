@@ -1,11 +1,14 @@
 package net.mistersecret312.stonemedusa.item;
 
+import net.minecraft.core.Position;
+import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -19,6 +22,17 @@ public class RevivalFluidItem extends Item
     public RevivalFluidItem(Properties pProperties)
     {
         super(pProperties);
+    }
+
+    public static AbstractProjectileDispenseBehavior getBehaviour()
+    {
+        return new AbstractProjectileDispenseBehavior() {
+            @Override
+            protected Projectile getProjectile(Level pLevel, Position pPosition, ItemStack pStack)
+            {
+                return new ThrownRevivalFluidEntity(pLevel);
+            }
+        };
     }
 
     @Override

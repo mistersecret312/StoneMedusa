@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -35,6 +36,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.mistersecret312.stonemedusa.item.ActiveMedusaItemProperty;
 import net.mistersecret312.stonemedusa.item.DiamondBatteryItemProperty;
+import net.mistersecret312.stonemedusa.item.MedusaItem;
+import net.mistersecret312.stonemedusa.item.RevivalFluidItem;
 import org.slf4j.Logger;
 
 import static net.minecraft.client.renderer.entity.LivingEntityRenderer.isEntityUpsideDown;
@@ -76,6 +79,8 @@ public class StoneMedusa
         event.enqueueWork(
         () -> {
             NetworkInit.registerPackets();
+            DispenserBlock.registerBehavior(ItemInit.MEDUSA.get(), MedusaItem.getBehaviour());
+            DispenserBlock.registerBehavior(ItemInit.REVIVAL_FLUID.get(), RevivalFluidItem.getBehaviour());
 
             BrewingRecipeRegistry.addRecipe(Ingredient.of(new ItemStack(ItemInit.NITRIC_ACID_FLASK.get())), Ingredient.of(Items.SUGAR), new ItemStack(ItemInit.REVIVAL_FLUID.get()));
         });

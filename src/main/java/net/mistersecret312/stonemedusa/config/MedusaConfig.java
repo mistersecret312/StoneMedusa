@@ -9,6 +9,7 @@ public class MedusaConfig
     public static ForgeConfigSpec.DoubleValue max_radius;
     public static ForgeConfigSpec.DoubleValue base_speed;
     public static ForgeConfigSpec.BooleanValue can_set_target;
+    public static ForgeConfigSpec.BooleanValue dispenser_activate;
 
     public static ForgeConfigSpec.IntValue generation_period;
     public static ForgeConfigSpec.DoubleValue generation_chance;
@@ -38,6 +39,10 @@ public class MedusaConfig
         can_set_target = builder
                 .comment("Should it be possible to target specific species with the Medusa or not")
                 .define("server.medusa_can_set_target", true);
+
+        dispenser_activate = builder
+                .comment("Should dispensing the Medusa with a Dispenser activate it to it's latest settings or not")
+                .define("server.medusa_dispenser_activate", true);
 
         builder.push("Medusa Generation");
 
