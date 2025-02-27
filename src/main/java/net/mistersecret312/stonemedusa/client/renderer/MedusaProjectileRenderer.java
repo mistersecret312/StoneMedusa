@@ -45,4 +45,6 @@ public class MedusaProjectileRenderer extends ThrownItemRenderer<MedusaProjectil
         return true;
     }
 
+
+
 }

@@ -28,6 +28,9 @@
   "advancement.stonemedusa.battery": "Diamond Heart",
   "advancement.stonemedusa.battery.desc": "Make the Diamond Battery",
 
+  "entity.stonemedusa.medusa": "Medusa",
+  "entity.stonemedusa.revival_fluid": "Revival Fluid",
+
   "creativetab.main_tab": "Dr.STONE - Medusa",
   "medusa.charge": "Charge: ",
   "medusa.target": "Target Species: "

@@ -1,7 +1,5 @@
 package net.mistersecret312.stonemedusa.effects;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
@@ -9,15 +7,10 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SplashPotionItem;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import net.mistersecret312.stonemedusa.init.EffectInit;
 
-import java.lang.ref.Reference;
 import java.util.List;
 
 public class PetrificationEffect extends MobEffect

@@ -2,12 +2,9 @@ package net.mistersecret312.stonemedusa.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
-import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -22,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.SpawnerBlock;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.init.ItemInit;
@@ -30,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
 import java.util.List;
-import java.util.Objects;
 
 public class MedusaItem extends Item
 {
@@ -194,6 +189,8 @@ public class MedusaItem extends Item
                 MedusaItem item = ((MedusaItem) stack.getItem());
                 MedusaProjectile medusaProjectile = new MedusaProjectile(level, item.getEnergy(stack),
                         item.getRadius(stack), item.getDelay(stack), MedusaConfig.dispenser_activate.get(), isActive(stack), item.getTargetEntityType(stack), false);
+                medusaProjectile.setPos(position.x(), position.y(), position.z());
+                medusaProjectile.setItem(stack);
                 return medusaProjectile;
             }
         };

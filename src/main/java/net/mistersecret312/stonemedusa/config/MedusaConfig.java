@@ -1,7 +1,6 @@
 package net.mistersecret312.stonemedusa.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.mistersecret312.stonemedusa.item.MedusaItem;
 
 public class MedusaConfig
 {

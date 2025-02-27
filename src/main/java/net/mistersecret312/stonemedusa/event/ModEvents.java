@@ -1,30 +1,21 @@
 package net.mistersecret312.stonemedusa.event;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.decoration.GlowItemFrame;
-import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -34,7 +25,6 @@ import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
@@ -47,11 +37,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.mistersecret312.stonemedusa.capability.GenericProvider;
 import net.mistersecret312.stonemedusa.capability.PetrifiedCapability;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
-import net.mistersecret312.stonemedusa.config.PetrificationConfig;
 import net.mistersecret312.stonemedusa.config.RevivalConfig;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import net.mistersecret312.stonemedusa.init.EffectInit;
+import net.mistersecret312.stonemedusa.init.EntityInit;
 import net.mistersecret312.stonemedusa.init.ItemInit;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
 import net.mistersecret312.stonemedusa.item.NitricAcidBottleItem;
@@ -82,6 +72,7 @@ public class ModEvents
             {
                 List<ItemEntity> fallenItems = level.getEntities(EntityType.ITEM, new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3, 3, 3))), item -> item.getItem().getItem() instanceof MedusaItem);
                 List<Player> nearbyPlayers = level.getEntities(EntityType.PLAYER, new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3, 3, 3))), playerEntity -> playerEntity.getInventory().hasAnyMatching(item -> item.getItem() instanceof MedusaItem));
+                List<MedusaProjectile> nearbyMedusa = level.getEntities(EntityInit.MEDUSA.get(), new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3,3,3))), medusaProjectile -> !medusaProjectile.isCountingDown());
 
                 for(ItemEntity item : fallenItems)
                 {
@@ -116,6 +107,15 @@ public class ModEvents
                             medusa.setRadius(stack, meters);
                             medusa.setCountdownActive(stack, true);
                         }
+                }
+
+                for(MedusaProjectile medusa: nearbyMedusa)
+                {
+                    medusa.setFading(0f);
+                    medusa.setCurrentRadius(0f);
+                    medusa.setDelay(seconds);
+                    medusa.setTargetRadius(meters);
+                    medusa.setCountingDown(true);
                 }
             }
         }

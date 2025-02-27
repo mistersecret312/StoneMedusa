@@ -50,10 +50,10 @@ public class LivingEntityMixin
                             pAmount = Float.MAX_VALUE;
                             return;
                         }
-                        if(entity.level().isClientSide)
-                        {
-                            NetworkInit.sendToServer(new BreakingEntityPetrifiedPacket(entity.getId()));
-                        }
+                    }
+                    if(entity.level().isClientSide)
+                    {
+                        NetworkInit.sendToServer(new BreakingEntityPetrifiedPacket(entity.getId(), pAmount));
                     }
                     cir.setReturnValue(false);
                 }

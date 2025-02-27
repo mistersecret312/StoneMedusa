@@ -1,7 +1,5 @@
 package net.mistersecret312.mixin;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.mistersecret312.stonemedusa.init.EffectInit;

@@ -30,6 +30,7 @@ import net.mistersecret312.stonemedusa.init.*;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
 import net.mistersecret312.stonemedusa.network.packets.EntityPetrifiedPacket;
 import net.mistersecret312.stonemedusa.network.packets.MedusaActivatedPacket;
+import net.mistersecret312.stonemedusa.network.packets.MedusaTextureUpdatePacket;
 
 import java.util.List;
 import java.util.Random;
@@ -188,6 +189,8 @@ public class MedusaProjectile extends ThrowableItemProjectile
     {
         this.setActive(true);
         this.setCountingDown(false);
+        ((MedusaItem) this.getDefaultItem()).setCountdownActive(this.getItem(), false);
+        MedusaItem.setActive(this.getItem(), true);
         this.noPhysics = true;
         this.setDeltaMovement(Vec3.ZERO);
         this.setNoGravity(true);
@@ -195,12 +198,14 @@ public class MedusaProjectile extends ThrowableItemProjectile
         int demandedEnergy = (int) ((this.targetRadius*this.speed*2+IDLE_TIME)*100);
         double energyPercentage = (double) this.energy /MedusaConfig.max_energy.get();
         if(energyPercentage < 0.05)
-            this.speed = Math.max(3, (100-(energyPercentage*100))+101);
+            this.speed = Math.max(3, (100-(energyPercentage*100))-65);
         if(demandedEnergy > this.energy)
             this.targetRadius = Math.max(1f, (float) ((this.energy - 20000) / (25 * this.speed * 2)));
 
         this.level().playSound(null, this.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.MASTER, 1F, 1F);
+
         NetworkInit.sendToTracking(this, new MedusaActivatedPacket(this.getId()));
+        NetworkInit.sendToTracking(this, new MedusaTextureUpdatePacket(this.getId(), this.isActive(), this.isCountingDown()));
     }
 
     @Override
@@ -294,10 +299,14 @@ public class MedusaProjectile extends ThrowableItemProjectile
     {
         this.setActive(false);
         this.setCountingDown(false);
+        ((MedusaItem) this.getDefaultItem()).setCountdownActive(this.getItem(), false);
+        MedusaItem.setActive(this.getItem(), false);
         this.setNoGravity(false);
         this.noPhysics = false;
         this.setDeltaMovement(Vec3.ZERO);
         this.setSpeed(MedusaConfig.base_speed.get());
+
+        NetworkInit.sendToTracking(this, new MedusaTextureUpdatePacket(this.getId(), this.isActive(), this.isCountingDown()));
     }
 
     @Override

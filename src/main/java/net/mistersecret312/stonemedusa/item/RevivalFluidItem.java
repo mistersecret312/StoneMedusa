@@ -30,7 +30,9 @@ public class RevivalFluidItem extends Item
             @Override
             protected Projectile getProjectile(Level pLevel, Position pPosition, ItemStack pStack)
             {
-                return new ThrownRevivalFluidEntity(pLevel);
+                ThrownRevivalFluidEntity revivalFluid = new ThrownRevivalFluidEntity(pLevel, pPosition.x(), pPosition.y(), pPosition.z());
+                revivalFluid.setItem(pStack);
+                return revivalFluid;
             }
         };
     }

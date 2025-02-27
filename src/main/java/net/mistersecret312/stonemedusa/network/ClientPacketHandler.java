@@ -2,9 +2,7 @@ package net.mistersecret312.stonemedusa.network;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -60,7 +58,7 @@ public class ClientPacketHandler
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Entity> T getEntity(int entityId) {
+    public static <T extends Entity> T getEntity(int entityId) {
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null)
             return null;
