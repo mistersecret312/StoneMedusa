@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:glass_bottle"
+        },
+        {
+            "item": "minecraft:glass_bottle"
+        },
+        {
+            "item": "minecraft:glass_bottle"
+        },
+        {
+            "item": "minecraft:glass_bottle"
+        },
+        {
+            "item": "stonemedusa:nitric_acid_bucket"
+        }
+    ],
+    "result": {
+        "item": "stonemedusa:nitric_acid_jar",
+        "count": 4
+    }
+}

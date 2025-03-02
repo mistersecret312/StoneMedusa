@@ -33,7 +33,7 @@ public class ItemInit
             () -> new RevivalFluidBucketItem(FluidInit.SOURCE_REVIVAL_FLUID,
                     new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).craftRemainder(Items.BUCKET)));
     public static final RegistryObject<Item> NITRIC_ACID_BUCKET = ITEMS.register("nitric_acid_bucket",
-            () -> new RevivalFluidBucketItem(FluidInit.SOURCE_NITRIC_ACID,
+            () -> new BucketItem(FluidInit.SOURCE_NITRIC_ACID,
                     new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).craftRemainder(Items.BUCKET)));
 
 

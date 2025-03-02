@@ -1,7 +1,9 @@
 package net.mistersecret312.stonemedusa.capability;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.mistersecret312.stonemedusa.init.EffectInit;
@@ -14,9 +16,11 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
     public static final String BREAK_STAGE = "breakStage";
     public static final String AGE = "age";
     public static final String TIME_PETRIFIED = "timePetrified";
+    public static final String BROKEN = "broken";
 
     public boolean petrified = false;
     public int breakStage = -1;
+    public boolean broken = false;
     public float age = 0f;
     public int timePetrified = 0;
 
@@ -31,7 +35,7 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         else if(timePetrified != 0)
             timePetrified = 0;
 
-        NetworkInit.sendToTracking(living, new PetrifiedEntityUpdatePacket(petrified, breakStage, age, living.getId()));
+        NetworkInit.sendToTracking(living, new PetrifiedEntityUpdatePacket(petrified, breakStage, age, broken, living.getId()));
     }
 
     public boolean isPetrified()
@@ -47,6 +51,11 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
     public float getAge()
     {
         return age;
+    }
+
+    public boolean isBroken()
+    {
+        return broken;
     }
 
     public int getTimePetrified()
@@ -73,6 +82,11 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         this.age = age;
     }
 
+    public void setBroken(boolean broken)
+    {
+        this.broken = broken;
+    }
+
     public void setTimePetrified(int timePetrified)
     {
         if(timePetrified < 0)
@@ -89,6 +103,7 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         tag.putInt(BREAK_STAGE, breakStage);
         tag.putFloat(AGE, age);
         tag.putInt(TIME_PETRIFIED, timePetrified);
+        tag.putBoolean(BROKEN, broken);
 
         return tag;
     }
@@ -100,5 +115,6 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         this.breakStage = nbt.getInt(BREAK_STAGE);
         this.age = nbt.getFloat(AGE);
         this.timePetrified = nbt.getInt(TIME_PETRIFIED);
+        this.broken = nbt.getBoolean(BROKEN);
     }
 }

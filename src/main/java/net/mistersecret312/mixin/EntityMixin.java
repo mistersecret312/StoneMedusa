@@ -8,8 +8,10 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Phantom;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.mistersecret312.stonemedusa.config.RevivalConfig;
+import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import net.mistersecret312.stonemedusa.init.EffectInit;
 import net.mistersecret312.stonemedusa.init.FluidTypeInit;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,5 +38,16 @@ public class EntityMixin
                     living.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), RevivalConfig.revival_time.get(), 0, false, false, true));
             }
         }
+    }
+
+    @Inject(method = "setSecondsOnFire(I)V", at = @At("HEAD"), cancellable = true)
+    public void burn(int pSeconds, CallbackInfo ci)
+    {
+        Entity entity = ((Entity) (Object) this);
+        if(entity instanceof LivingEntity living)
+            living.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap -> {
+                if(cap.isPetrified())
+                    ci.cancel();
+            });
     }
 }

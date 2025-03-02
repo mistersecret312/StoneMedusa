@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:bucket"
+    },
+    {
+      "item": "stonemedusa:revival_fluid_flask"
+    },
+    {
+      "item": "stonemedusa:revival_fluid_flask"
+    },
+    {
+      "item": "stonemedusa:revival_fluid_flask"
+    },
+    {
+      "item": "stonemedusa:revival_fluid_flask"
+    }
+  ],
+  "result": {
+    "item": "stonemedusa:revival_fluid_bucket",
+    "count": 1
+  }
+}

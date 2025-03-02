@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -50,8 +51,6 @@ public class StoneMedusa
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final TagKey<EntityType<?>> PETRIFICATION_IMMUNE = new TagKey<>(Registries.ENTITY_TYPE, new ResourceLocation(StoneMedusa.MOD_ID, "petrification_immune"));
-    public static final TagKey<Level> MEDUSA_SPAWN = new TagKey<>(Registries.DIMENSION, new ResourceLocation(StoneMedusa.MOD_ID, "medusa_spawn"));
-
 
     public StoneMedusa() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -82,7 +81,7 @@ public class StoneMedusa
             DispenserBlock.registerBehavior(ItemInit.MEDUSA.get(), MedusaItem.getBehaviour());
             DispenserBlock.registerBehavior(ItemInit.REVIVAL_FLUID.get(), RevivalFluidItem.getBehaviour());
 
-            BrewingRecipeRegistry.addRecipe(Ingredient.of(new ItemStack(ItemInit.NITRIC_ACID_FLASK.get())), Ingredient.of(Items.SUGAR), new ItemStack(ItemInit.REVIVAL_FLUID.get()));
+            BrewingRecipeRegistry.addRecipe(Ingredient.of(ItemInit.NITRIC_ACID_FLASK.get()), Ingredient.of(Items.SUGAR), new ItemStack(ItemInit.REVIVAL_FLUID.get()));
         });
     }
 

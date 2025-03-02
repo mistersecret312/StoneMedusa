@@ -23,6 +23,7 @@ public class ClientPacketHandler
                 cap.setPetrified(packet.petrified);
                 cap.setBreakStage(packet.breakStage);
                 cap.setAge(packet.age);
+                cap.setBroken(packet.broken);
             });
     }
 
@@ -52,8 +53,6 @@ public class ClientPacketHandler
         {
             Minecraft.getInstance().particleEngine.destroy(entity.blockPosition(), Blocks.STONE.defaultBlockState());
             entity.level().playSound(null, entity.blockPosition(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1f, 1f);
-
-
         }
     }
 

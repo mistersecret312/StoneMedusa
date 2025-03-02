@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:bucket"
+    },
+    {
+      "item": "stonemedusa:nitric_acid_jar"
+    },
+    {
+      "item": "stonemedusa:nitric_acid_jar"
+    },
+    {
+      "item": "stonemedusa:nitric_acid_jar"
+    },
+    {
+      "item": "stonemedusa:nitric_acid_jar"
+    }
+  ],
+  "result": {
+    "item": "stonemedusa:nitric_acid_bucket",
+    "count": 1
+  }
+}

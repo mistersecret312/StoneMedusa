@@ -60,15 +60,15 @@ public class NitricAcidBottleItem extends Item
     }
 
     @Override
-    public int getUseDuration(ItemStack pStack)
-    {
-        return 32;
-    }
-
-    @Override
     public UseAnim getUseAnimation(ItemStack pStack)
     {
         return UseAnim.DRINK;
+    }
+
+    @Override
+    public int getUseDuration(ItemStack pStack)
+    {
+        return 32;
     }
 
     @Override

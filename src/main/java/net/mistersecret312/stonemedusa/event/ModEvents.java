@@ -2,7 +2,9 @@ package net.mistersecret312.stonemedusa.event;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -11,7 +13,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -21,11 +25,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -37,19 +38,18 @@ import net.minecraftforge.fml.common.Mod;
 import net.mistersecret312.stonemedusa.capability.GenericProvider;
 import net.mistersecret312.stonemedusa.capability.PetrifiedCapability;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
+import net.mistersecret312.stonemedusa.config.PetrificationConfig;
 import net.mistersecret312.stonemedusa.config.RevivalConfig;
+import net.mistersecret312.stonemedusa.damagesource.PetrificationDamageSource;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
-import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
-import net.mistersecret312.stonemedusa.init.EffectInit;
-import net.mistersecret312.stonemedusa.init.EntityInit;
-import net.mistersecret312.stonemedusa.init.ItemInit;
+import net.mistersecret312.stonemedusa.init.*;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
 import net.mistersecret312.stonemedusa.item.NitricAcidBottleItem;
 
 import java.util.List;
 import java.util.Random;
 
-@Mod.EventBusSubscriber(modid = StoneMedusa.MOD_ID)
+@Mod.EventBusSubscriber(modid = StoneMedusa.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ModEvents
 {
     @SubscribeEvent
@@ -175,6 +175,27 @@ public class ModEvents
     @SubscribeEvent
     public static void entityHurt(LivingAttackEvent event)
     {
+        LivingEntity living = event.getEntity();
+        Level level = living.level();
+        if(level.isClientSide())
+            return;
+
+        living.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
+        {
+            if(cap.isPetrified() && !cap.isBroken() && !(event.getSource() instanceof PetrificationDamageSource))
+            {
+                if(event.getAmount() > 5f && PetrificationConfig.petrified_entity_damage.get())
+                    cap.setBreakStage(cap.breakStage+1);
+
+                if(cap.getBreakStage() >= 9 && PetrificationConfig.petrified_entity_destroy.get())
+                {
+                    living.setInvulnerable(false);
+                    living.hurt(PetrificationDamageSource.source(event.getEntity().level(), ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(StoneMedusa.MOD_ID, "petrification"))), Float.MAX_VALUE);
+                }
+
+                event.setCanceled(true);
+            }
+        });
 
     }
 
@@ -253,6 +274,30 @@ public class ModEvents
     @SubscribeEvent
     public static void playerAttack(AttackEntityEvent event)
     {
+        if(event.getTarget() instanceof LivingEntity living)
+        {
+            living.getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
+            {
+                if(cap.isPetrified())
+                {
+                    if(!cap.isBroken())
+                    {
+                        if(PetrificationConfig.petrified_entity_damage.get())
+                            cap.setBreakStage(cap.breakStage+1);
+
+                        if(cap.getBreakStage() >= 9 && PetrificationConfig.petrified_entity_destroy.get())
+                        {
+                            living.setInvulnerable(false);
+                            living.hurt(PetrificationDamageSource.source(event.getEntity().level(), ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(StoneMedusa.MOD_ID, "petrification"))), Float.MAX_VALUE);
+                        }
+                        event.setCanceled(true);
+                    }
+
+                }
+
+            });
+        }
+
         if(event.getEntity().getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
             event.setCanceled(true);
     }
@@ -269,13 +314,6 @@ public class ModEvents
     {
         if(event.getPlayer().getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
             event.setCanceled(true);
-    }
-
-    public static void entityOnLightning(EntityStruckByLightningEvent event)
-    {
-        if(event.getEntity() instanceof LivingEntity living)
-            if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
-                event.setCanceled(true);
     }
 
 
