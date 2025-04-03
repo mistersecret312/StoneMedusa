@@ -32,11 +32,13 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.minecraftforge.fml.common.Mod;
 import net.mistersecret312.stonemedusa.capability.GenericProvider;
 import net.mistersecret312.stonemedusa.capability.PetrifiedCapability;
+import net.mistersecret312.stonemedusa.capability.WorldCapability;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.config.PetrificationConfig;
 import net.mistersecret312.stonemedusa.config.RevivalConfig;
@@ -70,52 +72,76 @@ public class ModEvents
 
             if(meters > 0f)
             {
-                List<ItemEntity> fallenItems = level.getEntities(EntityType.ITEM, new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3, 3, 3))), item -> item.getItem().getItem() instanceof MedusaItem);
-                List<Player> nearbyPlayers = level.getEntities(EntityType.PLAYER, new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3, 3, 3))), playerEntity -> playerEntity.getInventory().hasAnyMatching(item -> item.getItem() instanceof MedusaItem));
-                List<MedusaProjectile> nearbyMedusa = level.getEntities(EntityInit.MEDUSA.get(), new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3,3,3))), medusaProjectile -> !medusaProjectile.isCountingDown());
-
-                for(ItemEntity item : fallenItems)
+                if(player.getMainHandItem().getItem() instanceof MedusaItem medusa)
                 {
-                    MedusaItem medusa = ((MedusaItem) item.getItem().getItem());
-                    if(medusa.getEnergy(item.getItem()) == 0)
-                        continue;
-                    medusa.setStartDelay(item.getItem(), seconds);
-                    medusa.setDelay(item.getItem(), seconds);
-                    medusa.setRadius(item.getItem(), meters);
-                    medusa.setCountdownActive(item.getItem(), true);
+                    if(medusa.getEnergy(player.getMainHandItem()) != 0)
+                    {
+                        medusa.setStartDelay(player.getMainHandItem(), seconds);
+                        medusa.setDelay(player.getMainHandItem(), seconds);
+                        medusa.setRadius(player.getMainHandItem(), meters);
+
+                        medusa.setCountdownActive(player.getMainHandItem(), true);
+                    }
                 }
-
-                for(Player playerEntity : nearbyPlayers)
+                else
+                if(player.getOffhandItem().getItem() instanceof MedusaItem medusa)
                 {
-                    for (ItemStack stack : playerEntity.getInventory().items)
-                        if (stack.getItem() instanceof MedusaItem medusa)
-                        {
-                            if(medusa.getEnergy(stack) == 0)
-                                continue;
-                            medusa.setStartDelay(stack, seconds);
-                            medusa.setDelay(stack, seconds);
-                            medusa.setRadius(stack, meters);
-                            medusa.setCountdownActive(stack, true);
-                        }
-                    for (ItemStack stack : playerEntity.getInventory().offhand)
-                        if (stack.getItem() instanceof MedusaItem medusa)
-                        {
-                            if(medusa.getEnergy(stack) == 0)
-                                continue;
-                            medusa.setStartDelay(stack, seconds);
-                            medusa.setDelay(stack, seconds);
-                            medusa.setRadius(stack, meters);
-                            medusa.setCountdownActive(stack, true);
-                        }
+                    if(medusa.getEnergy(player.getOffhandItem()) != 0)
+                    {
+                        medusa.setStartDelay(player.getOffhandItem(), seconds);
+                        medusa.setDelay(player.getOffhandItem(), seconds);
+                        medusa.setRadius(player.getOffhandItem(), meters);
+
+                        medusa.setCountdownActive(player.getOffhandItem(), true);
+                    }
                 }
-
-                for(MedusaProjectile medusa: nearbyMedusa)
+                else
                 {
-                    medusa.setFading(0f);
-                    medusa.setCurrentRadius(0f);
-                    medusa.setDelay(seconds);
-                    medusa.setTargetRadius(meters);
-                    medusa.setCountingDown(true);
+                    List<ItemEntity> fallenItems = level.getEntities(EntityType.ITEM, new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3, 3, 3))), item -> item.getItem().getItem() instanceof MedusaItem);
+                    List<Player> nearbyPlayers = level.getEntities(EntityType.PLAYER, new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3, 3, 3))), playerEntity -> playerEntity.getInventory().hasAnyMatching(item -> item.getItem() instanceof MedusaItem));
+                    List<MedusaProjectile> nearbyMedusa = level.getEntities(EntityInit.MEDUSA.get(), new AABB(player.blockPosition().offset(new Vec3i(-3, -3, -3)), player.blockPosition().offset(new Vec3i(3, 3, 3))), medusaProjectile -> !medusaProjectile.isCountingDown());
+
+                    for (ItemEntity item : fallenItems)
+                    {
+                        MedusaItem medusa = ((MedusaItem) item.getItem().getItem());
+                        if (medusa.getEnergy(item.getItem()) == 0) continue;
+                        medusa.setStartDelay(item.getItem(), seconds);
+                        medusa.setDelay(item.getItem(), seconds);
+                        medusa.setRadius(item.getItem(), meters);
+                        medusa.setCountdownActive(item.getItem(), true);
+                    }
+
+                    for (Player playerEntity : nearbyPlayers)
+                    {
+                        for (ItemStack stack : playerEntity.getInventory().items)
+                            if (stack.getItem() instanceof MedusaItem medusa)
+                            {
+                                if (medusa.getEnergy(stack) == 0) continue;
+                                medusa.setStartDelay(stack, seconds);
+                                medusa.setDelay(stack, seconds);
+                                medusa.setRadius(stack, meters);
+                                medusa.setCountdownActive(stack, true);
+                            }
+                        for (ItemStack stack : playerEntity.getInventory().offhand)
+                            if (stack.getItem() instanceof MedusaItem medusa)
+                            {
+                                if (medusa.getEnergy(stack) == 0) continue;
+                                medusa.setStartDelay(stack, seconds);
+                                medusa.setDelay(stack, seconds);
+                                medusa.setRadius(stack, meters);
+                                medusa.setCountdownActive(stack, true);
+                            }
+                    }
+
+                    for (MedusaProjectile medusa : nearbyMedusa)
+                    {
+                        if (medusa.getEnergy() == 0) continue;
+                        medusa.setFading(0f);
+                        medusa.setCurrentRadius(0f);
+                        medusa.setDelay(seconds);
+                        medusa.setTargetRadius(meters);
+                        medusa.setCountingDown(true);
+                    }
                 }
             }
         }
@@ -138,38 +164,36 @@ public class ModEvents
     }
 
     @SubscribeEvent
+    public static void attachWorldCapabilities(AttachCapabilitiesEvent<Level> event)
+    {
+        if(event.getObject().dimension().equals(Level.OVERWORLD))
+        {
+            event.addCapability(new ResourceLocation(StoneMedusa.MOD_ID, "stone_world"), new GenericProvider<>(CapabilitiesInit.WORLD, new WorldCapability()));
+        }
+
+    }
+
+    @SubscribeEvent
+    public static void levelTick(TickEvent.LevelTickEvent event)
+    {
+        if(event.side == LogicalSide.CLIENT)
+            return;
+        if(event.type == TickEvent.Type.CLIENT)
+            return;
+
+        event.level.getCapability(CapabilitiesInit.WORLD).ifPresent(cap ->
+        {
+            cap.tick(event.level);
+        });
+    }
+
+    @SubscribeEvent
     public static void livingTick(LivingEvent.LivingTickEvent event)
     {
         event.getEntity().getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
         {
             cap.tick(event.getEntity().level(), event.getEntity());
         });
-    }
-
-    @SubscribeEvent
-    public static void playerTick(TickEvent.PlayerTickEvent event)
-    {
-        Level level = event.player.level();
-        Player player = event.player;
-        Random random = new Random();
-        if(level.isClientSide() && event.side.isClient())
-            return;
-
-        if(!level.dimension().location().equals(Level.OVERWORLD.location()))
-            return;
-
-        if(level.getGameTime() % MedusaConfig.generation_period.get()*20 == 0 && random.nextDouble() > 1-MedusaConfig.generation_chance.get())
-        {
-            for (int i = 0; i < random.nextInt(MedusaConfig.min_generated_amount.get(), MedusaConfig.max_generated_amount.get()); i++)
-            {
-                ItemStack stack = MedusaItem.getMedusa(ItemInit.MEDUSA.get(), MedusaConfig.max_energy.get(), 5f, 20);
-                MedusaProjectile medusa = new MedusaProjectile(level, MedusaConfig.max_energy.get(), 5f, 20, false, false, "", true);
-                medusa.setItem(stack);
-                medusa.setPos(player.position().x+random.nextFloat(-72, 72), player.position().y+350+random.nextFloat(-72, 72), player.position().z+random.nextInt(-72, 72));
-                medusa.setDeltaMovement(new Vec3(random.nextFloat(0, 0.01f), random.nextFloat(-3f, -0.25f), random.nextFloat(0, 0.01f)));
-                level.addFreshEntity(medusa);
-            }
-        }
     }
 
     @SubscribeEvent

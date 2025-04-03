@@ -55,11 +55,11 @@ public class MedusaConfig
 
         min_generated_amount = builder
                 .comment("The minimal amount of Medusa's that can generate at once")
-                .defineInRange("server.medusa_generation_min", 2, 0, Integer.MAX_VALUE);
+                .defineInRange("server.medusa_generation_min", 5, 0, Integer.MAX_VALUE);
 
         max_generated_amount = builder
                 .comment("The maximum amount of Medusa's that can generate at once, has to be above minimum")
-                .defineInRange("server.medusa_generation_max", 5, 0, Integer.MAX_VALUE);
+                .defineInRange("server.medusa_generation_max", 14, 0, Integer.MAX_VALUE);
 
         break_chance = builder
                 .comment("The chance of a generated Medusa to break on impact with the ground")
