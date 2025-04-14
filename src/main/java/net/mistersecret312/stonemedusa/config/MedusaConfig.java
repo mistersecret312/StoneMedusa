@@ -5,6 +5,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class MedusaConfig
 {
     public static ForgeConfigSpec.IntValue max_energy;
+    public static ForgeConfigSpec.IntValue flat_activation_cast;
+    public static ForgeConfigSpec.IntValue cost_per_meter;
     public static ForgeConfigSpec.DoubleValue max_radius;
     public static ForgeConfigSpec.DoubleValue base_speed;
     public static ForgeConfigSpec.BooleanValue can_set_target;
@@ -25,11 +27,19 @@ public class MedusaConfig
     {
         max_energy = builder
                 .comment("The maximum energy that the Medusa can hold")
-                .defineInRange("server.medusa_max_energy", 1000000, 1000, Integer.MAX_VALUE);
+                .defineInRange("server.medusa_max_energy", 5000000, 1000, Integer.MAX_VALUE);
+
+        flat_activation_cast = builder
+                .comment("The amount of energy that the Medusa will consume on activation, no matter how large the target radius")
+                .defineInRange("server.medusa_flat_activation_cost", 5000, 0, Integer.MAX_VALUE);
+
+        cost_per_meter = builder
+                .comment("The amount of energy that the Medusa will consume on activation for each meter of the target radius")
+                .defineInRange("server.medusa_cost_per_meter", 500, 0, Integer.MAX_VALUE);
 
         max_radius = builder
                 .comment("The maximum radius that the Medusa can reach")
-                .defineInRange("server.medusa_max_radius", 4096, 2.5d, Float.MAX_VALUE);
+                .defineInRange("server.medusa_max_radius", 8192, 2.5d, Float.MAX_VALUE);
 
         base_speed = builder
                 .comment("The base speed of expansion of the Petrification Beam, in ticks per meter")

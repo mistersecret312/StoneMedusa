@@ -13,11 +13,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
@@ -25,7 +23,6 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.mistersecret312.stonemedusa.client.Layers;
 import net.mistersecret312.stonemedusa.client.layers.StoneRenderLayer;
-import net.mistersecret312.stonemedusa.client.renderer.MedusaProjectileRenderer;
 import net.mistersecret312.stonemedusa.init.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,8 +37,6 @@ import net.mistersecret312.stonemedusa.item.DiamondBatteryItemProperty;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
 import net.mistersecret312.stonemedusa.item.RevivalFluidItem;
 import org.slf4j.Logger;
-
-import static net.minecraft.client.renderer.entity.LivingEntityRenderer.isEntityUpsideDown;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(StoneMedusa.MOD_ID)
@@ -92,7 +87,7 @@ public class StoneMedusa
         public static void onClientSetup(FMLClientSetupEvent event)
         {
             event.enqueueWork(() -> {
-                EntityRenderers.register(EntityInit.MEDUSA.get(), MedusaProjectileRenderer::new);
+                EntityRenderers.register(EntityInit.MEDUSA.get(), ThrownItemRenderer::new);
                 EntityRenderers.register(EntityInit.REVIVAL_FLUIID.get(), ThrownItemRenderer::new);
 
                 ItemBlockRenderTypes.setRenderLayer(FluidInit.SOURCE_REVIVAL_FLUID.get(), RenderType.translucent());

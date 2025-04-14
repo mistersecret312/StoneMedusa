@@ -212,11 +212,6 @@ public class MedusaProjectile extends ThrowableItemProjectile
 
         NetworkInit.sendToTracking(this, new MedusaActivatedPacket(this.getId()));
         NetworkInit.sendToTracking(this, new MedusaTextureUpdatePacket(this.getId(), this.isActive(), this.isCountingDown()));
-
-        LevelChunk chunk = this.level().getChunkAt(this.blockPosition());
-        if(level() instanceof ServerLevel serverLevel)
-            ForgeChunkManager.forceChunk(serverLevel, StoneMedusa.MOD_ID, this.blockPosition(), chunk.getPos().x, chunk.getPos().z, true, true);
-
     }
 
     @Override
@@ -236,9 +231,20 @@ public class MedusaProjectile extends ThrowableItemProjectile
         }
         else
         {
-            if(this.energy > 100)
-                this.energy -= 100;
-            else this.energy = 0;
+
+            if(activeTicker == 0)
+            {
+                LevelChunk chunk = this.level().getChunkAt(this.blockPosition());
+                if(level() instanceof ServerLevel serverLevel)
+                    ForgeChunkManager.forceChunk(serverLevel, StoneMedusa.MOD_ID, this.blockPosition(), chunk.getPos().x, chunk.getPos().z, true, true);
+
+
+                this.energy -= MedusaConfig.flat_activation_cast.get();
+                this.energy -= (int) (MedusaConfig.cost_per_meter.get()*this.getTargetRadius());
+
+                if(energy < 0)
+                    energy = 0;
+            }
 
             activeTicker++;
             if(activeTicker <= this.targetRadius*this.speed && !(activeTicker > this.targetRadius*this.speed))
