@@ -18,10 +18,10 @@ public class ItemInit
     public static final RegistryObject<DiamondBatteryItem> BATTERY = ITEMS.register("diamond_battery",
             () -> new DiamondBatteryItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
-    public static final RegistryObject<Item> DIAMOND_GEM_CUTTER = ITEMS.register("diamond_gem_cutter",
-            () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.COMMON)));
-    public static final RegistryObject<Item> NETHERITE_GEM_CUTTER = ITEMS.register("netherite_gem_cutter",
-            () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.COMMON)));
+    public static final RegistryObject<GemCutterItem> DIAMOND_GEM_CUTTER = ITEMS.register("diamond_gem_cutter",
+            () -> new GemCutterItem(new Item.Properties().stacksTo(1).rarity(Rarity.COMMON)));
+    public static final RegistryObject<GemCutterItem> NETHERITE_GEM_CUTTER = ITEMS.register("netherite_gem_cutter",
+            () -> new GemCutterItem(new Item.Properties().stacksTo(1).rarity(Rarity.COMMON)));
 
     public static final RegistryObject<Item> NITRIC_ACID_FLASK = ITEMS.register("nitric_acid_jar",
             () -> new NitricAcidBottleItem(new Item.Properties().stacksTo(16)));

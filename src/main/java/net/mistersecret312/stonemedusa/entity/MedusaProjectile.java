@@ -5,7 +5,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -18,12 +20,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.mistersecret312.stonemedusa.StoneMedusa;
+import net.mistersecret312.stonemedusa.capability.WorldCapability;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.config.PetrificationConfig;
 import net.mistersecret312.stonemedusa.init.*;
@@ -206,6 +212,11 @@ public class MedusaProjectile extends ThrowableItemProjectile
 
         NetworkInit.sendToTracking(this, new MedusaActivatedPacket(this.getId()));
         NetworkInit.sendToTracking(this, new MedusaTextureUpdatePacket(this.getId(), this.isActive(), this.isCountingDown()));
+
+        LevelChunk chunk = this.level().getChunkAt(this.blockPosition());
+        if(level() instanceof ServerLevel serverLevel)
+            ForgeChunkManager.forceChunk(serverLevel, StoneMedusa.MOD_ID, this.blockPosition(), chunk.getPos().x, chunk.getPos().z, true, true);
+
     }
 
     @Override
@@ -241,6 +252,11 @@ public class MedusaProjectile extends ThrowableItemProjectile
 
             if(this.getCurrentRadius() > 0f && this.getFading() < 0.4f)
                 petrify(this.getCurrentRadius()*1.5F+2.5f);
+
+            level().getCapability(CapabilitiesInit.WORLD).ifPresent(cap -> {
+                WorldCapability.MedusaData data = new WorldCapability.MedusaData(this.getCurrentRadius(), this.getFading(), this.blockPosition(), ResourceKey.create(ForgeRegistries.ENTITY_TYPES.getRegistryKey(), ResourceLocation.parse(this.getTargetType())));
+                cap.getMedusaData().put(this.position(), data);
+            });
         }
     }
 
@@ -301,12 +317,18 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.setCountingDown(false);
         ((MedusaItem) this.getDefaultItem()).setCountdownActive(this.getItem(), false);
         MedusaItem.setActive(this.getItem(), false);
+        this.level().getCapability(CapabilitiesInit.WORLD).ifPresent(cap -> cap.getMedusaData().remove(this.position()));
         this.setNoGravity(false);
         this.noPhysics = false;
         this.setDeltaMovement(Vec3.ZERO);
         this.setSpeed(MedusaConfig.base_speed.get());
 
         NetworkInit.sendToTracking(this, new MedusaTextureUpdatePacket(this.getId(), this.isActive(), this.isCountingDown()));
+
+        LevelChunk chunk = this.level().getChunkAt(this.blockPosition());
+        if(level() instanceof ServerLevel serverLevel)
+            ForgeChunkManager.forceChunk(serverLevel, StoneMedusa.MOD_ID, this.blockPosition(), chunk.getPos().x, chunk.getPos().z, true, true);
+
     }
 
     @Override

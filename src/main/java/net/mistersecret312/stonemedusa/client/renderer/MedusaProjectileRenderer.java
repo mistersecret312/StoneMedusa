@@ -22,20 +22,20 @@ public class MedusaProjectileRenderer extends ThrownItemRenderer<MedusaProjectil
     @Override
     public void render(MedusaProjectile medusa, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight)
     {
-        pMatrixStack.pushPose();
-        if(!medusa.getTargetType().isBlank() && medusa.isActive())
-            if(Minecraft.getInstance().getCameraEntity() != null && Minecraft.getInstance().getCameraEntity().getType() == ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(medusa.getTargetType())))
-                SphereUtils.drawTexturedSphere(pMatrixStack, pBuffer,
-                    new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"),
-                    medusa.getCurrentRadius()/1300f, 32, 0.0F, 0.0F, pPackedLight, false,
-                    OverlayTexture.NO_OVERLAY, new float[]{0.0f, 1.0f, 0.0f, (0.25f*(1-Math.min(medusa.getFading(), 1)))});
-        if(medusa.getTargetType().isBlank() && medusa.isActive())
-            SphereUtils.drawTexturedSphere(pMatrixStack, pBuffer,
-                    new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"),
-                    medusa.getCurrentRadius()/1300f, 32, 0.0F, 0.0F, pPackedLight, false,
-                    OverlayTexture.NO_OVERLAY, new float[]{0.0f, 1.0f, 0.0f, (0.25f*(1-Math.min(medusa.getFading(), 1)))});
+        //pMatrixStack.pushPose();
+        //if(!medusa.getTargetType().isBlank() && medusa.isActive())
+        //    if(Minecraft.getInstance().getCameraEntity() != null && Minecraft.getInstance().getCameraEntity().getType() == ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(medusa.getTargetType())))
+        //        SphereUtils.drawTexturedSphere(pMatrixStack, pBuffer,
+       //             new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"),
+       //            medusa.getCurrentRadius()/1300f, 32, 0.0F, 0.0F, pPackedLight, false,
+       //             OverlayTexture.NO_OVERLAY, new float[]{0.0f, 1.0f, 0.0f, (0.25f*(1-Math.min(medusa.getFading(), 1)))});
+       // if(medusa.getTargetType().isBlank() && medusa.isActive())
+       //     SphereUtils.drawTexturedSphere(pMatrixStack, pBuffer,
+       //             new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"),
+       //             medusa.getCurrentRadius()/1300f, 32, 0.0F, 0.0F, pPackedLight, false,
+       //             OverlayTexture.NO_OVERLAY, new float[]{0.0f, 1.0f, 0.0f, (0.25f*(1-Math.min(medusa.getFading(), 1)))});
 
-        pMatrixStack.popPose();
+        // pMatrixStack.popPose();
         super.render(medusa, pEntityYaw, pPartialTicks, pMatrixStack, pBuffer, pPackedLight);
     }
 

@@ -29,7 +29,7 @@ public class MedusaConfig
 
         max_radius = builder
                 .comment("The maximum radius that the Medusa can reach")
-                .defineInRange("server.medusa_max_radius", 200d, 2.5d, Float.MAX_VALUE);
+                .defineInRange("server.medusa_max_radius", 20000, 2.5d, Float.MAX_VALUE);
 
         base_speed = builder
                 .comment("The base speed of expansion of the Petrification Beam, in ticks per meter")

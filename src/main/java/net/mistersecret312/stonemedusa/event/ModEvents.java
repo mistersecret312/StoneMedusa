@@ -166,11 +166,7 @@ public class ModEvents
     @SubscribeEvent
     public static void attachWorldCapabilities(AttachCapabilitiesEvent<Level> event)
     {
-        if(event.getObject().dimension().equals(Level.OVERWORLD))
-        {
-            event.addCapability(new ResourceLocation(StoneMedusa.MOD_ID, "stone_world"), new GenericProvider<>(CapabilitiesInit.WORLD, new WorldCapability()));
-        }
-
+        event.addCapability(new ResourceLocation(StoneMedusa.MOD_ID, "stone_world"), new GenericProvider<>(CapabilitiesInit.WORLD, new WorldCapability()));
     }
 
     @SubscribeEvent
