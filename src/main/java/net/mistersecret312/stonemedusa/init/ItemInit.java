@@ -19,9 +19,9 @@ public class ItemInit
             () -> new DiamondBatteryItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
     public static final RegistryObject<GemCutterItem> DIAMOND_GEM_CUTTER = ITEMS.register("diamond_gem_cutter",
-            () -> new GemCutterItem(new Item.Properties().stacksTo(1).rarity(Rarity.COMMON)));
+            () -> new GemCutterItem(new Item.Properties().durability(4).rarity(Rarity.COMMON)));
     public static final RegistryObject<GemCutterItem> NETHERITE_GEM_CUTTER = ITEMS.register("netherite_gem_cutter",
-            () -> new GemCutterItem(new Item.Properties().stacksTo(1).rarity(Rarity.COMMON)));
+            () -> new GemCutterItem(new Item.Properties().durability(10).fireResistant().rarity(Rarity.COMMON)));
 
     public static final RegistryObject<Item> NITRIC_ACID_FLASK = ITEMS.register("nitric_acid_jar",
             () -> new NitricAcidBottleItem(new Item.Properties().stacksTo(16)));

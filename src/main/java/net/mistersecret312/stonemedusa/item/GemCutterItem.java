@@ -6,6 +6,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import java.util.Random;
+
 public class GemCutterItem extends Item
 {
 
@@ -26,7 +28,7 @@ public class GemCutterItem extends Item
         ItemStack container = itemStack.copy();
         if(container.hurt(1, RandomSource.create(), null))
             return ItemStack.EMPTY;
-        else return itemStack;
+        else return container;
     }
 
 
