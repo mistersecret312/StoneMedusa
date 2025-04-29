@@ -64,6 +64,23 @@ public class ModEventBusClientEvents
                 level.getCapability(CapabilitiesInit.WORLD).ifPresent(cap -> {
                     cap.getMedusaData().forEach((vec, data) -> {
                         stack.pushPose();
+
+                        //stack.translate(vec.x, vec.y, vec.z);
+
+                        //stack.translate(0.5f, 0.5f, 0.5f);
+
+                        //stack.rotateAround(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation(), -camera.getPosition().toVector3f().x, -camera.getPosition().toVector3f().y, -camera.getPosition().toVector3f().z);
+                        //stack.mulPose(Axis.YP.rotationDegrees(180));
+
+                        //VertexConsumer consumerA = buffer.getBuffer(MedusaRenderTypes.halo(ResourceLocation.fromNamespaceAndPath(StoneMedusa.MOD_ID, "textures/entity/petrification_halo.png")));
+                        //consumerA.vertex(stack.last().pose(), -0.5f, -0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(0, 1).endVertex();
+                        //consumerA.vertex(stack.last().pose(), 0.5f, -0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(1, 1).endVertex();
+                        //consumerA.vertex(stack.last().pose(), 0.5f, 0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(1,0).endVertex();
+                        //consumerA.vertex(stack.last().pose(), -0.5f, 0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(0, 0).endVertex();
+
+                        stack.popPose();
+
+                        stack.pushPose();
                         stack.translate(vec.x, vec.y, vec.z);
 
                         SphereUtils.drawTexturedSphere(stack, buffer,
@@ -80,23 +97,6 @@ public class ModEventBusClientEvents
                                 new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"),
                                 data.getRadius()/(1300f*1.5f), 32, 0.0F, 0.0F, 15728880, false,
                                 OverlayTexture.NO_OVERLAY, new float[]{0.3f, 0.6f, 0.33f, (0.25f*(1-Math.min(data.getTransparency(), 1)))});
-
-                        stack.popPose();
-
-                        stack.pushPose();
-
-                        stack.translate(vec.x, vec.y, vec.z);
-
-                        //stack.translate(0.5f, 0.5f, 0.5f);
-
-                        stack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
-                        stack.mulPose(Axis.YP.rotationDegrees(180));
-
-                        VertexConsumer consumerA = buffer.getBuffer(MedusaRenderTypes.halo(ResourceLocation.fromNamespaceAndPath(StoneMedusa.MOD_ID, "textures/entity/petrification_halo.png")));
-                        consumerA.vertex(stack.last().pose(), -0.5f, -0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(0, 1).endVertex();
-                        consumerA.vertex(stack.last().pose(), 0.5f, -0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(1, 1).endVertex();
-                        consumerA.vertex(stack.last().pose(), 0.5f, 0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(1,0).endVertex();
-                        consumerA.vertex(stack.last().pose(), -0.5f, 0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(0, 0).endVertex();
 
                         stack.popPose();
 
