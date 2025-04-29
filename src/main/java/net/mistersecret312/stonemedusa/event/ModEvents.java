@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -304,11 +305,13 @@ public class ModEvents
                     {
                         if(PetrificationConfig.petrified_entity_damage.get())
                             cap.setBreakStage(cap.breakStage+1);
+                        living.playSound(SoundEvents.DRIPSTONE_BLOCK_BREAK);
 
                         if(cap.getBreakStage() >= 9 && PetrificationConfig.petrified_entity_destroy.get())
                         {
                             living.setInvulnerable(false);
                             living.hurt(PetrificationDamageSource.source(event.getEntity().level(), ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(StoneMedusa.MOD_ID, "petrification"))), Float.MAX_VALUE);
+                            living.playSound(SoundEvents.POINTED_DRIPSTONE_LAND);
                         }
                         event.setCanceled(true);
                     }

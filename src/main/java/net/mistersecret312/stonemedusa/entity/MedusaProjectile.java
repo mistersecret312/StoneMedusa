@@ -317,7 +317,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
                     {
                         cap.setPetrified(true);
 
-                        living.level().playSound(null, living.blockPosition(), SoundEvents.DRIPSTONE_BLOCK_PLACE, SoundSource.MASTER, 1F, 1F);
+                        living.level().playSound(null, living.blockPosition(), SoundEvents.DRIPSTONE_BLOCK_PLACE, SoundSource.MASTER, 1F, 0.5F);
                         NetworkInit.sendToTracking(living, new EntityPetrifiedPacket(living.getId()));
 
                         cap.setAge(Integer.valueOf(living.tickCount).floatValue());
