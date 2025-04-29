@@ -136,15 +136,15 @@ public class SphereUtils
 
     private static void addSideSphereQuads(VertexConsumer vertexBuilder, Matrix4f positionMatrix, Matrix3f normalMatrix, float x, float y, float z, float[] pos_list, float[] uv_list, int packedLight, boolean lightmap2, int overlay, float[] color) {
         if (lightmap2) {
-            vertexBuilder.vertex(positionMatrix, pos_list[0] + x, pos_list[1] + y, pos_list[2] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[0], uv_list[1]).overlayCoords(overlay).uv2(packedLight).normal(normalMatrix, pos_list[0], pos_list[1], pos_list[2]).endVertex();
-            vertexBuilder.vertex(positionMatrix, pos_list[3] + x, pos_list[4] + y, pos_list[5] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[2], uv_list[3]).overlayCoords(overlay).uv2(packedLight).normal(normalMatrix, pos_list[3], pos_list[4], pos_list[5]).endVertex();
-            vertexBuilder.vertex(positionMatrix, pos_list[9] + x, pos_list[10] + y, pos_list[11] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[6], uv_list[7]).overlayCoords(overlay).uv2(packedLight).normal(normalMatrix, pos_list[9], pos_list[10], pos_list[11]).endVertex();
-            vertexBuilder.vertex(positionMatrix, pos_list[6] + x, pos_list[7] + y, pos_list[8] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[4], uv_list[5]).overlayCoords(overlay).uv2(packedLight).normal(normalMatrix, pos_list[6], pos_list[7], pos_list[8]).endVertex();
+            vertexBuilder.vertex(positionMatrix, pos_list[0] + x, pos_list[1] + y, pos_list[2] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[0], uv_list[1]).overlayCoords(overlay).uv2(15728880).normal(normalMatrix, 1, 1, 1).endVertex();
+            vertexBuilder.vertex(positionMatrix, pos_list[3] + x, pos_list[4] + y, pos_list[5] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[2], uv_list[3]).overlayCoords(overlay).uv2(15728880).normal(normalMatrix, 1, 1, 1).endVertex();
+            vertexBuilder.vertex(positionMatrix, pos_list[9] + x, pos_list[10] + y, pos_list[11] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[6], uv_list[7]).overlayCoords(overlay).uv2(15728880).normal(normalMatrix, 1, 1, 1).endVertex();
+            vertexBuilder.vertex(positionMatrix, pos_list[6] + x, pos_list[7] + y, pos_list[8] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[4], uv_list[5]).overlayCoords(overlay).uv2(15728880).normal(normalMatrix, 1, 1, 1).endVertex();
         } else {
-            vertexBuilder.vertex(positionMatrix, pos_list[0] + x, pos_list[1] + y, pos_list[2] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[0], uv_list[1]).overlayCoords(overlay).uv2(packedLight).normal(pos_list[0], pos_list[1], pos_list[2]).endVertex();
-            vertexBuilder.vertex(positionMatrix, pos_list[3] + x, pos_list[4] + y, pos_list[5] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[2], uv_list[3]).overlayCoords(overlay).uv2(packedLight).normal(pos_list[3], pos_list[4], pos_list[5]).endVertex();
-            vertexBuilder.vertex(positionMatrix, pos_list[9] + x, pos_list[10] + y, pos_list[11] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[6], uv_list[7]).overlayCoords(overlay).uv2(packedLight).normal(pos_list[9], pos_list[10], pos_list[11]).endVertex();
-            vertexBuilder.vertex(positionMatrix, pos_list[6] + x, pos_list[7] + y, pos_list[8] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[4], uv_list[5]).overlayCoords(overlay).uv2(packedLight).normal(pos_list[6], pos_list[7], pos_list[8]).endVertex();
+            vertexBuilder.vertex(positionMatrix, pos_list[0] + x, pos_list[1] + y, pos_list[2] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[0], uv_list[1]).overlayCoords(overlay).uv2(15728880).normal(1, 1, 1).endVertex();
+            vertexBuilder.vertex(positionMatrix, pos_list[3] + x, pos_list[4] + y, pos_list[5] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[2], uv_list[3]).overlayCoords(overlay).uv2(15728880).normal(1, 1, 1).endVertex();
+            vertexBuilder.vertex(positionMatrix, pos_list[9] + x, pos_list[10] + y, pos_list[11] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[6], uv_list[7]).overlayCoords(overlay).uv2(15728880).normal(1, 1, 1).endVertex();
+            vertexBuilder.vertex(positionMatrix, pos_list[6] + x, pos_list[7] + y, pos_list[8] + z).color(color[0], color[1], color[2], color[3]).uv(uv_list[4], uv_list[5]).overlayCoords(overlay).uv2(15728880).normal(1, 1, 1).endVertex();
         }
 
     }
