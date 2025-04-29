@@ -226,12 +226,14 @@ public class MedusaProjectile extends ThrowableItemProjectile
         if(activeTicker >= this.targetRadius*this.speed+2*IDLE_TIME)
         {
             deactivate();
+
+            this.level().playSound(null, this.blockPosition(), SoundEvents.BEACON_DEACTIVATE, SoundSource.AMBIENT, 1f, 1f);
+
             activeTicker = 0;
             expansionTicker = 0;
         }
         else
         {
-
             if(activeTicker == 0)
             {
                 LevelChunk chunk = this.level().getChunkAt(this.blockPosition());
@@ -244,6 +246,13 @@ public class MedusaProjectile extends ThrowableItemProjectile
 
                 if(energy < 0)
                     energy = 0;
+
+                this.level().playSound(null, this.blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.AMBIENT, 1f, 1f);
+            }
+
+            if (activeTicker % 70 == 0)
+            {
+                this.level().playSound(null, this.blockPosition(), SoundEvents.BEACON_AMBIENT, SoundSource.AMBIENT, 1f, 1f);
             }
 
             activeTicker++;
