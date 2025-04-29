@@ -20,11 +20,11 @@ public class SphereUtils
         matrixStack.mulPose(new Quaternionf(0.0F, 1.0F, 0.0F, 45.0F));
         VertexConsumer iVertexBuilder = buffer.getBuffer(RenderType.entityTranslucentEmissive(texture));
         addBottomSphere(radius, segments, x, 0.0F, z, iVertexBuilder, positionMatrix, normalMatrix, 0.0625F, 0.0625F, false, packedLight, lightmap2, overlay, color);
-        addBottomSphere(radius * 1.01F, segments, x, 0.0F, z, iVertexBuilder, positionMatrix, normalMatrix, 0.0625F, 0.0625F, false, packedLight, lightmap2, overlay, color);
+        //addBottomSphere(radius * 1.01F, segments, x, 0.0F, z, iVertexBuilder, positionMatrix, normalMatrix, 0.0625F, 0.0625F, false, packedLight, lightmap2, overlay, color);
         addBottomSphere(radius, segments, x, 0.0F, z, iVertexBuilder, positionMatrix, normalMatrix, 0.0625F, 0.0625F, true, packedLight, lightmap2, overlay, color);
-        addBottomSphere(radius * 1.01F, segments, x, 0.0F, z, iVertexBuilder, positionMatrix, normalMatrix, 0.0625F, 0.0625F, true, packedLight, lightmap2, overlay, color);
+        //addBottomSphere(radius * 1.01F, segments, x, 0.0F, z, iVertexBuilder, positionMatrix, normalMatrix, 0.0625F, 0.0625F, true, packedLight, lightmap2, overlay, color);
         addSideSphere(radius, segments, x, 0.0F, z, iVertexBuilder, positionMatrix, normalMatrix, false, packedLight, lightmap2, overlay, color);
-        addSideSphere(radius * 1.01F, segments, x, 0.0F, z, iVertexBuilder, positionMatrix, normalMatrix, true, packedLight, lightmap2, overlay, color);
+        //addSideSphere(radius * 1.01F, segments, x, 0.0F, z, iVertexBuilder, positionMatrix, normalMatrix, true, packedLight, lightmap2, overlay, color);
         matrixStack.mulPose(new Quaternionf(0.0F, 1.0F, 0.0F, -45.0F));
     }
 

@@ -4,6 +4,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -11,9 +13,16 @@ import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.entity.layers.WardenEmissiveLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ThrowablePotionItem;
+import net.minecraft.world.level.block.BeaconBeamBlock;
+import net.minecraft.world.level.block.BeaconBlock;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
@@ -21,6 +30,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.Mod;
+import net.mistersecret312.stonemedusa.client.MedusaRenderTypes;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import net.mistersecret312.stonemedusa.init.EffectInit;
@@ -59,7 +69,44 @@ public class ModEventBusClientEvents
                         SphereUtils.drawTexturedSphere(stack, buffer,
                                 new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"),
                                 data.getRadius()/1300f, 32, 0.0F, 0.0F, 15728880, false,
-                                OverlayTexture.NO_OVERLAY, new float[]{0.0f, 1.0f, 0.0f, (0.25f*(1-Math.min(data.getTransparency(), 1)))});
+                                OverlayTexture.NO_OVERLAY, new float[]{0.38f, 0.95f, 0.47f, (0.25f*(1-Math.min(data.getTransparency(), 1)))});
+
+                        stack.popPose();
+
+                        stack.pushPose();
+                        stack.translate(vec.x, vec.y, vec.z);
+
+                        SphereUtils.drawTexturedSphere(stack, buffer,
+                                new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"),
+                                data.getRadius()/(1300f*1.5f), 32, 0.0F, 0.0F, 15728880, false,
+                                OverlayTexture.NO_OVERLAY, new float[]{0.3f, 0.6f, 0.33f, (0.25f*(1-Math.min(data.getTransparency(), 1)))});
+
+                        stack.popPose();
+
+                        stack.pushPose();
+
+                        stack.translate(vec.x, vec.y, vec.z);
+
+                        //stack.translate(0.5f, 0.5f, 0.5f);
+
+                        stack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
+                        stack.mulPose(Axis.YP.rotationDegrees(180));
+
+                        VertexConsumer consumerA = buffer.getBuffer(MedusaRenderTypes.halo(ResourceLocation.fromNamespaceAndPath(StoneMedusa.MOD_ID, "textures/entity/petrification_halo.png")));
+                        consumerA.vertex(stack.last().pose(), -0.5f, -0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(0, 1).endVertex();
+                        consumerA.vertex(stack.last().pose(), 0.5f, -0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(1, 1).endVertex();
+                        consumerA.vertex(stack.last().pose(), 0.5f, 0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(1,0).endVertex();
+                        consumerA.vertex(stack.last().pose(), -0.5f, 0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(0, 0).endVertex();
+
+                        stack.popPose();
+
+                        stack.pushPose();
+                        stack.translate(vec.x, vec.y, vec.z);
+
+                        SphereUtils.drawTexturedSphere(stack, buffer,
+                                new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"),
+                                data.getRadius()/(1300f*4f), 32, 0.0F, 0.0F, 15728880, false,
+                                OverlayTexture.NO_OVERLAY, new float[]{0.14f, 0.35f, 0.18f, (0.25f*(1-Math.min(data.getTransparency(), 1)))});
 
                         stack.popPose();
                     });

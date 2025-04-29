@@ -56,8 +56,8 @@ public class MedusaConfig
         builder.push("Medusa Generation");
 
         generation_period = builder
-                .comment("The amount of time that should pass to try generate falling Medusa's once more, in seconds")
-                .defineInRange("server.medusa_generation_period", 3600, 0, Integer.MAX_VALUE);
+                .comment("The amount of time that should pass to try generate falling Medusa's once more, in seconds, -1 to disable")
+                .defineInRange("server.medusa_generation_period", 3600, -1, Integer.MAX_VALUE);
 
         generation_chance = builder
                 .comment("The chance for it to actually generate Medusa's once the generation period passes")
