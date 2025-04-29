@@ -46,6 +46,7 @@ public class ThrownRevivalFluidEntity extends ThrowableItemProjectile
         for (LivingEntity living : list)
             if(living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
                 living.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), RevivalConfig.revival_time.get(), 0, false, false, true));
+        discard();
     }
 
     @Override
