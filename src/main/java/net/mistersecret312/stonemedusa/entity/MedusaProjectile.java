@@ -250,7 +250,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
                 this.level().playSound(null, this.blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.AMBIENT, 1f, 1f);
             }
 
-            if (activeTicker % 70 == 0)
+            if (activeTicker % 85 == 0)
             {
                 this.level().playSound(null, this.blockPosition(), SoundEvents.BEACON_AMBIENT, SoundSource.AMBIENT, 1f, 1f);
             }
