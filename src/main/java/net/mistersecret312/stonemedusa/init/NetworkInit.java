@@ -27,6 +27,7 @@ public class NetworkInit
         INSTANCE.registerMessage(id(), EntityPetrifiedBrokenPacket.class, EntityPetrifiedBrokenPacket::write, EntityPetrifiedBrokenPacket::read, EntityPetrifiedBrokenPacket::handle);
         INSTANCE.registerMessage(id(), MedusaTextureUpdatePacket.class, MedusaTextureUpdatePacket::write, MedusaTextureUpdatePacket::read, MedusaTextureUpdatePacket::handle);
         INSTANCE.registerMessage(id(), MedusaWorldUpdatePacket.class, MedusaWorldUpdatePacket::write, MedusaWorldUpdatePacket::read, MedusaWorldUpdatePacket::handle);
+        INSTANCE.registerMessage(id(), MedusaSoundTickPacket.class, MedusaSoundTickPacket::write, MedusaSoundTickPacket::read, MedusaSoundTickPacket::handle);
     }
 
     public static void sendPacketToAll(Object message){

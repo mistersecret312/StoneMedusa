@@ -36,6 +36,7 @@ import net.mistersecret312.stonemedusa.init.*;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
 import net.mistersecret312.stonemedusa.network.packets.EntityPetrifiedPacket;
 import net.mistersecret312.stonemedusa.network.packets.MedusaActivatedPacket;
+import net.mistersecret312.stonemedusa.network.packets.MedusaSoundTickPacket;
 import net.mistersecret312.stonemedusa.network.packets.MedusaTextureUpdatePacket;
 
 import java.util.List;
@@ -208,10 +209,8 @@ public class MedusaProjectile extends ThrowableItemProjectile
         if(demandedEnergy > this.energy)
             this.targetRadius = Math.max(1f, (float) ((this.energy - 20000) / (25 * this.speed * 2)));
 
-        this.level().playSound(null, this.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.MASTER, 1F, 1F);
+        //this.level().playSound(null, this.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.MASTER, 1F, 1F);
 
-        NetworkInit.sendToTracking(this, new MedusaActivatedPacket(this.getId()));
-        NetworkInit.sendToTracking(this, new MedusaTextureUpdatePacket(this.getId(), this.isActive(), this.isCountingDown()));
     }
 
     @Override
@@ -247,12 +246,13 @@ public class MedusaProjectile extends ThrowableItemProjectile
                 if(energy < 0)
                     energy = 0;
 
-                this.level().playSound(null, this.blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.AMBIENT, 1f, 1f);
+                NetworkInit.sendToTracking(this, new MedusaActivatedPacket(this.getId()));
+                NetworkInit.sendToTracking(this, new MedusaTextureUpdatePacket(this.getId(), this.isActive(), this.isCountingDown()));
             }
 
             if (activeTicker % 85 == 0)
             {
-                this.level().playSound(null, this.blockPosition(), SoundEvents.BEACON_AMBIENT, SoundSource.AMBIENT, 1f, 1f);
+                NetworkInit.sendToTracking(this, new MedusaSoundTickPacket(this.getId()));
             }
 
             activeTicker++;

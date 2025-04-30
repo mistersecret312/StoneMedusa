@@ -7,11 +7,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Blocks;
+import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
-import net.mistersecret312.stonemedusa.network.packets.EntityPetrifiedBrokenPacket;
-import net.mistersecret312.stonemedusa.network.packets.EntityPetrifiedPacket;
-import net.mistersecret312.stonemedusa.network.packets.MedusaActivatedPacket;
-import net.mistersecret312.stonemedusa.network.packets.PetrifiedEntityUpdatePacket;
+import net.mistersecret312.stonemedusa.network.packets.*;
 
 public class ClientPacketHandler
 {
@@ -32,7 +30,17 @@ public class ClientPacketHandler
         Entity entity = getEntity(packet.entityID);
         if(entity != null)
         {
-            entity.level().playSound(getPlayer(), entity.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.MASTER, 1F, 1F);
+            entity.level().playSound(getPlayer(), getPlayer().blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.AMBIENT, 1F, 1F);
+        }
+
+    }
+
+    public static void handleMedusaTickPacket(MedusaSoundTickPacket packet)
+    {
+        Entity entity = getEntity(packet.entityID);
+        if(entity != null)
+        {
+            entity.level().playSound(getPlayer(), getPlayer().blockPosition(), SoundEvents.BEACON_AMBIENT, SoundSource.AMBIENT, 1F, 1F);
         }
 
     }
