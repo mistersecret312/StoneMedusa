@@ -41,7 +41,7 @@ public class WorldCapability implements INBTSerializable<CompoundTag>
         {
             for(Player player : level.players())
             {
-                if (random.nextDouble() > MedusaConfig.generation_chance.get())
+                if (random.nextDouble() > 1-MedusaConfig.generation_chance.get())
                 {
                     for(int i = 0; i < random.nextInt(MedusaConfig.min_generated_amount.get(), MedusaConfig.max_generated_amount.get()); i++)
                     {

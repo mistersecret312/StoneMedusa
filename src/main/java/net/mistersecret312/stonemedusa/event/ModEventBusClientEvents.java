@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.entity.layers.WardenEmissiveLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
@@ -27,6 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.Mod;
@@ -55,7 +57,6 @@ public class ModEventBusClientEvents
             MultiBufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
             ClientLevel level = Minecraft.getInstance().level;
-            if(level != null)
             {
                 stack.pushPose();
                 boolean flag1 = Minecraft.getInstance().level.effects().isFoggyAt(Mth.floor(camera.getPosition().x), Mth.floor(camera.getPosition().y)) || Minecraft.getInstance().gui.getBossOverlay().shouldCreateWorldFog();
@@ -63,22 +64,9 @@ public class ModEventBusClientEvents
                 stack.translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
                 level.getCapability(CapabilitiesInit.WORLD).ifPresent(cap -> {
                     cap.getMedusaData().forEach((vec, data) -> {
-                        stack.pushPose();
-
-                        //stack.translate(vec.x, vec.y, vec.z);
-
-                        //stack.translate(0.5f, 0.5f, 0.5f);
-
-                        //stack.rotateAround(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation(), -camera.getPosition().toVector3f().x, -camera.getPosition().toVector3f().y, -camera.getPosition().toVector3f().z);
-                        //stack.mulPose(Axis.YP.rotationDegrees(180));
-
-                        //VertexConsumer consumerA = buffer.getBuffer(MedusaRenderTypes.halo(ResourceLocation.fromNamespaceAndPath(StoneMedusa.MOD_ID, "textures/entity/petrification_halo.png")));
-                        //consumerA.vertex(stack.last().pose(), -0.5f, -0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(0, 1).endVertex();
-                        //consumerA.vertex(stack.last().pose(), 0.5f, -0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(1, 1).endVertex();
-                        //consumerA.vertex(stack.last().pose(), 0.5f, 0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(1,0).endVertex();
-                        //consumerA.vertex(stack.last().pose(), -0.5f, 0.5f, 0).color(FastColor.ABGR32.color(255, 255, 255, 255)).uv(0, 0).endVertex();
-
-                        stack.popPose();
+                        boolean visible = Minecraft.getInstance().getCameraEntity() != null && ForgeRegistries.ENTITY_TYPES.getValue(data.filter.location()) == Minecraft.getInstance().getCameraEntity().getType();
+                        if(!visible && !data.filter.location().getPath().isBlank())
+                            return;
 
                         stack.pushPose();
                         stack.translate(vec.x, vec.y, vec.z);
