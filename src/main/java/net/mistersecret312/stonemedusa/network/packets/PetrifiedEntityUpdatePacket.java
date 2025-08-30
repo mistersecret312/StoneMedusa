@@ -12,13 +12,15 @@ public class PetrifiedEntityUpdatePacket
     public float age;
     public int breakStage;
     public boolean broken;
+    public int tickCount;
     public int entityId;
 
-    public PetrifiedEntityUpdatePacket(boolean petrified, int breakStage, float age, boolean broken ,int entityId) {
+    public PetrifiedEntityUpdatePacket(boolean petrified, int breakStage, float age, boolean broken, int tickCount, int entityId) {
         this.petrified = petrified;
         this.breakStage = breakStage;
         this.age = age;
         this.broken = broken;
+        this.tickCount = tickCount;
         this.entityId = entityId;
     }
 
@@ -27,6 +29,7 @@ public class PetrifiedEntityUpdatePacket
         buffer.writeInt(packet.breakStage);
         buffer.writeFloat(packet.age);
         buffer.writeBoolean(packet.broken);
+        buffer.writeInt(packet.tickCount);
         buffer.writeInt(packet.entityId);
     }
 
@@ -35,9 +38,10 @@ public class PetrifiedEntityUpdatePacket
         int breakStage = buffer.readInt();
         float age = buffer.readFloat();
         boolean broken = buffer.readBoolean();
+        int tickCount = buffer.readInt();
         int entityId = buffer.readInt();
 
-        return new PetrifiedEntityUpdatePacket(petrified, breakStage, age, broken, entityId);
+        return new PetrifiedEntityUpdatePacket(petrified, breakStage, age, broken, tickCount, entityId);
     }
 
     public static void handle(PetrifiedEntityUpdatePacket packet, Supplier<NetworkEvent.Context> context) {

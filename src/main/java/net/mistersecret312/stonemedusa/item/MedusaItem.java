@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.entity.MedusaProjectile;
@@ -119,6 +121,17 @@ public class MedusaItem extends Item
         pPlayer.setItemInHand(pUsedHand, ItemStack.EMPTY);
 
         return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
+    }
+
+    @Override
+    public InteractionResult useOn(UseOnContext context)
+    {
+        if(this.getTargetEntityType(context.getItemInHand()) != "")
+        {
+            this.setTargetEntityType(context.getItemInHand(), "");
+            context.getPlayer().displayClientMessage(Component.translatable("stonemedusa.target_type.reset"), true);
+        }
+        return InteractionResult.PASS;
     }
 
     @Override

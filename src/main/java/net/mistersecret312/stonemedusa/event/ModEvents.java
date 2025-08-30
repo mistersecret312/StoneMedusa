@@ -14,15 +14,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
@@ -40,7 +37,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.mistersecret312.stonemedusa.capability.GenericProvider;
 import net.mistersecret312.stonemedusa.capability.PetrifiedCapability;
 import net.mistersecret312.stonemedusa.capability.WorldCapability;
-import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.config.PetrificationConfig;
 import net.mistersecret312.stonemedusa.config.RevivalConfig;
 import net.mistersecret312.stonemedusa.damagesource.PetrificationDamageSource;
@@ -50,7 +46,6 @@ import net.mistersecret312.stonemedusa.item.MedusaItem;
 import net.mistersecret312.stonemedusa.item.NitricAcidBottleItem;
 
 import java.util.List;
-import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = StoneMedusa.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ModEvents

@@ -21,12 +21,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ThrowablePotionItem;
 import net.minecraft.world.level.block.BeaconBeamBlock;
 import net.minecraft.world.level.block.BeaconBlock;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.mistersecret312.stonemedusa.StoneMedusa;
@@ -107,6 +109,18 @@ public class ModEventBusClientEvents
     }
 
     @SubscribeEvent
+    public static void dontAnimate(RenderLivingEvent.Pre<?, ?> event)
+    {
+        event.getEntity().getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
+        {
+            if(cap.isPetrified())
+            {
+
+            }
+        });
+    }
+
+    @SubscribeEvent
     public static void dontScroll(InputEvent.MouseScrollingEvent event)
     {
         Minecraft minecraft = Minecraft.getInstance();
@@ -128,6 +142,5 @@ public class ModEventBusClientEvents
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.screen == null && !event.getKeyMapping().getKey().equals(InputConstants.Type.KEYSYM.getOrCreate(InputConstants.KEY_ESCAPE)) && minecraft.player != null && minecraft.player.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()))
             event.setCanceled(true);
-
     }
 }

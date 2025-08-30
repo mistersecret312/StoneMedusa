@@ -29,6 +29,7 @@ public class ConfigInit
         RevivalConfig.init(COMMON_BUILDER);
         COMMON_BUILDER.pop();
 
+        COMMON_BUILDER.pop();
         COMMON_CONFIG = COMMON_BUILDER.build();
     }
 }
