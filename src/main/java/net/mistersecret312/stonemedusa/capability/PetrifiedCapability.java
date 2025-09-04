@@ -1,16 +1,24 @@
 package net.mistersecret312.stonemedusa.capability;
 
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.mistersecret312.stonemedusa.StoneMedusa;
+import net.mistersecret312.stonemedusa.config.RevivalConfig;
 import net.mistersecret312.stonemedusa.init.EffectInit;
+import net.mistersecret312.stonemedusa.init.FluidTypeInit;
 import net.mistersecret312.stonemedusa.init.NetworkInit;
 import net.mistersecret312.stonemedusa.network.packets.PetrifiedEntityUpdatePacket;
 
@@ -29,6 +37,11 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
     public float age = 0f;
     public int timePetrified = 0;
 
+    public float limbSwing = 0;
+    public float limbSwingAmount = 0;
+    public float headYaw = 0;
+    public float headPitch = 0;
+
     public void tick(Level level, LivingEntity living)
     {
         if(level.isClientSide())
@@ -38,15 +51,25 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         if(isPetrified())
         {
             timePetrified++;
-            living.setNoGravity(false);
-            living.move(MoverType.SELF, living.position().add(0, -0.01, 0));
+            living.setTicksFrozen(0);
+            living.clearFire();
+            Vec3 movement = new Vec3(0d, -0.04d*living.getBbHeight()*living.getBbWidth(), 0d);
+            living.move(MoverType.SELF, movement);
         }
         else if(timePetrified != 0)
-        {
             timePetrified = 0;
+
+        DamageSource source = new DamageSource(Holder.direct(living.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getOrThrow(ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(StoneMedusa.MOD_ID, "nitric_acid")))),
+                null, null, null);
+        if((living.isInFluidType(FluidTypeInit.REVIVAL_FLUID_TYPE.get()) || living.isInFluidType(FluidTypeInit.NITRIC_ACID_TYPE.get())) && living.level().getGameTime() % 20 == 0)
+        {
+            living.hurt(source, living.isInFluidType(FluidTypeInit.REVIVAL_FLUID_TYPE.get()) ? RevivalConfig.revival_damage.get() : RevivalConfig.nitric_damage.get());
+
+            if (living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get()) && !living.getActiveEffectsMap().get(EffectInit.PETRIFICATION.get()).endsWithin(RevivalConfig.revival_time.get()))
+                living.getActiveEffectsMap().put(EffectInit.PETRIFICATION.get(), new MobEffectInstance(EffectInit.PETRIFICATION.get(), RevivalConfig.revival_time.get(), 0, false, false, true));
         }
 
-        NetworkInit.sendToTracking(living, new PetrifiedEntityUpdatePacket(petrified, breakStage, age, broken, living.getId()));
+        NetworkInit.sendToTracking(living, new PetrifiedEntityUpdatePacket(petrified, breakStage, age, broken, limbSwing, limbSwingAmount, headYaw, headPitch, living.getId()));
     }
 
     public boolean isPetrified()
@@ -115,6 +138,10 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         tag.putFloat(AGE, age);
         tag.putInt(TIME_PETRIFIED, timePetrified);
         tag.putBoolean(BROKEN, broken);
+        tag.putFloat("limbSwing", limbSwing);
+        tag.putFloat("limbSwingAmount", limbSwingAmount);
+        tag.putFloat("headYaw", headYaw);
+        tag.putFloat("headPitch", headPitch);
 
         return tag;
     }
@@ -127,5 +154,41 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         this.age = nbt.getFloat(AGE);
         this.timePetrified = nbt.getInt(TIME_PETRIFIED);
         this.broken = nbt.getBoolean(BROKEN);
+        this.limbSwing = nbt.getFloat("limbSwing");
+        this.limbSwingAmount = nbt.getFloat("limbSwingAmount");
+        this.headYaw = nbt.getFloat("headYaw");
+        this.headPitch = nbt.getFloat("headPitch");
+    }
+
+    public void setHeadPitch(float pitch)
+    {
+        this.headPitch = pitch;
+    }
+
+    public void setHeadYaw(float yaw)
+    {
+        this.headYaw = yaw;
+    }
+
+    public void setLimbSwingAmount(float position)
+    {
+        this.limbSwing = position;
+    }
+
+    public void setLimbSwing(float speed)
+    {
+        this.limbSwing = speed;
+    }
+
+    private static Vec3 getInputVector(Vec3 pRelative, float pMotionScaler, float pFacing) {
+        double d0 = pRelative.lengthSqr();
+        if (d0 < 1.0E-7D) {
+            return Vec3.ZERO;
+        } else {
+            Vec3 vec3 = (d0 > 1.0D ? pRelative.normalize() : pRelative).scale((double)pMotionScaler);
+            float f = Mth.sin(pFacing * ((float)Math.PI / 180F));
+            float f1 = Mth.cos(pFacing * ((float)Math.PI / 180F));
+            return new Vec3(vec3.x * (double)f1 - vec3.z * (double)f, vec3.y, vec3.z * (double)f1 + vec3.x * (double)f);
+        }
     }
 }

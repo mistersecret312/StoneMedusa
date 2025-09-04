@@ -12,13 +12,22 @@ public class PetrifiedEntityUpdatePacket
     public float age;
     public int breakStage;
     public boolean broken;
+    public float limbSwing;
+    public float limbSwingAmount;
+    public float headYaw;
+    public float headPitch;
     public int entityId;
 
-    public PetrifiedEntityUpdatePacket(boolean petrified, int breakStage, float age, boolean broken, int entityId) {
+    public PetrifiedEntityUpdatePacket(boolean petrified, int breakStage, float age, boolean broken, float limbSwing,
+                                       float limbSwingAmount, float headYaw, float headPitch, int entityId) {
         this.petrified = petrified;
         this.breakStage = breakStage;
         this.age = age;
         this.broken = broken;
+        this.limbSwing = limbSwing;
+        this.limbSwingAmount = limbSwingAmount;
+        this.headYaw = headYaw;
+        this.headPitch = headPitch;
         this.entityId = entityId;
     }
 
@@ -27,6 +36,10 @@ public class PetrifiedEntityUpdatePacket
         buffer.writeInt(packet.breakStage);
         buffer.writeFloat(packet.age);
         buffer.writeBoolean(packet.broken);
+        buffer.writeFloat(packet.limbSwing);
+        buffer.writeFloat(packet.limbSwingAmount);
+        buffer.writeFloat(packet.headYaw);
+        buffer.writeFloat(packet.headPitch);
         buffer.writeInt(packet.entityId);
     }
 
@@ -35,9 +48,13 @@ public class PetrifiedEntityUpdatePacket
         int breakStage = buffer.readInt();
         float age = buffer.readFloat();
         boolean broken = buffer.readBoolean();
+        float limbSwing = buffer.readFloat();
+        float limbSwingAmount = buffer.readFloat();
+        float headYaw = buffer.readFloat();
+        float headPitch = buffer.readFloat();
         int entityId = buffer.readInt();
 
-        return new PetrifiedEntityUpdatePacket(petrified, breakStage, age, broken, entityId);
+        return new PetrifiedEntityUpdatePacket(petrified, breakStage, age, broken, limbSwing, limbSwingAmount, headYaw, headPitch, entityId);
     }
 
     public static void handle(PetrifiedEntityUpdatePacket packet, Supplier<NetworkEvent.Context> context) {

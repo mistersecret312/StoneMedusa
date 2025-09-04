@@ -42,6 +42,8 @@ import net.mistersecret312.stonemedusa.network.packets.MedusaTextureUpdatePacket
 import java.util.List;
 import java.util.Random;
 
+import static net.minecraft.client.renderer.entity.LivingEntityRenderer.isEntityUpsideDown;
+
 public class MedusaProjectile extends ThrowableItemProjectile
 {
     public static final String ENERGY = "energy";
@@ -76,9 +78,9 @@ public class MedusaProjectile extends ThrowableItemProjectile
     private int expansionTicker = 0;
 
 
-    public MedusaProjectile(EntityType<? extends ThrowableItemProjectile> pEntityType, Level pLevel)
+    public MedusaProjectile(EntityType<? extends ThrowableItemProjectile> livingType, Level pLevel)
     {
-        super(pEntityType, pLevel);
+        super(livingType, pLevel);
     }
 
     public MedusaProjectile(Level level)
@@ -321,6 +323,44 @@ public class MedusaProjectile extends ThrowableItemProjectile
                         NetworkInit.sendToTracking(living, new EntityPetrifiedPacket(living.getId()));
 
                         cap.setAge(Integer.valueOf(living.tickCount).floatValue());
+                        cap.setLimbSwing(living.walkAnimation.position());
+                        cap.setLimbSwingAmount(living.walkAnimation.speed());
+
+                        float f =  living.yBodyRot;
+                        float f1 = living.yHeadRot;
+                        float yaw = f1 - f;
+                        boolean shouldSit = living.isPassenger() && (living.getVehicle() != null && living.getVehicle().shouldRiderSit());
+                        if (shouldSit && living.getVehicle() instanceof LivingEntity) {
+                            LivingEntity livingentity = (LivingEntity)living.getVehicle();
+                            f = livingentity.yBodyRot;
+                            yaw = f1 - f;
+                            float f3 = Mth.wrapDegrees(yaw);
+                            if (f3 < -85.0F) {
+                                f3 = -85.0F;
+                            }
+
+                            if (f3 >= 85.0F) {
+                                f3 = 85.0F;
+                            }
+
+                            f = f1 - f3;
+                            if (f3 * f3 > 2500.0F) 
+                            {
+                                f += f3 * 0.2F;
+                            }
+
+                            yaw = f1 - f;
+                        }
+
+                        float pitch = living.getXRot();
+                        if (isEntityUpsideDown(living)) 
+                        {
+                            pitch *= -1.0F;
+                            yaw *= -1.0F;
+                        }
+
+                        cap.setHeadYaw(yaw);
+                        cap.setHeadPitch(pitch);
                     });
                 }
         }

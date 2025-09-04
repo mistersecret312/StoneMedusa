@@ -22,6 +22,10 @@ public class ClientPacketHandler
                 cap.setBreakStage(packet.breakStage);
                 cap.setAge(packet.age);
                 cap.setBroken(packet.broken);
+                cap.setLimbSwing(packet.limbSwing);
+                cap.setLimbSwingAmount(packet.limbSwingAmount);
+                cap.setHeadYaw(packet.headYaw);
+                cap.setHeadPitch(packet.headPitch);
             });
     }
 

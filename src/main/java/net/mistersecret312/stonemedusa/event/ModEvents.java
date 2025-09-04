@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
@@ -182,9 +184,10 @@ public class ModEvents
     @SubscribeEvent
     public static void livingTick(LivingEvent.LivingTickEvent event)
     {
+        LivingEntity living = event.getEntity();
         event.getEntity().getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
         {
-            cap.tick(event.getEntity().level(), event.getEntity());
+            cap.tick(living.level(), living);
         });
     }
 

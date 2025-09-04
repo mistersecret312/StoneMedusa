@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.util.LazyOptional;
 import net.mistersecret312.stonemedusa.capability.PetrifiedCapability;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
@@ -26,9 +27,10 @@ public class LivingEntityRendererMixin<T extends Entity>
         Optional<PetrifiedCapability> capabilityOptional = capabilityLazyOptional.resolve();
         PetrifiedCapability capability = capabilityOptional.orElse(null);
         if(capability == null || !capability.isPetrified())
-        {
-            original.call(instance, entity, limbSwing, limbSwingAmount, capability.age, headYaw, headPitch);
-        }
+            original.call(instance, entity, limbSwing, limbSwingAmount, ageInTicks, headYaw, headPitch);
+
+        if(capability != null && capability.isPetrified())
+            original.call(instance, entity, capability.limbSwing, capability.limbSwingAmount, capability.getAge(), capability.headYaw, capability.headPitch);
     }
 
     @SuppressWarnings({"MixinExtrasOperationParameters"})
@@ -42,5 +44,22 @@ public class LivingEntityRendererMixin<T extends Entity>
         PetrifiedCapability capability = capabilityOptional.orElse(null);
         if(capability == null || !capability.isPetrified())
             original.call(instance, entity, limbSwing, limbSwingAmount, partialTick);
+
+        if(capability != null && capability.isPetrified())
+        {
+            Entity renderEntity = entity.getType().create(entity.level());
+            if(entity instanceof LivingEntity && renderEntity instanceof LivingEntity living)
+            {
+                LivingEntity oldEntity = (LivingEntity) entity;
+                living.walkAnimation.setSpeed(capability.limbSwingAmount);
+                living.tickCount = (int) capability.age;
+
+                living.yHeadRot = oldEntity.yHeadRot;
+                living.yHeadRotO = oldEntity.yHeadRotO;
+                living.yBodyRot = oldEntity.yBodyRot;
+                living.yBodyRotO = oldEntity.yBodyRotO;
+            }
+            original.call(instance, renderEntity, capability.limbSwing, capability.limbSwingAmount, partialTick);
+        }
     }
 }
