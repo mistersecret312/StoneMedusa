@@ -28,7 +28,6 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
     public boolean broken = false;
     public float age = 0f;
     public int timePetrified = 0;
-    public int tickCount = 0;
 
     public void tick(Level level, LivingEntity living)
     {
@@ -47,7 +46,7 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
             timePetrified = 0;
         }
 
-        NetworkInit.sendToTracking(living, new PetrifiedEntityUpdatePacket(petrified, breakStage, age, broken, tickCount, living.getId()));
+        NetworkInit.sendToTracking(living, new PetrifiedEntityUpdatePacket(petrified, breakStage, age, broken, living.getId()));
     }
 
     public boolean isPetrified()
@@ -106,16 +105,6 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         this.timePetrified = timePetrified;
     }
 
-    public void setTickCount(int tickCount)
-    {
-        this.tickCount = tickCount;
-    }
-
-    public int getTickCount()
-    {
-        return tickCount;
-    }
-
     @Override
     public CompoundTag serializeNBT()
     {
@@ -126,7 +115,6 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         tag.putFloat(AGE, age);
         tag.putInt(TIME_PETRIFIED, timePetrified);
         tag.putBoolean(BROKEN, broken);
-        tag.putInt(TICK_COUNT, tickCount);
 
         return tag;
     }
@@ -139,6 +127,5 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         this.age = nbt.getFloat(AGE);
         this.timePetrified = nbt.getInt(TIME_PETRIFIED);
         this.broken = nbt.getBoolean(BROKEN);
-        this.tickCount = nbt.getInt(TICK_COUNT);
     }
 }

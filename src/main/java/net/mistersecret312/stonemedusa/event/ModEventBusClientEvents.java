@@ -109,18 +109,6 @@ public class ModEventBusClientEvents
     }
 
     @SubscribeEvent
-    public static void dontAnimate(RenderLivingEvent.Pre<?, ?> event)
-    {
-        event.getEntity().getCapability(CapabilitiesInit.PETRIFIED).ifPresent(cap ->
-        {
-            if(cap.isPetrified())
-            {
-
-            }
-        });
-    }
-
-    @SubscribeEvent
     public static void dontScroll(InputEvent.MouseScrollingEvent event)
     {
         Minecraft minecraft = Minecraft.getInstance();

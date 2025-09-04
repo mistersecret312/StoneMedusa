@@ -22,7 +22,6 @@ public class ClientPacketHandler
                 cap.setBreakStage(packet.breakStage);
                 cap.setAge(packet.age);
                 cap.setBroken(packet.broken);
-                cap.setTickCount(packet.tickCount);
             });
     }
 
