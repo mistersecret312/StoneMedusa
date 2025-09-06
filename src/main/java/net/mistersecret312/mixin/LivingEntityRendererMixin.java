@@ -11,7 +11,6 @@ import net.mistersecret312.stonemedusa.capability.PetrifiedCapability;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 
 import java.util.Optional;
 

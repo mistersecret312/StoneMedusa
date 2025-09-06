@@ -52,6 +52,7 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         {
             timePetrified++;
             living.setTicksFrozen(0);
+            living.setNoActionTime(0);
             living.clearFire();
             Vec3 movement = new Vec3(0d, -0.04d*living.getBbHeight()*living.getBbWidth(), 0d);
             living.move(MoverType.SELF, movement);
