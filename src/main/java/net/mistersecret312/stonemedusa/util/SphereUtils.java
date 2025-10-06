@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.mistersecret312.stonemedusa.client.MedusaRenderTypes;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -18,7 +19,7 @@ public class SphereUtils
         Matrix4f positionMatrix = matrixStack.last().pose();
         Matrix3f normalMatrix = matrixStack.last().normal();
         matrixStack.mulPose(new Quaternionf(0.0F, 1.0F, 0.0F, 45.0F));
-        VertexConsumer iVertexBuilder = buffer.getBuffer(RenderType.entityTranslucentEmissive(texture));
+        VertexConsumer iVertexBuilder = buffer.getBuffer(MedusaRenderTypes.petrificationRay(texture));
         addBottomSphere(radius, segments, x, 0.0F, z, iVertexBuilder, positionMatrix, normalMatrix, 0.0625F, 0.0625F, false, packedLight, lightmap2, overlay, color);
         //addBottomSphere(radius * 1.01F, segments, x, 0.0F, z, iVertexBuilder, positionMatrix, normalMatrix, 0.0625F, 0.0625F, false, packedLight, lightmap2, overlay, color);
         addBottomSphere(radius, segments, x, 0.0F, z, iVertexBuilder, positionMatrix, normalMatrix, 0.0625F, 0.0625F, true, packedLight, lightmap2, overlay, color);

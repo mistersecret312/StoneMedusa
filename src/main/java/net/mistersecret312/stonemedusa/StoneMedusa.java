@@ -1,8 +1,10 @@
 package net.mistersecret312.stonemedusa;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -18,11 +20,13 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.mistersecret312.stonemedusa.client.Layers;
 import net.mistersecret312.stonemedusa.client.layers.StoneRenderLayer;
+import net.mistersecret312.stonemedusa.client.renderer.ShaderedSphereRenderer;
 import net.mistersecret312.stonemedusa.init.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -37,6 +41,8 @@ import net.mistersecret312.stonemedusa.item.DiamondBatteryItemProperty;
 import net.mistersecret312.stonemedusa.item.MedusaItem;
 import net.mistersecret312.stonemedusa.item.RevivalFluidItem;
 import org.slf4j.Logger;
+
+import java.io.IOException;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(StoneMedusa.MOD_ID)
@@ -83,6 +89,8 @@ public class StoneMedusa
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
+        private static ShaderInstance petrificationRay;
+
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
@@ -95,7 +103,18 @@ public class StoneMedusa
 
                 ItemProperties.register(ItemInit.MEDUSA.get(), new ResourceLocation(MOD_ID, "is_active"), new ActiveMedusaItemProperty());
                 ItemProperties.register(ItemInit.BATTERY.get(), new ResourceLocation(MOD_ID, "battery"), new DiamondBatteryItemProperty());
+                ShaderedSphereRenderer.init();
             });
+        }
+
+        @SubscribeEvent
+        public static void onShaderRegister(RegisterShadersEvent event) throws IOException
+        {
+            event.registerShader(
+                    new ShaderInstance(event.getResourceProvider(),
+                                       ResourceLocation.fromNamespaceAndPath(MOD_ID, "petrification_ray"),
+                                       DefaultVertexFormat.NEW_ENTITY),
+                    (shaderInstance -> petrificationRay = shaderInstance));
         }
 
         @SubscribeEvent
@@ -121,6 +140,11 @@ public class StoneMedusa
             {
                 livingRenderer.addLayer(new StoneRenderLayer(livingRenderer));
             }
+        }
+
+        public static ShaderInstance petrificationRay()
+        {
+            return petrificationRay;
         }
     }
 }

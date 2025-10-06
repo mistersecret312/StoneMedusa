@@ -35,6 +35,7 @@ import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.Mod;
 import net.mistersecret312.stonemedusa.client.MedusaRenderTypes;
+import net.mistersecret312.stonemedusa.client.renderer.ShaderedSphereRenderer;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import net.mistersecret312.stonemedusa.init.EffectInit;
