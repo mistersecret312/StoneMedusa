@@ -6,7 +6,9 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.ModList;
 import net.mistersecret312.stonemedusa.capability.PetrifiedCapability;
 import net.mistersecret312.stonemedusa.init.CapabilitiesInit;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,6 +24,16 @@ public class LivingEntityRendererMixin<T extends Entity>
     at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;setupAnim(Lnet/minecraft/world/entity/Entity;FFFFF)V"))
     public void setupAnim(EntityModel<T> instance, T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch, Operation<Void> original)
     {
+        if(!(entity instanceof LivingEntity))
+        {
+            original.call();
+            return;
+        }
+        if(ModList.get().isLoaded("figura") && entity instanceof Player)
+        {
+            original.call(instance, entity, limbSwing, limbSwingAmount, ageInTicks, headYaw, headPitch);
+        }
+
         LazyOptional<PetrifiedCapability> capabilityLazyOptional = entity.getCapability(CapabilitiesInit.PETRIFIED);
         Optional<PetrifiedCapability> capabilityOptional = capabilityLazyOptional.resolve();
         PetrifiedCapability capability = capabilityOptional.orElse(null);
@@ -38,6 +50,17 @@ public class LivingEntityRendererMixin<T extends Entity>
     public void prepModel(EntityModel<T> instance, T entity, float limbSwing, float limbSwingAmount, float partialTick,
                           Operation<Void> original)
     {
+        if(!(entity instanceof LivingEntity))
+        {
+            original.call(instance, entity, limbSwing, limbSwingAmount, partialTick);
+            return;
+        }
+
+        if(ModList.get().isLoaded("figura") && entity instanceof Player)
+        {
+            original.call(instance, entity, limbSwing, limbSwingAmount, partialTick);
+            return;
+        }
         LazyOptional<PetrifiedCapability> capabilityLazyOptional = entity.getCapability(CapabilitiesInit.PETRIFIED);
         Optional<PetrifiedCapability> capabilityOptional = capabilityLazyOptional.resolve();
         PetrifiedCapability capability = capabilityOptional.orElse(null);
@@ -57,6 +80,10 @@ public class LivingEntityRendererMixin<T extends Entity>
                 living.yHeadRotO = oldEntity.yHeadRotO;
                 living.yBodyRot = oldEntity.yBodyRot;
                 living.yBodyRotO = oldEntity.yBodyRotO;
+            }
+            if(entity instanceof Player)
+            {
+                renderEntity = entity;
             }
             original.call(instance, renderEntity, capability.limbSwing, capability.limbSwingAmount, partialTick);
         }

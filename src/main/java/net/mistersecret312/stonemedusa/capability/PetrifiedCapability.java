@@ -5,13 +5,10 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -47,7 +44,7 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         if(level.isClientSide())
             return;
 
-        petrified = living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get());
+        this.petrified = living.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get());
         if(isPetrified())
         {
             timePetrified++;
@@ -181,15 +178,4 @@ public class PetrifiedCapability implements INBTSerializable<CompoundTag>
         this.limbSwing = speed;
     }
 
-    private static Vec3 getInputVector(Vec3 pRelative, float pMotionScaler, float pFacing) {
-        double d0 = pRelative.lengthSqr();
-        if (d0 < 1.0E-7D) {
-            return Vec3.ZERO;
-        } else {
-            Vec3 vec3 = (d0 > 1.0D ? pRelative.normalize() : pRelative).scale((double)pMotionScaler);
-            float f = Mth.sin(pFacing * ((float)Math.PI / 180F));
-            float f1 = Mth.cos(pFacing * ((float)Math.PI / 180F));
-            return new Vec3(vec3.x * (double)f1 - vec3.z * (double)f, vec3.y, vec3.z * (double)f1 + vec3.x * (double)f);
-        }
-    }
 }

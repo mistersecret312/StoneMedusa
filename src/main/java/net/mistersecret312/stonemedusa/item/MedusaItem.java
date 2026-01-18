@@ -1,7 +1,6 @@
 package net.mistersecret312.stonemedusa.item;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -109,16 +108,18 @@ public class MedusaItem extends Item
             return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
         }
 
-        if(Screen.hasShiftDown())
+        if(pPlayer.isShiftKeyDown())
             return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
 
         pLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(),
                 SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (pLevel.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!pLevel.isClientSide)
+        {
             summonMedusa(itemstack, pLevel, pPlayer, true);
+            pPlayer.setItemInHand(pUsedHand, ItemStack.EMPTY);
+        }
 
         pPlayer.awardStat(Stats.ITEM_USED.get(this));
-        pPlayer.setItemInHand(pUsedHand, ItemStack.EMPTY);
 
         return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
     }

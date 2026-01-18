@@ -10,7 +10,7 @@
     ],
     "result": {
         "item": "stonemedusa:diamond_battery",
-        "nbt": "{energy:1000000}",
+        "nbt": "{energy:5000000}",
         "count": 1
     }
 }

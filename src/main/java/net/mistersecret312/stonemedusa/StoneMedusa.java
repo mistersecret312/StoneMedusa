@@ -26,7 +26,6 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.mistersecret312.stonemedusa.client.Layers;
 import net.mistersecret312.stonemedusa.client.layers.StoneRenderLayer;
-import net.mistersecret312.stonemedusa.client.renderer.ShaderedSphereRenderer;
 import net.mistersecret312.stonemedusa.init.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -103,7 +102,6 @@ public class StoneMedusa
 
                 ItemProperties.register(ItemInit.MEDUSA.get(), new ResourceLocation(MOD_ID, "is_active"), new ActiveMedusaItemProperty());
                 ItemProperties.register(ItemInit.BATTERY.get(), new ResourceLocation(MOD_ID, "battery"), new DiamondBatteryItemProperty());
-                ShaderedSphereRenderer.init();
             });
         }
 

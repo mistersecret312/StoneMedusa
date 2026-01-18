@@ -20,7 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
@@ -41,8 +40,6 @@ import net.mistersecret312.stonemedusa.network.packets.MedusaTextureUpdatePacket
 
 import java.util.List;
 import java.util.Random;
-
-import static net.minecraft.client.renderer.entity.LivingEntityRenderer.isEntityUpsideDown;
 
 public class MedusaProjectile extends ThrowableItemProjectile
 {
@@ -353,12 +350,6 @@ public class MedusaProjectile extends ThrowableItemProjectile
                         }
 
                         float pitch = living.getXRot();
-                        if (isEntityUpsideDown(living)) 
-                        {
-                            pitch *= -1.0F;
-                            yaw *= -1.0F;
-                        }
-
                         cap.setHeadYaw(yaw);
                         cap.setHeadPitch(pitch);
                     });

@@ -20,9 +20,6 @@ public class KeyboardHandlerMixin
     @Final
     @Shadow
     private Minecraft minecraft;
-    private static final ArrayList<Integer> keyWhitelist = Lists.newArrayList(InputConstants.KEY_SLASH, InputConstants.KEY_F5, InputConstants.KEY_F3,
-            65, 66, 67, 68, 71, 72, 73, 76, 78, 80, 81, 83, 84, 293, InputConstants.KEY_F1, InputConstants.KEY_F2, InputConstants.KEY_F4,
-            InputConstants.KEY_F6, InputConstants.KEY_F7, InputConstants.KEY_F8, InputConstants.KEY_F9, InputConstants.KEY_ESCAPE);
 
     @Inject(method = "keyPress(JIIII)V", at = @At("HEAD"), cancellable = true)
     public void keyPress(long pWindowPointer, int pKey, int pScanCode, int pAction, int pModifiers, CallbackInfo ci)
@@ -33,12 +30,16 @@ public class KeyboardHandlerMixin
 
     public boolean mixinMethod(int pKey, int pScanCode)
     {
+        ArrayList<Integer> keyBlacklist = Lists.newArrayList(minecraft.options.keyJump.getKey().getValue(),
+                minecraft.options.keyAttack.getKey().getValue(), minecraft.options.keySwapOffhand.getKey().getValue(),
+                minecraft.options.keyDrop.getKey().getValue(), minecraft.options.keySprint.getKey().getValue(),
+                minecraft.options.keyLeft.getKey().getValue(), minecraft.options.keyRight.getKey().getValue(),
+                minecraft.options.keyShift.getKey().getValue(), minecraft.options.keyUp.getKey().getValue(),
+                minecraft.options.keyDown.getKey().getValue());
+
         if(this.minecraft.screen == null)
-        {
-            if(InputConstants.getKey(pKey, pScanCode).getValue() == InputConstants.KEY_SLASH && Minecraft.getInstance().player.hasPermissions(3))
-                return false;
-            return keyWhitelist.stream().noneMatch(key -> key == InputConstants.getKey(pKey, pScanCode).getValue()) && minecraft.player != null && minecraft.player.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get());
-        } else return false;
+            return keyBlacklist.stream().anyMatch(key -> key == InputConstants.getKey(pKey, pScanCode).getValue()) && minecraft.player != null && minecraft.player.getActiveEffectsMap().containsKey(EffectInit.PETRIFICATION.get());
+        else return false;
     }
 
 }

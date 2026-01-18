@@ -36,7 +36,7 @@ public class PetrificationEffect extends MobEffect
 
         if(petrification.endsWithin(20))
         {
-            MobEffectInstance depetrification = new MobEffectInstance(MobEffects.REGENERATION,20, 4, false, false, false);
+            MobEffectInstance depetrification = new MobEffectInstance(MobEffects.REGENERATION,20, 9, false, false, false);
             pLivingEntity.addEffect(depetrification);
         }
         else
