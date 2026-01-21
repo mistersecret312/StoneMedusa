@@ -164,7 +164,10 @@ public class MedusaProjectile extends ThrowableItemProjectile
     public void tick()
     {
         if(this.level().isClientSide())
+        {
+            super.tick();
             return;
+        }
 
         if(delay > 0 && this.isCountingDown())
             countdown();
