@@ -48,7 +48,7 @@ public class MedusaConfig
 
         base_speed = builder
                 .comment("The base speed of expansion of the Petrification Beam, in ticks per meter")
-                .defineInRange("server.medusa_base_speed", 3.333, 0.01, Double.MAX_VALUE);
+                .defineInRange("server.medusa_base_speed", 3.33, 1, Double.MAX_VALUE);
 
         can_set_target = builder
                 .comment("Should it be possible to target specific species with the Medusa or not")
