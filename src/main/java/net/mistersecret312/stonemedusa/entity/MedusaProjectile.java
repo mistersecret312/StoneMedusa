@@ -265,6 +265,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
             }
 
             activeTicker++;
+            this.setSpeed(MedusaConfig.base_speed.get());
             if(activeTicker <= this.targetRadius*this.speed && !(activeTicker > this.targetRadius*this.speed))
                 expansionTicker++;
             if(activeTicker > (this.targetRadius*this.speed)+IDLE_TIME && !(activeTicker > this.targetRadius*this.speed+2*IDLE_TIME))
