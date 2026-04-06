@@ -200,19 +200,26 @@ public class MedusaProjectile extends ThrowableItemProjectile
         this.setCountingDown(false);
         ((MedusaItem) this.getDefaultItem()).setCountdownActive(this.getItem(), false);
         MedusaItem.setActive(this.getItem(), true);
+        this.setSpeed(Math.min(1000, Math.max(getTargetRadius(), 3)));
         this.noPhysics = true;
         this.setDeltaMovement(Vec3.ZERO);
         this.setNoGravity(true);
 
-        int demandedEnergy = (int) ((this.targetRadius*this.speed*2+IDLE_TIME)*100);
-        double energyPercentage = (double) this.energy /MedusaConfig.max_energy.get();
-        if(energyPercentage < 0.05)
-            this.speed = Math.max(3, (100-(energyPercentage*100))-65);
+        int demandedEnergy = 0;
+        demandedEnergy += MedusaConfig.flat_activation_cost.get();
+        demandedEnergy += (int) (MedusaConfig.cost_per_meter.get()*this.getTargetRadius());
         if(demandedEnergy > this.energy)
-            this.targetRadius = Math.max(1f, (float) ((this.energy - 20000) / (25 * this.speed * 2)));
+        {
+            float mathEnergy = MedusaConfig.flat_activation_cost.get();
+            if(mathEnergy > this.energy)
+            {
+                this.deactivate();
+                return;
+            }
 
-        //this.level().playSound(null, this.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.MASTER, 1F, 1F);
-
+            mathEnergy = this.energy-MedusaConfig.flat_activation_cost.get();
+            this.targetRadius = mathEnergy / MedusaConfig.cost_per_meter.get();
+        }
     }
 
     @Override
@@ -242,7 +249,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
                     ForgeChunkManager.forceChunk(serverLevel, StoneMedusa.MOD_ID, this.blockPosition(), chunk.getPos().x, chunk.getPos().z, true, true);
 
 
-                this.energy -= MedusaConfig.flat_activation_cast.get();
+                this.energy -= MedusaConfig.flat_activation_cost.get();
                 this.energy -= (int) (MedusaConfig.cost_per_meter.get()*this.getTargetRadius());
 
                 if(energy < 0)
@@ -268,7 +275,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
                 this.setCurrentRadius((float) Mth.lerp(expansionTicker/(this.targetRadius*this.speed), 0, this.targetRadius));
 
             if(this.getCurrentRadius() > 0f && this.getFading() < 0.4f)
-                petrify(this.getCurrentRadius()*1.5F+2.5f);
+                petrify(this.getCurrentRadius()+1.5f);
 
             level().getCapability(CapabilitiesInit.WORLD).ifPresent(cap -> {
                 WorldCapability.MedusaData data = new WorldCapability.MedusaData(this.getCurrentRadius(), this.getFading(), this.blockPosition(), ResourceKey.create(ForgeRegistries.ENTITY_TYPES.getRegistryKey(), ResourceLocation.parse(this.getTargetType())));
