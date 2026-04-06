@@ -62,7 +62,7 @@ public class MedusaProjectile extends ThrowableItemProjectile
     private static final EntityDataAccessor<String> TARGET_TYPE =
             SynchedEntityData.defineId(MedusaProjectile.class, EntityDataSerializers.STRING);
 
-    public static int IDLE_TIME = 200;
+    public static int IDLE_TIME = MedusaConfig.idle_time.get();
     
     private int energy = 0;
     private float targetRadius = 0;

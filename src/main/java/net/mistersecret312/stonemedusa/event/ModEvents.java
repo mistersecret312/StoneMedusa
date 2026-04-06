@@ -60,7 +60,7 @@ public class ModEvents
         if(!level.isClientSide() && (message.toLowerCase().contains("meter") || message.toLowerCase().contains("metre")) && message.toLowerCase().contains("second"))
         {
             String[] parts = message.replace("'", "").replace("seconds", "").replace("meter", "-").replace("meters", "-").replace("metre", "-").replace("metres", "-").split("-");
-            float meters = (float) (Float.parseFloat(parts[0].replaceAll("[^1234567890.]", ""))/1.5);
+            float meters = (float) (Float.parseFloat(parts[0].replaceAll("[^1234567890.]", "")));
             int seconds = Integer.parseInt(parts[1].replaceAll("[^1234567890]", ""))*20;
 
             if(seconds <= 0)

@@ -59,7 +59,7 @@ public class ModEventBusClientEvents
 
                         SphereUtils.drawTexturedSphere(stack, buffer,
                                 new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"),
-                                data.getRadius()/1300f, 32, 0.0F, 0.0F, 15728880, false,
+                                (data.getRadius()/1.5f)/1300f, 32, 0.0F, 0.0F, 15728880, false,
                                 OverlayTexture.NO_OVERLAY, new float[]{0.38f, 0.95f, 0.47f, (0.25f*(1-Math.min(data.getTransparency(), 1)))});
 
                         stack.popPose();
@@ -69,7 +69,7 @@ public class ModEventBusClientEvents
 
                         SphereUtils.drawTexturedSphere(stack, buffer,
                                 new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"),
-                                data.getRadius()/(1300f*1.5f), 32, 0.0F, 0.0F, 15728880, false,
+                                (data.getRadius()/1.5f)/(1300f*1.5f), 32, 0.0F, 0.0F, 15728880, false,
                                 OverlayTexture.NO_OVERLAY, new float[]{0.3f, 0.6f, 0.33f, (0.25f*(1-Math.min(data.getTransparency(), 1)))});
 
                         stack.popPose();
@@ -79,7 +79,7 @@ public class ModEventBusClientEvents
 
                         SphereUtils.drawTexturedSphere(stack, buffer,
                                 new ResourceLocation(StoneMedusa.MOD_ID, "textures/entity/petrification_beam.png"),
-                                data.getRadius()/(1300f*4f), 32, 0.0F, 0.0F, 15728880, false,
+                                (data.getRadius()/1.5f)/(1300f*4f), 32, 0.0F, 0.0F, 15728880, false,
                                 OverlayTexture.NO_OVERLAY, new float[]{0.14f, 0.35f, 0.18f, (0.25f*(1-Math.min(data.getTransparency(), 1)))});
 
                         stack.popPose();
