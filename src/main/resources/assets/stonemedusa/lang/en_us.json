@@ -1,0 +1,16 @@
+{
+  "tabs.medusa": "Dr.STONE - Medusa",
+  "item.stonemedusa.medusa": "Medusa",
+  "item.stonemedusa.mobius_plating": "Möbius Plating",
+  "item.stonemedusa.waveguide_filament": "Waveguide Filament",
+  "item.stonemedusa.spatial_manifold": "Spatial Manifold",
+  "item.stonemedusa.crystal_receptacle": "Crystal Receptacle",
+
+  "item.stonemedusa.diamond_battery": "Diamond Battery",
+
+  "item.stonemedusa.revival_fluid_flask": "Revival Fluid Flask",
+
+  "death.attack.petrification": "%1$s statue was destroyed",
+  "death.attack.petrification.player": "%1$s statue was destroyed by %2$s",
+  "death.attack.petrification.item": "%1$s statue was destroyed by %2$s using %3$s"
+}
