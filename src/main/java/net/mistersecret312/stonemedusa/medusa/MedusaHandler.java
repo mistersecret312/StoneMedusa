@@ -40,13 +40,13 @@ public class MedusaHandler
 		this.source = source;
 
 		MedusaComponent hullComponent = new MedusaComponent(hull.componentID(), hull.type(),
-				hull.maxIntegrity(), hull.modifiers());
+				hull.maxIntegrity(), hull.modifiers(), this);
 		MedusaComponent wiringComponent = new MedusaComponent(wiring.componentID(), wiring.type(),
-				wiring.maxIntegrity(), wiring.modifiers());
+				wiring.maxIntegrity(), wiring.modifiers(), this);
 		MedusaComponent batteryComponent = new MedusaComponent(batterySlot.componentID(), batterySlot.type(),
-				batterySlot.maxIntegrity(), batterySlot.modifiers());
+				batterySlot.maxIntegrity(), batterySlot.modifiers(), this);
 		MedusaComponent focalComponent = new MedusaComponent(focalPoint.componentID(), focalPoint.type(),
-				focalPoint.maxIntegrity(), focalPoint.modifiers());
+				focalPoint.maxIntegrity(), focalPoint.modifiers(), this);
 
 
 		this.components.put(MedusaComponentType.HULL, hullComponent);
@@ -69,6 +69,12 @@ public class MedusaHandler
 		this.components.put(MedusaComponentType.FOCAL_POINT, focalPoint);
 
 		calculateAttributes();
+	}
+
+	public MedusaHandler(UUID uuid, MedusaSource source)
+	{
+		this.medusaID = uuid;
+		this.source = source;
 	}
 
 	public void tick(Level level)
@@ -94,7 +100,7 @@ public class MedusaHandler
 		{
 			MedusaComponent hull = components.get(MedusaComponentType.HULL);
 			double percentage = hull.getIntegrityPercentage();
-			if(percentage >= 50d)
+			if(percentage >= 0.5d)
 				damageComponent(MedusaComponentType.HULL, wearOverTime);
 			else
 			{
@@ -218,15 +224,22 @@ public class MedusaHandler
 		if(tag.contains("source"))
 			source = MedusaSource.load(tag.getCompound("source"));
 
-		MedusaComponent hull = MedusaComponent.deserializeNBT(tag.getCompound("hull"));
-		MedusaComponent wiring = MedusaComponent.deserializeNBT(tag.getCompound("wiring"));
-		MedusaComponent batterySlot = MedusaComponent.deserializeNBT(tag.getCompound("battery_slot"));
-		MedusaComponent focalPoint = MedusaComponent.deserializeNBT(tag.getCompound("focal_point"));
+		MedusaHandler handler = new MedusaHandler(uuid, source);
 
-		MedusaHandler handler = new MedusaHandler(uuid, source, hull, wiring, batterySlot, focalPoint);
+		MedusaComponent hull = MedusaComponent.deserializeNBT(tag.getCompound("hull"), handler);
+		MedusaComponent wiring = MedusaComponent.deserializeNBT(tag.getCompound("wiring"), handler);
+		MedusaComponent batterySlot = MedusaComponent.deserializeNBT(tag.getCompound("battery_slot"), handler);
+		MedusaComponent focalPoint = MedusaComponent.deserializeNBT(tag.getCompound("focal_point"), handler);
+
+		handler.components.put(MedusaComponentType.HULL, hull);
+		handler.components.put(MedusaComponentType.WIRING, wiring);
+		handler.components.put(MedusaComponentType.BATTERY_SLOT, batterySlot);
+		handler.components.put(MedusaComponentType.FOCAL_POINT, focalPoint);
 
 		handler.markRemove = tag.getBoolean("removed");
 		handler.initialized = tag.getBoolean("initialized");
+
+		handler.calculateAttributes();
 		return handler;
 	}
 }

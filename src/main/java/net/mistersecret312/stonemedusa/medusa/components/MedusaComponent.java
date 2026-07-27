@@ -1,38 +1,33 @@
 package net.mistersecret312.stonemedusa.medusa.components;
 
-import com.google.gson.JsonElement;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.profiling.ProfilerFiller;
-import net.mistersecret312.stonemedusa.StoneMedusa;
+import net.mistersecret312.stonemedusa.medusa.MedusaHandler;
 
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import static com.mojang.text2speech.Narrator.LOGGER;
 
 public class MedusaComponent
 {
+	private MedusaHandler handler;
+
 	private final String componentID;
 	private final MedusaComponentType type;
 	private double maxIntegrity;
 	private double integrity;
 	private final List<MedusaModifier> modifiers;
 
-	public MedusaComponent(String componentID, MedusaComponentType type, double maxIntegrity, List<MedusaModifier> modifiers)
+	public MedusaComponent(String componentID, MedusaComponentType type, double maxIntegrity,
+						   List<MedusaModifier> modifiers, MedusaHandler handler)
 	{
 		this.componentID = componentID;
 		this.type = type;
 		this.maxIntegrity = maxIntegrity;
 		this.integrity = maxIntegrity;
 		this.modifiers = modifiers;
+		this.handler = handler;
 	}
 
 	public CompoundTag serializeNBT()
@@ -51,7 +46,7 @@ public class MedusaComponent
 		return tag;
 	}
 
-	public static MedusaComponent deserializeNBT(CompoundTag tag)
+	public static MedusaComponent deserializeNBT(CompoundTag tag, MedusaHandler handler)
 	{
 		String componentID = tag.getString("id");
 		MedusaComponentType type = MedusaComponentType.CODEC.byName(tag.getString("type"));
@@ -63,9 +58,8 @@ public class MedusaComponent
 		for(Tag listTag : modifiersTag)
 			modifiers.add(MedusaModifier.deserializeNBT(((CompoundTag) listTag)));
 
-		MedusaComponent component = new MedusaComponent(componentID, type, max, modifiers);
+		MedusaComponent component = new MedusaComponent(componentID, type, max, modifiers, handler);
 		component.integrity = integrity;
-
 		return component;
 	}
 
@@ -91,7 +85,7 @@ public class MedusaComponent
 
 	public double getIntegrityPercentage()
 	{
-		return integrity/maxIntegrity * 100d;
+		return integrity/maxIntegrity;
 	}
 
 	public void setIntegrity(double integrity)
@@ -111,7 +105,11 @@ public class MedusaComponent
 
 	public List<MedusaModifier> getActiveModifiers()
 	{
-		return modifiers.stream().filter(mod -> mod.isActive(getIntegrity())).toList();
+		return modifiers.stream().filter(mod ->
+			{
+				double integrityPercentage = handler.components.get(mod.integrityComponent()).getIntegrityPercentage();
+				return mod.isActive(integrityPercentage);
+			}).toList();
 	}
 
 	public void damage(double damage)

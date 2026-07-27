@@ -33,6 +33,7 @@ import net.mistersecret312.stonemedusa.medusa.MedusaBeam;
 import net.mistersecret312.stonemedusa.medusa.MedusaHandler;
 import net.mistersecret312.stonemedusa.medusa.components.MedusaComponent;
 import net.mistersecret312.stonemedusa.medusa.components.MedusaComponentTemplate;
+import net.mistersecret312.stonemedusa.medusa.components.MedusaModifier;
 import net.mistersecret312.stonemedusa.medusa.design.MedusaDesign;
 import net.mistersecret312.stonemedusa.medusa.source.EntitySource;
 import net.mistersecret312.stonemedusa.medusa.source.MedusaSource;
@@ -176,7 +177,6 @@ public class MedusaItem extends Item implements IMedusa,IBorderCustom
 		percentage.setMaximumFractionDigits(1);
 		percentage.setMinimumFractionDigits(0);
 
-		Map<UUID, MedusaBeam> beams = level.getData(AttachmentTypeInit.MEDUSA).getActiveBeams();
 		Map<UUID, MedusaHandler> handlers = level.getData(AttachmentTypeInit.MEDUSA).getMedusaHandlers();
 		MedusaHandler handler = handlers.get(getDeviceId(stack));
 		if(handler == null)
@@ -184,8 +184,18 @@ public class MedusaItem extends Item implements IMedusa,IBorderCustom
 
 		for(MedusaComponent component : handler.components.values())
 		{
-			Component text = Component.literal(component.getComponentID()).append(" - " + percentage.format(component.getIntegrityPercentage()/100));
+			Component text = Component.literal(component.getComponentID()).append(" - " + percentage.format(component.getIntegrityPercentage()));
 			tooltipComponents.add(text);
+		}
+
+		tooltipComponents.add(Component.literal(""));
+
+		for(MedusaComponent component : handler.components.values())
+		{
+			for(MedusaModifier modifier : component.getActiveModifiers())
+			{
+				tooltipComponents.add(Component.literal(modifier.attribute().getSerializedName() + " of - " + modifier.integrityComponent().getSerializedName()));
+			}
 		}
 	}
 
