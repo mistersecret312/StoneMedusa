@@ -2,28 +2,15 @@ package net.mistersecret312.stonemedusa;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
-import net.minecraft.core.dispenser.BlockSource;
-import net.minecraft.core.dispenser.DispenseItemBehavior;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
 import net.mistersecret312.stonemedusa.client.MedusaBeamRenderers;
 import net.mistersecret312.stonemedusa.client.beams.DefaultBeamRenderer;
 import net.mistersecret312.stonemedusa.client.tooltip.DiamondBatteryTooltipRenderer;
@@ -35,6 +22,9 @@ import net.mistersecret312.stonemedusa.items.MedusaItem;
 import net.mistersecret312.stonemedusa.items.properties.DiamondBatteryItemProperty;
 import net.mistersecret312.stonemedusa.items.properties.MedusaActivatedProperty;
 import net.mistersecret312.stonemedusa.medusa.MedusaBeam;
+import net.mistersecret312.stonemedusa.medusa.components.MedusaComponent;
+import net.mistersecret312.stonemedusa.medusa.components.MedusaComponentTemplate;
+import net.mistersecret312.stonemedusa.medusa.design.MedusaDesign;
 import net.mistersecret312.stonemedusa.medusa.source.EntitySource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -50,9 +40,6 @@ import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactori
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.*;
 import org.slf4j.Logger;
 
@@ -75,11 +62,18 @@ public class StoneMedusa
 		DataComponentInit.register(modEventBus);
 		BeamTypeInit.register(modEventBus);
 		BeamSourceInit.register(modEventBus);
+		StructureTypeInit.register(modEventBus);
+		StructurePlacementInit.register(modEventBus);
 
 		modEventBus.addListener(NetworkInit::registerPackets);
 		modEventBus.addListener(this::registerRegistries);
 		modEventBus.addListener(this::commonSetup);
 
+		modEventBus.addListener((DataPackRegistryEvent.NewRegistry event) ->
+			{
+				event.dataPackRegistry(MedusaDesign.REGISTRY_KEY, MedusaDesign.CODEC, MedusaDesign.CODEC);
+				event.dataPackRegistry(MedusaComponentTemplate.REGISTRY_KEY, MedusaComponentTemplate.CODEC, MedusaComponentTemplate.CODEC);
+			});
 		modContainer.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG, "stonemedusa-client.toml");
 		modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG, "stonemedusa-common.toml");
 		if(dist.isClient())

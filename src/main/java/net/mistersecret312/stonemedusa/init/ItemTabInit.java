@@ -23,7 +23,9 @@ public class ItemTabInit
 								 .icon(() -> new ItemStack(ItemInit.MEDUSA.get()))
 								 .title(Component.translatable("tabs.medusa"))
 								 .displayItems((parameters, output) -> {
-									 output.accept(MedusaItem.getMedusa(ItemInit.MEDUSA.get(), MedusaConfig.medusa_max_energy.get()));
+									 output.accept(MedusaItem.getMedusa(ItemInit.MEDUSA.get(),
+											 ResourceLocation.fromNamespaceAndPath(StoneMedusa.MODID, "whyman"),
+											 MedusaConfig.medusa_max_energy.get()));
 									 output.accept(DiamondBatteryItem.getBattery(ItemInit.BATTERY.get(), MedusaConfig.medusa_max_energy.get()));
 									 output.accept(ItemInit.REVIVAL_FLUID_FLASK);
 

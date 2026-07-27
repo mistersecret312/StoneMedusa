@@ -93,13 +93,13 @@ public class PetrificationAttachment implements INBTSerializable<CompoundTag>
 				}
 				living.move(MoverType.SELF, living.getDeltaMovement());
 			}
-			petrificationProgress++;
 			if(petrificationProgress == 100 && !isFullyPetrified)
 			{
 				this.isFullyPetrified = true;
 				if(!locked)
 					this.lockTransform(living);
 			}
+			petrificationProgress++;
 			living.syncData(AttachmentTypeInit.PETRIFICATION);
 		}
 	}

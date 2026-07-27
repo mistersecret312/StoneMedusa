@@ -70,7 +70,7 @@ public class MedusaChatHandler {
                         position = new MedusaSettings.MedusaPosition(player.position().toVector3f(),
                                 player.serverLevel().dimension());
 
-                    double speed = 0.01 + (0.05d * Mth.sqrt((float) meters));
+                    double speed = 0.01 + (0.5d * Mth.sqrt((float) meters));
                     MedusaSettings settings = new MedusaSettings(meters, speed, 0x00FF00,
                             position, id, source);
                     MedusaBeam beam = new MedusaBeam(settings);

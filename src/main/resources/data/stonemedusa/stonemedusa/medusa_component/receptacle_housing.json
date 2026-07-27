@@ -1,0 +1,5 @@
+{
+  "name": "receptacle_housing",
+  "type": "battery_slot",
+  "max_integrity": 10000
+}

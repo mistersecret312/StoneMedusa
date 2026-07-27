@@ -69,6 +69,8 @@ public class ClientEvents
 			for(Map.Entry<UUID, MedusaBeam> entry : medusaAttachment.getActiveBeams().entrySet())
 			{
 				MedusaBeam beam = entry.getValue();
+				if(beam.getSettings().location() == null)
+					continue;
 				if(!beam.getSettings().dimension().equals(level.dimension()))
 					continue;
 
@@ -298,15 +300,6 @@ public class ClientEvents
 		{
 			event.setBorderStart(custom.getBorderColors(stack).getFirst());
 			event.setBorderEnd(custom.getBorderColors(stack).getSecond());
-		}
-		if(stack.is(ItemInit.BATTERY))
-		{
-			float percentage = 1 - DiamondBatteryItem.getEnergy(stack) / MedusaConfig.medusa_max_energy.get().floatValue();
-			int colorStart = FastColor.ARGB32.lerp(percentage, 0xff00aeff, 0xff8c8c8c);
-			int colorEnd = FastColor.ARGB32.lerp(percentage, 0xff00628c, 0xff595959);
-
-			event.setBorderStart(colorStart);
-			event.setBorderEnd(colorEnd);
 		}
 	}
 }

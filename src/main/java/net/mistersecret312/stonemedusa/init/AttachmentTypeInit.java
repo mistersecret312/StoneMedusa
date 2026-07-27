@@ -2,6 +2,7 @@ package net.mistersecret312.stonemedusa.init;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.mistersecret312.stonemedusa.data_attachment.MedusaLevelAttachment;
 import net.mistersecret312.stonemedusa.data_attachment.PetrificationAttachment;

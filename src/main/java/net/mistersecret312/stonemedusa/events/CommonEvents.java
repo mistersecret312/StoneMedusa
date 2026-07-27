@@ -1,39 +1,55 @@
 package net.mistersecret312.stonemedusa.events;
 
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec2;
 import net.mistersecret312.stonemedusa.StoneMedusa;
+import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.data_attachment.MedusaLevelAttachment;
 import net.mistersecret312.stonemedusa.data_attachment.PetrificationAttachment;
 import net.mistersecret312.stonemedusa.init.AttachmentTypeInit;
 import net.mistersecret312.stonemedusa.items.MedusaItem;
 import net.mistersecret312.stonemedusa.medusa.MedusaBeam;
+import net.mistersecret312.stonemedusa.medusa.PetrifiedArea;
 import net.mistersecret312.stonemedusa.medusa.source.EntitySource;
 import net.mistersecret312.stonemedusa.medusa.source.InventorySource;
+import net.mistersecret312.stonemedusa.medusa.source.MedusaSource;
 import net.mistersecret312.stonemedusa.medusa.source.PlayerSource;
 import net.mistersecret312.stonemedusa.util.MedusaUtil;
+import net.mistersecret312.stonemedusa.util.StructureUtil;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
+import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import org.joml.Vector3f;
 
-import java.util.UUID;
+import java.util.*;
 
 @EventBusSubscriber(modid = StoneMedusa.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class CommonEvents
@@ -42,9 +58,13 @@ public class CommonEvents
 	public static void levelTick(LevelTickEvent.Pre event)
 	{
 		Level level = event.getLevel();
+		if(!level.tickRateManager().runsNormally())
+			return;
 
 		MedusaLevelAttachment medusaAttachment = level.getData(AttachmentTypeInit.MEDUSA);
 		medusaAttachment.tickBeams(level);
+		medusaAttachment.tickAreas(level);
+		medusaAttachment.tickHandlers(level);
 	}
 
 	@SubscribeEvent
@@ -109,6 +129,72 @@ public class CommonEvents
 			entity.yRotO = cap.getLockedYaw();
 			entity.xRotO = cap.getLockedPitch();
 		}
+	}
+
+	@SubscribeEvent
+	public static void onEntitySpawn(FinalizeSpawnEvent event)
+	{
+		MobSpawnType type = event.getSpawnType();
+		Mob mob = event.getEntity();
+
+
+		if(type.equals(MobSpawnType.CHUNK_GENERATION) || type.equals(MobSpawnType.NATURAL) || type.equals(MobSpawnType.STRUCTURE))
+			handleEntityPetrificationInArea(mob.level(), mob, false);
+	}
+
+	@SubscribeEvent
+	public static void levelLoad(LevelEvent.Load event)
+	{
+		if(event.getLevel().getServer() == null)
+			return;
+
+		ServerLevel level = event.getLevel().getServer().overworld();
+
+		long seed = level.getSeed();
+		int chunkX = StructureUtil.getChunkX(seed, 15524351, MedusaConfig.pyramid_generation_x_chunk_offset.get(),
+				MedusaConfig.pyramid_generation_x_chunk_bounds.get(), 0);
+		int chunkZ = StructureUtil.getChunkZ(seed, 15524351, MedusaConfig.pyramid_generation_z_chunk_offset.get(),
+				MedusaConfig.pyramid_generation_z_chunk_bounds.get(), 0);
+
+		PetrifiedArea area = new PetrifiedArea(new Vec2(chunkX*16, chunkZ*16),
+				level.dimension(), 250, -1, new HashSet<>(), false);
+		level.getData(AttachmentTypeInit.MEDUSA).addPetrifiedArea(level, area);
+	}
+
+	@SubscribeEvent
+	public static void onEntityJoinLevel(EntityJoinLevelEvent event)
+	{
+		Level level = event.getLevel();
+		Entity entity = event.getEntity();
+
+		if(event.loadedFromDisk())
+			handleEntityPetrificationInArea(level, entity, true);
+	}
+
+	public static void handleEntityPetrificationInArea(Level level, Entity entity, boolean load)
+	{
+		MedusaLevelAttachment medusaAttachment = level.getData(AttachmentTypeInit.MEDUSA);
+		List<PetrifiedArea> areas = new ArrayList<>(medusaAttachment.getPetrifiedAreas());
+		areas.stream()
+			 .filter(area ->
+				 {
+					 if(!area.petrifyLoad() && load)
+						 return false;
+
+					 Vec2 entityPos = new Vec2((float) entity.getX(), (float) entity.getZ());
+					 return entityPos.distanceToSqr(area.epicenter()) <= area.radius() * area.radius() &&
+							 level.dimension().equals(area.dimension());
+				 })
+			 .forEach(area -> {
+				 if(area.entities().contains(entity.getUUID()) || !(entity instanceof LivingEntity living))
+					 return;
+
+				 area.entities().add(entity.getUUID());
+				 PetrificationAttachment petrification = entity.getData(AttachmentTypeInit.PETRIFICATION.get());
+				 petrification.startPetrification(living, new Vector3f(), area.radius());
+				 petrification.setPetrificationProgress(100);
+			 });
+
 	}
 
 	@SubscribeEvent

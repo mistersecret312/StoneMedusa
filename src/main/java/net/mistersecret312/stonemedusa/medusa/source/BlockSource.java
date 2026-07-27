@@ -4,15 +4,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.mistersecret312.stonemedusa.init.BeamSourceInit;
 import net.mistersecret312.stonemedusa.medusa.IMedusa;
 import net.mistersecret312.stonemedusa.medusa.MedusaSettings;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.UUID;
 
 public record BlockSource(BlockPos pos) implements MedusaSource
 {
@@ -44,6 +40,14 @@ public record BlockSource(BlockPos pos) implements MedusaSource
         if(blockEntity instanceof IMedusa medusa)
             return medusa;
         return null;
+    }
+
+    @Override
+    public void notifyClient(Level level)
+    {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if(blockEntity != null)
+            blockEntity.setChanged();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package net.mistersecret312.stonemedusa.entity;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -19,7 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -35,10 +35,13 @@ import net.mistersecret312.stonemedusa.items.DiamondBatteryItem;
 import net.mistersecret312.stonemedusa.items.MedusaItem;
 import net.mistersecret312.stonemedusa.medusa.IMedusa;
 import net.mistersecret312.stonemedusa.medusa.MedusaBeam;
+import net.mistersecret312.stonemedusa.medusa.MedusaHandler;
+import net.mistersecret312.stonemedusa.medusa.components.MedusaComponentTemplate;
+import net.mistersecret312.stonemedusa.medusa.design.MedusaDesign;
 import net.mistersecret312.stonemedusa.medusa.source.EntitySource;
 import net.mistersecret312.stonemedusa.medusa.source.MedusaSource;
+import net.mistersecret312.stonemedusa.util.MedusaUtil;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.List;
 import java.util.UUID;
@@ -75,6 +78,49 @@ public class ThrownMedusaEntity extends ThrowableItemProjectile implements IMedu
 	public void tick()
 	{
 		super.tick();
+
+		if(!level().isClientSide())
+		{
+			MedusaLevelAttachment data = level().getData(AttachmentTypeInit.MEDUSA);
+			ItemStack stack = getItem();
+			UUID deviceID = stack.get(DataComponentInit.DEVICE_ID);
+			ResourceLocation designID = stack.get(DataComponentInit.MEDUSA_DESIGN);
+			MedusaHandler handler = data.getMedusaHandlers().get(getDeviceID(level()));
+			if(handler == null)
+			{
+				Registry<MedusaDesign> designRegistry = level().registryAccess().registryOrThrow(MedusaDesign.REGISTRY_KEY);
+				Registry<MedusaComponentTemplate> componentRegistry = level().registryAccess().registryOrThrow(
+						MedusaComponentTemplate.REGISTRY_KEY);
+				MedusaDesign design = designRegistry.get(designID);
+				if(design == null)
+					return;
+
+				MedusaComponentTemplate hull = componentRegistry.get(design.hull().id());
+				MedusaComponentTemplate wiring = componentRegistry.get(design.wiring().id());
+				MedusaComponentTemplate batterySlot = componentRegistry.get(design.batterySlot().id());
+				MedusaComponentTemplate focalPoint = componentRegistry.get(design.focalPoint().id());
+				if(hull == null || wiring == null || batterySlot == null || focalPoint == null)
+					return;
+
+				AABB localArea = new AABB(this.blockPosition()).inflate(2);
+				MedusaSource source = MedusaUtil.getSpecificSource(level(), localArea, deviceID);
+				MedusaHandler newHandler = new MedusaHandler(deviceID, source,
+						hull, wiring, batterySlot, focalPoint);
+				data.addHandler(newHandler);
+			}
+			else if(handler.source == null)
+			{
+				AABB localArea = new AABB(this.blockPosition()).inflate(2);
+				handler.source = MedusaUtil.getSpecificSource(level(), localArea, deviceID);
+			}
+		}
+	}
+
+	@Override
+	public UUID getDeviceID(Level level)
+	{
+		ItemStack stack = getItem();
+		return stack.getOrDefault(DataComponentInit.DEVICE_ID, UUID.randomUUID());
 	}
 
 	@Override
@@ -161,7 +207,6 @@ public class ThrownMedusaEntity extends ThrowableItemProjectile implements IMedu
 					vec31 = vec31.yRot(-this.getYRot() * ((float)Math.PI / 180F));
 					vec31 = vec31.add(this.getX(), this.getY(), this.getZ());
 
-
 					ItemEntity fragment = new ItemEntity(level(), vec31.x, vec31.y, vec31.z, stack);
 					fragment.setDeltaMovement(vec3);
 					level().addFreshEntity(fragment);
@@ -220,6 +265,38 @@ public class ThrownMedusaEntity extends ThrowableItemProjectile implements IMedu
 			stack.set(DataComponentInit.BATTERY, new DiamondBatteryComponent(battery));
 		}
 
+	}
+
+	@Override
+	public void consumeEnergy(Level level, MedusaSource source, int energy)
+	{
+		ItemStack stack = getItem();
+		if(stack.has(DataComponentInit.BATTERY))
+		{
+			DiamondBatteryComponent batteryComponent = stack.get(DataComponentInit.BATTERY);
+			if(batteryComponent == null)
+				return;
+			ItemStack battery = batteryComponent.batteryStack();
+			int newEnergy = DiamondBatteryItem.getEnergy(battery)-energy;
+			if(newEnergy < 0)
+				newEnergy = 0;
+
+			DiamondBatteryItem.setEnergy(battery, newEnergy);
+			stack.set(DataComponentInit.BATTERY, new DiamondBatteryComponent(battery));
+		}
+	}
+
+	@Override
+	public int getMaximumEnergy(MedusaSource source, Level level)
+	{
+		ItemStack stack = this.getItem();
+		if(stack != null && stack.has(DataComponentInit.BATTERY))
+		{
+			DiamondBatteryComponent component = stack.get(DataComponentInit.BATTERY);
+			if(component != null)
+				return DiamondBatteryItem.getMaximumEnergy(component.batteryStack());
+		}
+		return 0;
 	}
 
 	@Override

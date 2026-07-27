@@ -13,6 +13,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.init.DataComponentInit;
+import net.mistersecret312.stonemedusa.medusa.components.MedusaComponent;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -24,7 +25,7 @@ public class DiamondBatteryItem extends Item implements IBorderCustom
         super(pProperties);
     }
 
-    @Override
+	@Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected)
     {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
@@ -59,7 +60,18 @@ public class DiamondBatteryItem extends Item implements IBorderCustom
     {
         ItemStack stack = new ItemStack(item);
         setEnergy(stack, energy);
+        setMaximumEnergy(stack, energy);
         return stack;
+    }
+
+    public static int getMaximumEnergy(ItemStack stack)
+    {
+        return stack.getOrDefault(DataComponentInit.MAX_ENERGY, MedusaConfig.medusa_max_energy.get());
+    }
+
+    public static void setMaximumEnergy(ItemStack stack, int energy)
+    {
+        stack.set(DataComponentInit.MAX_ENERGY, energy);
     }
 
     public static int getEnergy(ItemStack stack)
@@ -75,14 +87,18 @@ public class DiamondBatteryItem extends Item implements IBorderCustom
     @Override
     public int getNameColor(ItemStack stack)
     {
-        float percentage = 1 - getEnergy(stack) / MedusaConfig.medusa_max_energy.get().floatValue();
+        float maxEnergy = getMaximumEnergy(stack);
+
+        float percentage = 1 - getEnergy(stack) / maxEnergy;
 		return FastColor.ARGB32.lerp(percentage, 0xff00aeff, 0xff8c8c8c);
     }
 
     @Override
     public Pair<Integer, Integer> getBorderColors(ItemStack stack)
     {
-        float percentage = 1 - DiamondBatteryItem.getEnergy(stack) / MedusaConfig.medusa_max_energy.get().floatValue();
+        float maxEnergy = getMaximumEnergy(stack);
+
+        float percentage = 1 - getEnergy(stack) / maxEnergy;
         int colorStart = FastColor.ARGB32.lerp(percentage, 0xff00aeff, 0xff8c8c8c);
         int colorEnd = FastColor.ARGB32.lerp(percentage, 0xff00628c, 0xff595959);
 

@@ -17,6 +17,7 @@ import net.mistersecret312.stonemedusa.init.BeamSourceInit;
 import net.mistersecret312.stonemedusa.init.DataComponentInit;
 import net.mistersecret312.stonemedusa.medusa.IMedusa;
 import net.mistersecret312.stonemedusa.medusa.MedusaSettings;
+import net.mistersecret312.stonemedusa.medusa.design.MedusaDesign;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.joml.Vector3f;
@@ -68,10 +69,12 @@ public record InventorySource(MedusaSource parent, int slot) implements MedusaSo
         }
         else if(parent instanceof PlayerSource(UUID playerId))
         {
-            Entity player = level.getPlayerByUUID(playerId);
+            Player player = level.getPlayerByUUID(playerId);
             if(player == null)
                 return null;
             handler = player.getCapability(Capabilities.ItemHandler.ENTITY, null);
+            if(slot == -1 && player.containerMenu.getCarried().getItem() instanceof IMedusa medusa)
+                return medusa;
         }
 
         if (handler != null && slot < handler.getSlots())
@@ -104,6 +107,8 @@ public record InventorySource(MedusaSource parent, int slot) implements MedusaSo
             if(player == null)
                 return null;
             handler = player.getCapability(Capabilities.ItemHandler.ENTITY, null);
+            if(slot == -1 && player.containerMenu.getCarried().getItem() instanceof IMedusa)
+                return player.containerMenu.getCarried();
         }
 
         if (handler != null && slot < handler.getSlots())
@@ -134,9 +139,13 @@ public record InventorySource(MedusaSource parent, int slot) implements MedusaSo
         else if(parent instanceof PlayerSource(UUID playerId))
         {
             Player player = level.getPlayerByUUID(playerId);
-            if(player == null)
-                return;
+            if(player == null) return;
             handler = player.getCapability(Capabilities.ItemHandler.ENTITY, null);
+            if(slot == -1 && player.containerMenu.getCarried().getItem() instanceof IMedusa)
+            {
+                ItemStack stack = player.containerMenu.getCarried();
+                stack.set(DataComponentInit.IS_ACTIVE, !stack.getOrDefault(DataComponentInit.IS_ACTIVE, false));
+            }
         }
 
         if (handler != null && slot < handler.getSlots())
@@ -144,6 +153,7 @@ public record InventorySource(MedusaSource parent, int slot) implements MedusaSo
             ItemStack stack = handler.getStackInSlot(slot);
             if (stack.getItem() instanceof IMedusa)
                 stack.set(DataComponentInit.IS_ACTIVE, !stack.getOrDefault(DataComponentInit.IS_ACTIVE, false));
+            parent.notifyClient(level);
         }
     }
 

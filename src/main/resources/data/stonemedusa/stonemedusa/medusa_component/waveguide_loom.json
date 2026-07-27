@@ -1,0 +1,23 @@
+{
+  "name": "waveguide_loom",
+  "type": "wiring",
+  "max_integrity": 25000,
+  "modifiers": [
+    {
+      "attribute": "energy_efficiency",
+      "amount": -5,
+      "operation": "add",
+      "integrity_component": "wiring",
+      "min_integrity": 0.0,
+      "max_integrity": 0.75
+    },
+    {
+      "attribute": "energy_drain",
+      "amount": -1,
+      "operation": "add",
+      "integrity_component": "hull",
+      "min_integrity": 0.0,
+      "max_integrity": 0.75
+    }
+  ]
+}

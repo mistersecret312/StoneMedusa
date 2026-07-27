@@ -1,0 +1,12 @@
+{
+  "structures": [
+    {
+      "structure": "stonemedusa:medusa_pyramid",
+      "weight": 1
+    }
+  ],
+  "placement": {
+     "salt": 15524351,
+    "type": "stonemedusa:medusa_pyramid_placement"
+  }
+}

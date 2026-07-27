@@ -1,0 +1,28 @@
+{
+  "name": "whyman",
+  "hull":
+  {
+    "id": "stonemedusa:mobius_chassis",
+    "repair_ingredients":
+    [
+      {
+        "ingredient": {
+          "item":"stonemedusa:mobius_plating"
+        },
+        "percentage": 0.25
+      }
+    ]
+  },
+  "wiring":
+  {
+    "id": "stonemedusa:waveguide_loom"
+  },
+  "battery_slot":
+  {
+    "id": "stonemedusa:receptacle_housing"
+  },
+  "focal_point":
+  {
+    "id": "stonemedusa:spatial_aperture"
+  }
+}

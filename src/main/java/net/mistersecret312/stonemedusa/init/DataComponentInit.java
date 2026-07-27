@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.mistersecret312.stonemedusa.data_components.DiamondBatteryComponent;
@@ -21,6 +22,9 @@ public class DataComponentInit
 
 	public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> ENERGY =
 			register("energy", builder -> builder.persistent(Codec.INT));
+	public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> MAX_ENERGY =
+			register("max_energy", builder -> builder.persistent(Codec.INT));
+
 
 	public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> IS_ACTIVE =
 			register("is_active", builder -> builder.persistent(Codec.BOOL));
@@ -31,6 +35,8 @@ public class DataComponentInit
 			register("tick_delay", builder -> builder.persistent(Codec.INT));
 
 
+	public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>> MEDUSA_DESIGN =
+			register("medusa_design", builder -> builder.persistent(ResourceLocation.CODEC));
 	public static final DeferredHolder<DataComponentType<?>, DataComponentType<UUID>> DEVICE_ID =
 			register("device_id", builder -> builder.persistent(UUIDUtil.CODEC));
 	public static final DeferredHolder<DataComponentType<?>, DataComponentType<DiamondBatteryComponent>> BATTERY =

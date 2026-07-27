@@ -15,7 +15,7 @@ public class DiamondBatteryItemProperty implements ClampedItemPropertyFunction
     public float unclampedCall(@NotNull ItemStack stack, @Nullable ClientLevel pLevel, @Nullable LivingEntity pEntity, int pSeed)
     {
         int energy = DiamondBatteryItem.getEnergy(stack);
-        int maxEnergy = MedusaConfig.medusa_max_energy.get();
+        int maxEnergy = DiamondBatteryItem.getMaximumEnergy(stack);
         if(energy > maxEnergy*0.75f && energy <= maxEnergy)
             return 1f;
         if(energy > maxEnergy*0.5f && energy <= maxEnergy*0.75f)

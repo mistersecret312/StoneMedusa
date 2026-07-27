@@ -10,18 +10,26 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.data_attachment.PetrificationAttachment;
 import net.mistersecret312.stonemedusa.init.AttachmentTypeInit;
 import net.mistersecret312.stonemedusa.init.BeamTypeInit;
+import net.mistersecret312.stonemedusa.init.TagsInit;
+import net.mistersecret312.stonemedusa.medusa.components.MedusaComponentType;
+import net.mistersecret312.stonemedusa.medusa.source.InventorySource;
 import net.mistersecret312.stonemedusa.medusa.source.MedusaSource;
+import net.mistersecret312.stonemedusa.util.MedusaUtil;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,6 +52,9 @@ public class MedusaBeam
 	private int delayTicker = -1;
 
 	private boolean markForRemoval;
+	public int attemptedScans = 0;
+
+	public boolean serverApproved = true;
 
 	private MedusaSettings settings;
 	private Vector3f prevPosition;
@@ -69,14 +80,33 @@ public class MedusaBeam
 			return;
 
 		IMedusa medusa = settings.source().resolve(level);
-		if (medusa != null)
+		if ((medusa != null) || (level.isClientSide() && serverApproved))
 		{
-			if (!level.isClientSide())
+			if (!level.isClientSide() && medusa != null)
 				medusa.beamTick(this, level);
+
 			this.setPosition(level, settings.source().providePosition(level));
 		}
 		else if (!level.isClientSide())
 		{
+			if(attemptedScans < 5)
+			{
+				AABB area = new AABB(new BlockPos((int) settings.position().x, (int) settings.position().y,
+						(int) settings.position().z)).inflate(10);
+				MedusaSource newSource = MedusaUtil.getSpecificSource(level, area, settings.uuid());
+				if(newSource != null)
+				{
+					setSource(newSource);
+					attemptedScans = 0;
+					serverApproved = true;
+					level.syncData(AttachmentTypeInit.MEDUSA);
+					return;
+				}
+				serverApproved = false;
+				attemptedScans++;
+				return;
+			}
+
 			markForRemoval(level);
 			return;
 		}
@@ -95,14 +125,25 @@ public class MedusaBeam
 		if (finalExpansionTick == Integer.MAX_VALUE && !level.isClientSide())
 			end(level);
 
-		if (expansionTick <= finalExpansionTick + 40)
+		MedusaHandler handler = level.getData(AttachmentTypeInit.MEDUSA).getMedusaHandlers().get(settings.source().getMedusaUUID(level));
+		handler.damageComponent(MedusaComponentType.HULL, 1);
+
+		if (expansionTick <= finalExpansionTick + MedusaConfig.medusa_idle_time.get())
 		{
+			handler.damageComponent(MedusaComponentType.WIRING, 1);
+
 			expand(settings.speed());
 			expansionTick++;
-		} else if (shrinkingTick == 0)
+		}
+		else if (shrinkingTick == 0)
 		{
-			shrinkingTick = expansionTick - 40;
+			shrinkingTick = expansionTick - MedusaConfig.medusa_idle_time.get();
 			this.reachedMaxRadius = true;
+			PetrifiedArea area = new PetrifiedArea(new Vec2(settings.position().x, settings.position().z),
+					settings.dimension(), settings.radius(),
+					level.getGameTime()+expansionTick+(long) (240*settings.radius()),
+					new HashSet<>(), true);
+			level.getData(AttachmentTypeInit.MEDUSA).addPetrifiedArea(level, area);
 		}
 
 		if (shrinkingTick != 0)
@@ -133,6 +174,10 @@ public class MedusaBeam
 		IMedusa medusa = settings.source().resolve(level);
 		if(medusa != null)
 		{
+			MedusaHandler handler = level.getData(AttachmentTypeInit.MEDUSA).getMedusaHandlers().get(settings.source().getMedusaUUID(level));
+			handler.damageComponent(MedusaComponentType.FOCAL_POINT, 1);
+			handler.damageComponent(MedusaComponentType.BATTERY_SLOT, 10);
+
 			this.consumeEnergy(level, medusa);
 			medusa.beamStart(this, level);
 		}
@@ -163,6 +208,8 @@ public class MedusaBeam
 			}
 			if(petrifiedBefore.contains(living.getUUID()))
 				continue;
+			if(living.getType().is(TagsInit.Entity.PETRIFICATION_IMMUNE))
+				continue;
 
 			Vector3f pos = new Vector3f(settings.position());
 			double distance = living.position().distanceTo(new Vec3(settings.position()));
@@ -182,7 +229,7 @@ public class MedusaBeam
 		int energy = medusa.getAvailableEnergy(this, level);
 		if(energy < 5*settings.radius())
 		{
-			settings = new MedusaSettings(energy/4d, settings.speed(), settings.color(),
+			settings = new MedusaSettings(energy/6d, settings.speed(), settings.color(),
 					settings.location(), settings.uuid(), settings.source());
 		}
 
@@ -195,8 +242,13 @@ public class MedusaBeam
 		return settings;
 	}
 
+
+
 	public void setPosition(Level level, MedusaSettings.MedusaPosition position)
 	{
+		if(position == null)
+			return;
+
 		this.prevPosition = settings.position();
 		this.settings = new MedusaSettings(settings.radius(), settings.speed(),
 				settings.color(), position, settings.uuid(), settings.source());
@@ -319,6 +371,7 @@ public class MedusaBeam
 		tag.putDouble("current_radius", currentRadius);
 		tag.putDouble("previous_radius", prevRadius);
 		tag.putBoolean("reached_max_radius", reachedMaxRadius);
+		tag.putBoolean("approved", serverApproved);
 
 		ListTag listTag = new ListTag();
 		for(UUID uuid : petrifiedBefore)
@@ -365,6 +418,7 @@ public class MedusaBeam
 		beam.currentRadius = tag.getDouble("current_radius");
 		beam.prevRadius = tag.getDouble("previous_radius");
 		beam.reachedMaxRadius = tag.getBoolean("reached_max_radius");
+		beam.serverApproved = tag.getBoolean("approved");
 
 		ListTag listTag = tag.getList("petrified_before", StringTag.TAG_STRING);
 		for(Tag stringtag : listTag)

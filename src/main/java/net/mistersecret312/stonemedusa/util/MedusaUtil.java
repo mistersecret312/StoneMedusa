@@ -14,6 +14,7 @@ import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.phys.AABB;
@@ -26,6 +27,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class MedusaUtil
 {
@@ -38,7 +40,7 @@ public class MedusaUtil
 		return new DamageSource(type);
 	}
 
-	public static List<MedusaSource> scanForMedusas(ServerLevel level, AABB area)
+	public static List<MedusaSource> scanForMedusas(Level level, AABB area)
 	{
 		List<MedusaSource> foundSources = new ArrayList<>();
 
@@ -69,7 +71,11 @@ public class MedusaUtil
 			{
 				MedusaSource source;
 				if(entity instanceof Player player)
+				{
 					source = new PlayerSource(player.getUUID());
+					if(player.containerMenu.getCarried().getItem() instanceof IMedusa)
+						foundSources.add(new InventorySource(source, -1));
+				}
 				else source = new EntitySource(entity.getUUID(), entity.getId());
 				scanItemHandler(level, itemHandler, source, foundSources);
 			}
@@ -93,7 +99,17 @@ public class MedusaUtil
 		return foundSources;
 	}
 
-	private static void scanItemHandler(ServerLevel level, IItemHandler handler, MedusaSource parentContext,
+	public static MedusaSource getSpecificSource(Level level, AABB area, UUID uuid)
+	{
+		List<MedusaSource> sources = scanForMedusas(level, area);
+		sources.removeIf(source -> source.getMedusaUUID(level) == null);
+		sources.removeIf(source -> !source.getMedusaUUID(level).equals(uuid));
+		if(sources.isEmpty())
+			return null;
+		return sources.getFirst();
+	}
+
+	private static void scanItemHandler(Level level, IItemHandler handler, MedusaSource parentContext,
 										List<MedusaSource> foundSources)
 	{
 		for(int slot = 0; slot < handler.getSlots(); slot++)

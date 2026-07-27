@@ -6,6 +6,11 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.gossip.GossipType;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -57,12 +62,7 @@ public class ThrownRevivalFluidEntity extends ThrowableItemProjectile
 	@Override
 	public boolean hurt(DamageSource source, float amount)
 	{
-		AABB aabb = this.getBoundingBox().inflate(2.0D, 2.0D, 2.0D);
-		this.level().levelEvent(2002, this.blockPosition(), 13409380);
-		List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, aabb);
-		for (LivingEntity living : list)
-			living.getData(AttachmentTypeInit.PETRIFICATION.get()).startDepetrification(living);
-		discard();
+		onHit(new EntityHitResult(this));
 		return true;
 	}
 
@@ -73,18 +73,17 @@ public class ThrownRevivalFluidEntity extends ThrowableItemProjectile
 		this.level().levelEvent(2002, this.blockPosition(), 13409380);
 		List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, aabb);
 		for (LivingEntity living : list)
+		{
 			living.getData(AttachmentTypeInit.PETRIFICATION.get()).startDepetrification(living);
+			if(this.getOwner() != null && living instanceof Villager villager)
+				villager.getGossips().add(this.getOwner().getUUID(), GossipType.MAJOR_POSITIVE, 100);
+		}
 		discard();
 	}
 
 	@Override
 	protected void onHitEntity(EntityHitResult result)
 	{
-		AABB aabb = this.getBoundingBox().inflate(2.0D, 2.0D, 2.0D);
-		this.level().levelEvent(2002, this.blockPosition(), 13409380);
-		List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, aabb);
-		for (LivingEntity living : list)
-			living.getData(AttachmentTypeInit.PETRIFICATION.get()).startDepetrification(living);
-		discard();
+		onHit(result);
 	}
 }
