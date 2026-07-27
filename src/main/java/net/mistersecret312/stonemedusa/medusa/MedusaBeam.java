@@ -131,7 +131,7 @@ public class MedusaBeam
 
 		if (expansionTick <= finalExpansionTick + MedusaConfig.medusa_idle_time.get())
 		{
-			handler.damageComponent(MedusaComponentType.WIRING, 5);
+			handler.damageComponent(MedusaComponentType.WIRING, 1);
 
 			expand(settings.speed());
 			expansionTick++;
@@ -246,7 +246,7 @@ public class MedusaBeam
 		}
 
 		level.syncData(AttachmentTypeInit.MEDUSA);
-		medusa.consumeActivationEnergy(this, level, energyToUse));
+		medusa.consumeActivationEnergy(this, level, energyToUse);
 	}
 
 	public MedusaSettings getSettings()
