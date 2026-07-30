@@ -1,28 +1,22 @@
 package net.mistersecret312.stonemedusa.client.screens;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.phys.Vec2;
-import net.mistersecret312.stonemedusa.StoneMedusa;
-import net.mistersecret312.stonemedusa.client.screens.widgets.HexTileWidget;
+import net.mistersecret312.stonemedusa.client.screens.widgets.BaseHexTile;
+import net.mistersecret312.stonemedusa.client.screens.widgets.EndHexTile;
+import net.mistersecret312.stonemedusa.client.screens.widgets.StartHexTile;
 import net.mistersecret312.stonemedusa.menus.EngineeringTableMenu;
 import org.joml.Vector2d;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableMenu>
 {
-	public Map<Vector2d, HexTileWidget> tiles = new HashMap();
+	public Map<Vector2d, BaseHexTile> tiles = new HashMap();
 	public boolean solved = false;
 
 	public EngineeringScreen(EngineeringTableMenu menu, Inventory playerInventory, Component title)
@@ -35,7 +29,7 @@ public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableM
 	{
 		int x = (width) / 2;
 		int y = (height) / 2;
-		int radius = 2;
+		int radius = 3;
 		for (int c = -radius; c <= radius; c++)
 		{
 			int rStart = Math.max(-radius, -c - radius);
@@ -43,11 +37,35 @@ public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableM
 
 			for (int r = rStart; r <= rEnd; r++)
 			{
-				HexTileWidget widget = new HexTileWidget(x, y, r, c, radius, this);
-				this.addRenderableWidget(widget);
-				tiles.put(new Vector2d(r, c), widget);
+				BaseHexTile widget = new BaseHexTile(x, y, r, c, radius, this);
+				placeTile(r, c, widget);
 			}
 		}
+
+		placeTile(-2, -1, new StartHexTile(x,y,-2,-1, radius,this, 15));
+		placeTile(2, -3, new StartHexTile(x,y,2,-3, radius,this, 15));
+
+		placeTile(2, 1, new EndHexTile(x,y,2,1, radius,this, 10));
+		placeTile(-2, 3, new EndHexTile(x,y,-2,3, radius,this, 10));
+	}
+
+	public void placeTile(int row, int column, BaseHexTile newTile)
+	{
+		Vector2d coord = new Vector2d(row, column);
+		BaseHexTile oldTile = this.tiles.get(coord);
+
+		if (oldTile != null)
+		{
+			oldTile.disconnectFromNeighbors();
+			this.removeWidget(oldTile);
+		}
+
+		this.tiles.put(coord, newTile);
+
+		this.addRenderableWidget(newTile);
+		newTile.autoConnectToNeighbors();
+
+		this.solved = this.tiles.values().stream().filter(tile -> tile instanceof EndHexTile).allMatch(tile -> tile.signal == ((EndHexTile) tile).requiredSignal);
 	}
 
 	@Override
