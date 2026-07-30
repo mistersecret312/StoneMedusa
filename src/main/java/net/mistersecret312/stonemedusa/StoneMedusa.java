@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.mistersecret312.stonemedusa.client.MedusaBeamRenderers;
 import net.mistersecret312.stonemedusa.client.beams.DefaultBeamRenderer;
+import net.mistersecret312.stonemedusa.client.screens.EngineeringScreen;
 import net.mistersecret312.stonemedusa.client.tooltip.DiamondBatteryTooltipRenderer;
 import net.mistersecret312.stonemedusa.data_attachment.MedusaLevelAttachment;
 import net.mistersecret312.stonemedusa.entity.ThrownMedusaEntity;
@@ -26,6 +27,7 @@ import net.mistersecret312.stonemedusa.medusa.components.MedusaComponent;
 import net.mistersecret312.stonemedusa.medusa.components.MedusaComponentTemplate;
 import net.mistersecret312.stonemedusa.medusa.design.MedusaDesign;
 import net.mistersecret312.stonemedusa.medusa.source.EntitySource;
+import net.mistersecret312.stonemedusa.menus.EngineeringTableMenu;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -37,6 +39,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -57,6 +60,9 @@ public class StoneMedusa
 	{
 		ItemInit.register(modEventBus);
 		ItemTabInit.register(modEventBus);
+		BlockInit.register(modEventBus);
+		BlockEntityInit.register(modEventBus);
+		MenuInit.register(modEventBus);
 		EntityInit.register(modEventBus);
 		AttachmentTypeInit.register(modEventBus);
 		DataComponentInit.register(modEventBus);
@@ -174,6 +180,12 @@ public class StoneMedusa
 							ResourceLocation.fromNamespaceAndPath(MODID, "rendertype_petrification"),
 							DefaultVertexFormat.NEW_ENTITY),
 					shaderInstance -> petrificationInstance = shaderInstance);
+		}
+
+		@SubscribeEvent
+		public static void registerScreens(RegisterMenuScreensEvent event)
+		{
+			event.register(MenuInit.ENGINEERING_TABLE.get(), EngineeringScreen::new);
 		}
 	}
 }

@@ -33,6 +33,8 @@ public class ItemTabInit
 									 output.accept(ItemInit.WAVEGUIDE_FILAMENT);
 									 output.accept(ItemInit.CRYSTAL_RECEPTACLE);
 									 output.accept(ItemInit.SPATIAL_MANIFOLD);
+
+									 output.accept(BlockInit.ENGINEERING_TABLE.asItem());
 								 }).build());
 
 	public static void register(IEventBus bus)
