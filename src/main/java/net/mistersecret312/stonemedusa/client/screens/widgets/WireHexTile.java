@@ -31,4 +31,9 @@ public class WireHexTile extends BaseHexTile
 	{
 		return GRID_WIRE;
 	}
+
+	public TileType getType()
+	{
+		return TileType.WIRE;
+	}
 }

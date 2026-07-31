@@ -135,9 +135,31 @@ public class BaseHexTile extends AbstractWidget implements Renderable
 		this.updateSignal();
 	}
 
+	public boolean canConnectOnSpot()
+	{
+		for (HexDirection dir : HexDirection.values())
+		{
+			BaseHexTile neighbor = screen.tiles.get(new Vector2d(r + dir.dr, c + dir.dc));
+			if (neighbor == null || neighbor.getMaxInputs() == 0 && neighbor.getMaxOutputs() == 0)
+				continue;
+
+			if (neighbor.canAcceptOutput() && this.canAcceptInput())
+				return true;
+			else if (this.canAcceptOutput() && neighbor.canAcceptInput())
+				return true;
+		}
+
+		return false;
+	}
+
 	protected ResourceLocation getTexture()
 	{
 		return GRID;
+	}
+
+	public TileType getType()
+	{
+		return TileType.BLANK;
 	}
 
 	public void updateSignal()
@@ -189,14 +211,13 @@ public class BaseHexTile extends AbstractWidget implements Renderable
 	{
 		if(!isMouseOver(mouseX, mouseY))
 			return false;
+		if(this instanceof StartHexTile || this instanceof EndHexTile)
+			return false;
 
-		if(button == 0 && !(this instanceof StartHexTile) && !(this instanceof EndHexTile))
-			screen.placeTile(r,c, new WireHexTile(x, y, r, c, gridRadius, screen));
+		if(button == 0)
+			screen.placeTile(r,c, x, y, gridRadius, screen.activeTileType);
 		if(button == 1)
-		{
-			if(this instanceof WireHexTile)
-				screen.placeTile(r,c, new BaseHexTile(x, y, r, c, gridRadius, screen));
-		}
+			screen.placeTile(r, c, x, y, gridRadius, TileType.BLANK);
 		if(button == 2)
 			System.out.println("Position of tile - " + r + " " + c);
 		return true;

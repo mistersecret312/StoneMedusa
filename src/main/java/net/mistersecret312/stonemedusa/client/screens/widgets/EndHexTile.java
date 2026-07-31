@@ -33,6 +33,11 @@ public class EndHexTile extends BaseHexTile
 		return GRID_END;
 	}
 
+	public TileType getType()
+	{
+		return TileType.END;
+	}
+
 	@Override
 	protected void renderWidget(GuiGraphics graphics, int i, int i1, float v)
 	{

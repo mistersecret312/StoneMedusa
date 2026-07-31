@@ -30,6 +30,11 @@ public class StartHexTile extends BaseHexTile
 		return GRID_START;
 	}
 
+	public TileType getType()
+	{
+		return TileType.START;
+	}
+
 	@Override
 	public void updateSignal()
 	{

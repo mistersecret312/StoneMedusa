@@ -13,7 +13,8 @@ public class NetworkInit
 		final PayloadRegistrar registrar = event.registrar("1");
 
 		//Server
-
+		registrar.playToServer(ServerboundConsumeItemPacket.TYPE, ServerboundConsumeItemPacket.STREAM_CODEC,
+				ServerboundConsumeItemPacket::handle);
 
 		//Client
 

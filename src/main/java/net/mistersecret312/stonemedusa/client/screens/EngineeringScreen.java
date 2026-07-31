@@ -5,9 +5,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.mistersecret312.stonemedusa.client.screens.widgets.BaseHexTile;
-import net.mistersecret312.stonemedusa.client.screens.widgets.EndHexTile;
-import net.mistersecret312.stonemedusa.client.screens.widgets.StartHexTile;
+import net.minecraft.world.item.Items;
+import net.mistersecret312.stonemedusa.client.screens.widgets.*;
+import net.mistersecret312.stonemedusa.init.ItemInit;
 import net.mistersecret312.stonemedusa.menus.EngineeringTableMenu;
 import org.joml.Vector2d;
 
@@ -16,8 +16,11 @@ import java.util.Map;
 
 public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableMenu>
 {
-	public Map<Vector2d, BaseHexTile> tiles = new HashMap();
+	public Map<Vector2d, BaseHexTile> tiles = new HashMap<>();
+	public Map<TileType, TileTypeItemWidget> types = new HashMap<>();
 	public boolean solved = false;
+
+	public TileType activeTileType = TileType.BLANK;
 
 	public EngineeringScreen(EngineeringTableMenu menu, Inventory playerInventory, Component title)
 	{
@@ -42,11 +45,20 @@ public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableM
 			}
 		}
 
+		placeTypeButton(new TileTypeItemWidget(100, 100, Items.COPPER_INGOT,
+				TileType.WIRE, this));
+
 		placeTile(-2, -1, new StartHexTile(x,y,-2,-1, radius,this, 15));
 		placeTile(2, -3, new StartHexTile(x,y,2,-3, radius,this, 15));
 
 		placeTile(2, 1, new EndHexTile(x,y,2,1, radius,this, 10));
 		placeTile(-2, 3, new EndHexTile(x,y,-2,3, radius,this, 10));
+	}
+
+	public void placeTypeButton(TileTypeItemWidget typeWidget)
+	{
+		types.put(typeWidget.type, typeWidget);
+		addRenderableWidget(typeWidget);
 	}
 
 	public void placeTile(int row, int column, BaseHexTile newTile)
@@ -61,11 +73,30 @@ public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableM
 		}
 
 		this.tiles.put(coord, newTile);
-
 		this.addRenderableWidget(newTile);
 		newTile.autoConnectToNeighbors();
 
 		this.solved = this.tiles.values().stream().filter(tile -> tile instanceof EndHexTile).allMatch(tile -> tile.signal == ((EndHexTile) tile).requiredSignal);
+	}
+
+	public void placeTile(int row, int column, int x, int y, int radius, TileType type)
+	{
+		if(type == null)
+			return;
+
+		BaseHexTile tile = new BaseHexTile(x, y, row, column, radius, this);
+		if(type.equals(TileType.WIRE))
+			tile = new WireHexTile(x, y, row, column, radius, this);
+
+		if(!tile.canConnectOnSpot() && !(tile.getType().equals(TileType.BLANK)))
+			return;
+
+		TileTypeItemWidget typeWidget = this.types.get(type);
+		if(typeWidget == null || typeWidget.countItem() == 0)
+			return;
+
+		typeWidget.removeItem();
+		placeTile(row, column, tile);
 	}
 
 	@Override

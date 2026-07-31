@@ -11,9 +11,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.mistersecret312.stonemedusa.block_entities.EngineeringTableBlockEntity;
 import net.mistersecret312.stonemedusa.client.MedusaBeamRenderers;
 import net.mistersecret312.stonemedusa.client.beams.DefaultBeamRenderer;
 import net.mistersecret312.stonemedusa.client.screens.EngineeringScreen;
+import net.mistersecret312.stonemedusa.client.screens.EngineeringStorageScreen;
 import net.mistersecret312.stonemedusa.client.tooltip.DiamondBatteryTooltipRenderer;
 import net.mistersecret312.stonemedusa.data_attachment.MedusaLevelAttachment;
 import net.mistersecret312.stonemedusa.entity.ThrownMedusaEntity;
@@ -37,6 +39,8 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -72,6 +76,7 @@ public class StoneMedusa
 		StructurePlacementInit.register(modEventBus);
 
 		modEventBus.addListener(NetworkInit::registerPackets);
+		modEventBus.addListener(this::onRegisterCapabilities);
 		modEventBus.addListener(this::registerRegistries);
 		modEventBus.addListener(this::commonSetup);
 
@@ -90,6 +95,12 @@ public class StoneMedusa
 	{
 		event.register(BeamTypeInit.REGISTRY);
 		event.register(BeamSourceInit.REGISTRY);
+	}
+
+	public void onRegisterCapabilities(RegisterCapabilitiesEvent event)
+	{
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.ENGINEERING_TABLE.get(),
+				(blockEntity, side) -> blockEntity.getItemHandler(side));
 	}
 
 	public void commonSetup(FMLCommonSetupEvent event)
@@ -185,7 +196,8 @@ public class StoneMedusa
 		@SubscribeEvent
 		public static void registerScreens(RegisterMenuScreensEvent event)
 		{
-			event.register(MenuInit.ENGINEERING_TABLE.get(), EngineeringScreen::new);
+			event.register(MenuInit.ENGINEERING_RESEARCH.get(), EngineeringScreen::new);
+			event.register(MenuInit.ENGINEERING_STORAGE.get(), EngineeringStorageScreen::new);
 		}
 	}
 }
