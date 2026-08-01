@@ -17,7 +17,7 @@ public enum TileType implements StringRepresentable
 	SPLITTER("splitter"),
 	WIRE("wire");
 
-	public static final Codec<TileType> CODEC = StringRepresentable.fromEnum(TileType::values);
+	public static final EnumCodec<TileType> CODEC = StringRepresentable.fromEnum(TileType::values);
 
 	final String name;
 	final MapCodec<? extends TileData> codec;

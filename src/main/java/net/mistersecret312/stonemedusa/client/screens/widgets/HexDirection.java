@@ -1,19 +1,25 @@
 package net.mistersecret312.stonemedusa.client.screens.widgets;
 
-public enum HexDirection
-{
-    NORTH_EAST(1, -1),
-    EAST(1, 0),
-    SOUTH_EAST(0, 1),
-    SOUTH_WEST(-1, 1),
-    WEST(-1, 0),
-    NORTH_WEST(0, -1);
+import net.minecraft.util.StringRepresentable;
 
+public enum HexDirection implements StringRepresentable
+{
+    NORTH_EAST("north_east", 1, -1),
+    EAST("east", 1, 0),
+    SOUTH_EAST("south_east", 0, 1),
+    SOUTH_WEST("south_west", -1, 1),
+    WEST("west", -1, 0),
+    NORTH_WEST("north_west", 0, -1);
+
+    public static final EnumCodec<HexDirection> CODEC = StringRepresentable.fromEnum(HexDirection::values);
+
+    public final String name;
     public final int dc;
     public final int dr;
 
-    HexDirection(int dc, int dr)
+    HexDirection(String name, int dc, int dr)
     {
+        this.name = name;
         this.dc = dc;
         this.dr = dr;
     }
@@ -28,5 +34,11 @@ public enum HexDirection
             case WEST -> EAST;
             case NORTH_WEST -> SOUTH_EAST;
         };
+    }
+
+    @Override
+    public String getSerializedName()
+    {
+        return name;
     }
 }

@@ -15,6 +15,8 @@ public class NetworkInit
 		//Server
 		registrar.playToServer(ServerboundConsumeItemPacket.TYPE, ServerboundConsumeItemPacket.STREAM_CODEC,
 				ServerboundConsumeItemPacket::handle);
+		registrar.playToServer(ServerboundResearchProgressPacket.TYPE, ServerboundResearchProgressPacket.STREAM_CODEC,
+				ServerboundResearchProgressPacket::handle);
 
 		//Client
 

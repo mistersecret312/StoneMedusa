@@ -1,5 +1,6 @@
 package net.mistersecret312.stonemedusa.client.screens.widgets;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.mistersecret312.stonemedusa.client.screens.EngineeringScreen;
@@ -9,16 +10,15 @@ public class AoEBlockTile extends BaseHexTile
 	public static final ResourceLocation GRID_AOE_BLOCKER =
 			ResourceLocation.fromNamespaceAndPath(StoneMedusa.MODID, "textures/item/grid_aoe_blocker.png");
 
-	public AoEBlockTile(int x, int y, int row, int column, int radius, EngineeringScreen screen)
+	public AoEBlockTile(int x, int y, int row, int column, int radius, EngineeringScreen screen, CompoundTag tag)
 	{
-		super(x, y, row, column, radius, screen);
-
+		super(x, y, row, column, radius, screen, tag);
 		for(HexDirection direction : HexDirection.values())
 		{
 			int tileRow = row+direction.dr;
 			int tileColumn = column+direction.dc;
 			screen.placeTile(tileRow, tileColumn,
-					new BlockerHexTile(x, y, tileRow, tileColumn, radius, screen));
+					new BlockerHexTile(x, y, tileRow, tileColumn, radius, screen, new CompoundTag()), false);
 		}
 	}
 

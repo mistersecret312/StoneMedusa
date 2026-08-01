@@ -1,13 +1,14 @@
 package net.mistersecret312.stonemedusa.client.screens.widgets;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.nbt.CompoundTag;
 import net.mistersecret312.stonemedusa.client.screens.EngineeringScreen;
 
 public class RemoveHexTile extends BaseHexTile
 {
-	public RemoveHexTile(int x, int y, int row, int column, int radius, EngineeringScreen screen)
+	public RemoveHexTile(int x, int y, int row, int column, int radius, EngineeringScreen screen, CompoundTag tag)
 	{
-		super(x, y, row, column, radius, screen);
+		super(x, y, row, column, radius, screen, tag);
 	}
 
 	@Override

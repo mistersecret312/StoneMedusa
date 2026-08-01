@@ -1,5 +1,6 @@
 package net.mistersecret312.stonemedusa.client.screens.widgets;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.mistersecret312.stonemedusa.client.screens.EngineeringScreen;
@@ -9,9 +10,9 @@ public class BlockerHexTile extends BaseHexTile
 	public static final ResourceLocation GRID_BLOCKER =
 			ResourceLocation.fromNamespaceAndPath(StoneMedusa.MODID, "textures/item/grid_blocker.png");
 
-	public BlockerHexTile(int x, int y, int row, int column, int radius, EngineeringScreen screen)
+	public BlockerHexTile(int x, int y, int row, int column, int radius, EngineeringScreen screen, CompoundTag tag)
 	{
-		super(x, y, row, column, radius, screen);
+		super(x, y, row, column, radius, screen, tag);
 	}
 
 	@Override

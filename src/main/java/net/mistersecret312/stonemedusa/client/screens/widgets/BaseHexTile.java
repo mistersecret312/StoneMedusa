@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.mistersecret312.stonemedusa.StoneMedusa;
@@ -33,10 +34,10 @@ public class BaseHexTile extends AbstractWidget implements Renderable
 	int r,c;
 	int gridRadius;
 
-	protected Set<HexDirection> inputs = EnumSet.noneOf(HexDirection.class);
-	protected Set<HexDirection> outputs = EnumSet.noneOf(HexDirection.class);
+	public Set<HexDirection> inputs = EnumSet.noneOf(HexDirection.class);
+	public Set<HexDirection> outputs = EnumSet.noneOf(HexDirection.class);
 
-	public BaseHexTile(int x, int y, int row, int column, int radius, EngineeringScreen screen)
+	public BaseHexTile(int x, int y, int row, int column, int radius, EngineeringScreen screen, CompoundTag tag)
 	{
 		super(x, y, 16, 16, Component.empty());
 		this.x = x;
@@ -45,6 +46,26 @@ public class BaseHexTile extends AbstractWidget implements Renderable
 		this.c = column;
 		this.screen = screen;
 		this.gridRadius = radius;
+	}
+
+	public int getRow()
+	{
+		return r;
+	}
+
+	public int getColumn()
+	{
+		return c;
+	}
+
+	public Set<HexDirection> getInputs()
+	{
+		return inputs;
+	}
+
+	public Set<HexDirection> getOutputs()
+	{
+		return outputs;
 	}
 
 	@Override
@@ -94,6 +115,16 @@ public class BaseHexTile extends AbstractWidget implements Renderable
 		inputs.clear();
 		outputs.clear();
 		signal = 0;
+	}
+
+	public CompoundTag saveAdditional()
+	{
+		return new CompoundTag();
+	}
+
+	public void loadAdditional(CompoundTag tag)
+	{
+
 	}
 
 	public void disconnectFromNeighbors()
