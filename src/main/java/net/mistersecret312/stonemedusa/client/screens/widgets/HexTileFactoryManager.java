@@ -11,6 +11,7 @@ public class HexTileFactoryManager
 	{
 		FACTORIES.put(TileType.BLANK, BaseHexTile::new);
 		FACTORIES.put(TileType.AOE_BLOCKER, AoEBlockTile::new);
+		FACTORIES.put(TileType.BOOSTER, BoosterHexTile::new);
 		FACTORIES.put(TileType.BLOCKER, BlockerHexTile::new);
 		FACTORIES.put(TileType.END, EndHexTile::new);
 		FACTORIES.put(TileType.REMOVED, RemoveHexTile::new);
