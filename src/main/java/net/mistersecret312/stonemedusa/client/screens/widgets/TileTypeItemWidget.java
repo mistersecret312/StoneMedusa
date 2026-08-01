@@ -19,9 +19,9 @@ public class TileTypeItemWidget extends AbstractWidget implements Renderable
 {
 	public final EngineeringScreen screen;
 	public final Item item;
-	public final TileType type;
+	public final TilePlacement type;
 
-	public TileTypeItemWidget(int x, int y, Item item, TileType type, EngineeringScreen screen)
+	public TileTypeItemWidget(int x, int y, Item item, TilePlacement type, EngineeringScreen screen)
 	{
 		super(x, y, 16, 16, Component.empty());
 		this.item = item;
@@ -36,7 +36,7 @@ public class TileTypeItemWidget extends AbstractWidget implements Renderable
 			return false;
 
 		if(this.screen.activeTileType.equals(type))
-			this.screen.activeTileType = TileType.BLANK;
+			this.screen.activeTileType = TilePlacement.BLANK;
 		else this.screen.activeTileType = type;
 
 		return true;

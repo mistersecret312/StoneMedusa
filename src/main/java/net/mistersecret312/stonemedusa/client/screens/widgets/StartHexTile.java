@@ -21,7 +21,7 @@ public class StartHexTile extends BaseHexTile
 	@Override
 	public int getMaxOutputs()
 	{
-		return 6;
+		return 1;
 	}
 
 	@Override

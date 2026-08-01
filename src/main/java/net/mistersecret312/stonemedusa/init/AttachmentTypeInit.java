@@ -6,6 +6,7 @@ import net.minecraft.world.level.Level;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.mistersecret312.stonemedusa.data_attachment.MedusaLevelAttachment;
 import net.mistersecret312.stonemedusa.data_attachment.PetrificationAttachment;
+import net.mistersecret312.stonemedusa.data_attachment.ResearchAttachment;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -41,6 +42,29 @@ public class AttachmentTypeInit
 											}
 										})
 										.sync(PetrificationAttachment.STREAM_CODEC)
+										.build());
+
+	public static final DeferredHolder<AttachmentType<?>, AttachmentType<ResearchAttachment>> RESEARCH =
+			ATTACHMENT_TYPES.register("research",
+					() -> AttachmentType.builder(ResearchAttachment::new)
+										.serialize(new IAttachmentSerializer<CompoundTag, ResearchAttachment>() {
+											@Override
+											public ResearchAttachment read(IAttachmentHolder holder, CompoundTag tag,
+																				HolderLookup.Provider provider)
+											{
+												ResearchAttachment capability = new ResearchAttachment();
+												capability.deserializeNBT(provider, tag);
+												return capability;
+											}
+
+											@Override
+											public @Nullable CompoundTag write(ResearchAttachment attachment,
+																			   HolderLookup.Provider provider)
+											{
+												return attachment.serializeNBT(provider);
+											}
+										})
+										.sync(ResearchAttachment.STREAM_CODEC)
 										.build());
 
 	public static final DeferredHolder<AttachmentType<?>, AttachmentType<MedusaLevelAttachment>> MEDUSA =

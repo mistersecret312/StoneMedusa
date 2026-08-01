@@ -182,6 +182,9 @@ public class MedusaItem extends Item implements IMedusa,IBorderCustom
 		if(handler == null)
 			return;
 
+		if(true)
+			return;
+
 		for(MedusaComponent component : handler.components.values())
 		{
 			Component text = Component.literal(component.getComponentID()).append(" - " + percentage.format(component.getIntegrityPercentage()));

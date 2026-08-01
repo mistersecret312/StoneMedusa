@@ -300,7 +300,7 @@ public class BaseHexTile extends AbstractWidget implements Renderable
 			return false;
 
 		if(button == 0)
-			screen.placeTile(r,c, x, y, gridRadius, screen.activeTileType);
+			screen.placeTile(r,c, x, y, gridRadius, screen.activeTileType.tileType);
 		if(button == 1)
 			screen.placeTile(r, c, x, y, gridRadius, TileType.BLANK);
 		if(button == 2)

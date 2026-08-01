@@ -30,6 +30,7 @@ import net.mistersecret312.stonemedusa.medusa.components.MedusaComponentTemplate
 import net.mistersecret312.stonemedusa.medusa.design.MedusaDesign;
 import net.mistersecret312.stonemedusa.medusa.source.EntitySource;
 import net.mistersecret312.stonemedusa.menus.EngineeringTableMenu;
+import net.mistersecret312.stonemedusa.research.ResearchEntry;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -84,6 +85,7 @@ public class StoneMedusa
 			{
 				event.dataPackRegistry(MedusaDesign.REGISTRY_KEY, MedusaDesign.CODEC, MedusaDesign.CODEC);
 				event.dataPackRegistry(MedusaComponentTemplate.REGISTRY_KEY, MedusaComponentTemplate.CODEC, MedusaComponentTemplate.CODEC);
+				event.dataPackRegistry(ResearchEntry.REGISTRY_KEY, ResearchEntry.CODEC, ResearchEntry.CODEC);
 			});
 		modContainer.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG, "stonemedusa-client.toml");
 		modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG, "stonemedusa-common.toml");

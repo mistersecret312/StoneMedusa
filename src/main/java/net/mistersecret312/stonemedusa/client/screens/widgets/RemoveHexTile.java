@@ -19,7 +19,7 @@ public class RemoveHexTile extends BaseHexTile
 	@Override
 	public TileType getType()
 	{
-		return TileType.REMOVE;
+		return TileType.REMOVED;
 	}
 
 	@Override

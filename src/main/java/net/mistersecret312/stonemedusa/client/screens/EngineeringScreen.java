@@ -3,11 +3,17 @@ package net.mistersecret312.stonemedusa.client.screens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Items;
+import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.mistersecret312.stonemedusa.client.screens.widgets.*;
 import net.mistersecret312.stonemedusa.menus.EngineeringTableMenu;
+import net.mistersecret312.stonemedusa.research.ResearchEntry;
+import net.mistersecret312.stonemedusa.research.tiles.*;
 import org.joml.Vector2d;
 
 import java.util.HashMap;
@@ -18,12 +24,18 @@ public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableM
 	public Map<Vector2d, BaseHexTile> tiles = new HashMap<>();
 	public Map<TileType, TileTypeItemWidget> types = new HashMap<>();
 	public boolean solved = false;
+	public ResearchEntry activeEntry;
 
-	public TileType activeTileType = TileType.BLANK;
+	public TilePlacement activeTileType = TilePlacement.BLANK;
 
 	public EngineeringScreen(EngineeringTableMenu menu, Inventory playerInventory, Component title)
 	{
 		super(menu, playerInventory, title);
+		RegistryAccess registryAccess = menu.blockEntity.getLevel().registryAccess();
+		Registry<ResearchEntry> registry = registryAccess.registryOrThrow(ResearchEntry.REGISTRY_KEY);
+		ResearchEntry entry = registry.get(ResourceLocation.fromNamespaceAndPath(StoneMedusa.MODID, "basic"));
+		if(entry != null)
+			activeEntry = entry;
 	}
 
 	@Override
@@ -32,44 +44,46 @@ public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableM
 		tiles.clear();
 		types.clear();
 		solved = false;
-		activeTileType = TileType.BLANK;
+		activeTileType = TilePlacement.BLANK;
 
-		int x = (width) / 2;
-		int y = (height) / 2;
-		int radius = 3;
-		for (int c = -radius; c <= radius; c++)
+		RegistryAccess registryAccess = menu.blockEntity.getLevel().registryAccess();
+		Registry<ResearchEntry> registry = registryAccess.registryOrThrow(ResearchEntry.REGISTRY_KEY);
+		ResearchEntry entry = registry.get(ResourceLocation.fromNamespaceAndPath(StoneMedusa.MODID, "basic"));
+		if(entry != null)
 		{
-			int rStart = Math.max(-radius, -c - radius);
-			int rEnd = Math.min(radius, -c + radius);
-
-			for (int r = rStart; r <= rEnd; r++)
+			int x = (width) / 2;
+			int y = (height) / 2;
+			int radius = entry.grid().radius();
+			for (int c = -radius; c <= radius; c++)
 			{
-				BaseHexTile widget = new BaseHexTile(x, y, r, c, radius, this);
-				placeTile(r, c, widget);
+				int rStart = Math.max(-radius, -c - radius);
+				int rEnd = Math.min(radius, -c + radius);
+
+				for (int r = rStart; r <= rEnd; r++)
+				{
+					BaseHexTile widget = new BaseHexTile(x, y, r, c, radius, this);
+					placeTile(r, c, widget);
+				}
 			}
+
+			for(GridTile tile : entry.grid().tiles())
+				placeTile(tile.row(), tile.column(), x, y, radius, tile.tileData());
 		}
 
+
 		placeTypeButton(new TileTypeItemWidget(100, 100, Items.COPPER_INGOT,
-				TileType.WIRE, this));
+				TilePlacement.WIRE, this));
 		placeTypeButton(new TileTypeItemWidget(100, 126, Items.IRON_INGOT,
-				TileType.PLATE, this));
+				TilePlacement.PLATE, this));
 		placeTypeButton(new TileTypeItemWidget(100, 152, Items.GOLD_INGOT,
-				TileType.BOOSTER, this));
+				TilePlacement.BOOSTER, this));
 		placeTypeButton(new TileTypeItemWidget(100, 178, Items.DIAMOND,
-				TileType.SPLITTER, this));
-
-		placeTile(0, 0, new AoEBlockTile(x, y, 0, 0, radius, this));
-
-		placeTile(-2, -1, new StartHexTile(x,y,-2,-1, radius,this, 15));
-		placeTile(2, -3, new StartHexTile(x,y,2,-3, radius,this, 15));
-
-		placeTile(2, 1, new EndHexTile(x,y,2,1, radius,this, 20));
-		placeTile(-2, 3, new EndHexTile(x,y,-2,3, radius,this, 25));
+				TilePlacement.SPLITTER, this));
 	}
 
 	public void placeTypeButton(TileTypeItemWidget typeWidget)
 	{
-		types.put(typeWidget.type, typeWidget);
+		types.put(typeWidget.type.getTileType(), typeWidget);
 		addRenderableWidget(typeWidget);
 	}
 
@@ -97,9 +111,32 @@ public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableM
 		this.solved = this.tiles.values().stream().filter(tile -> tile instanceof EndHexTile).allMatch(tile -> tile.signal == ((EndHexTile) tile).requiredSignal);
 	}
 
+	public void placeTile(int row, int column, int x, int y, int radius, TileData data)
+	{
+		switch(data)
+		{
+			case StartTileData(int strength) ->
+			{
+				StartHexTile tile = new StartHexTile(x, y, row, column, radius, this, strength);
+				placeTile(row, column, tile);
+			}
+			case EndTileData(int required) ->
+			{
+				EndHexTile tile = new EndHexTile(x, y, row, column, radius, this, required);
+				placeTile(row, column, tile);
+			}
+			case BoosterTileData(int amount) ->
+			{
+				BoosterHexTile tile = new BoosterHexTile(x, y, row, column, radius, this, amount);
+				placeTile(row, column, tile);
+			}
+			default -> placeTile(row, column, x, y, radius, data.getType());
+		}
+	}
+
 	public void placeTile(int row, int column, int x, int y, int radius, TileType type)
 	{
-		if(type == null || type.equals(TileType.PLATE))
+		if(type == null)
 			return;
 
 		BaseHexTile tile = new BaseHexTile(x, y, row, column, radius, this);

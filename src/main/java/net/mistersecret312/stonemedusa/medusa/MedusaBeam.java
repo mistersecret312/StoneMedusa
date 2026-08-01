@@ -126,13 +126,19 @@ public class MedusaBeam
 		if (finalExpansionTick == Integer.MAX_VALUE && !level.isClientSide())
 			end(level);
 
-		MedusaHandler handler = getHandler(level);
-		handler.damageComponent(MedusaComponentType.HULL, 1);
-
+		if(!level.isClientSide())
+		{
+			MedusaHandler handler = getHandler(level);
+			if(handler != null)
+				handler.damageComponent(MedusaComponentType.HULL, 1);
+		}
 		if (expansionTick <= finalExpansionTick + MedusaConfig.medusa_idle_time.get())
 		{
-			handler.damageComponent(MedusaComponentType.WIRING, 1);
-
+			if(!level.isClientSide())
+			{
+				MedusaHandler handler = getHandler(level);
+				if(handler != null) handler.damageComponent(MedusaComponentType.WIRING, 1);
+			}
 			expand(settings.speed());
 			expansionTick++;
 		}
@@ -175,11 +181,17 @@ public class MedusaBeam
 		IMedusa medusa = settings.source().resolve(level);
 		if(medusa != null)
 		{
-			MedusaHandler handler = getHandler(level);
-			handler.damageComponent(MedusaComponentType.FOCAL_POINT, 1);
-			handler.damageComponent(MedusaComponentType.BATTERY_SLOT, 10);
+			if(!level.isClientSide())
+			{
+				MedusaHandler handler = getHandler(level);
+				if(handler != null)
+				{
+					handler.damageComponent(MedusaComponentType.FOCAL_POINT, 1);
+					handler.damageComponent(MedusaComponentType.BATTERY_SLOT, 10);
+				}
+				this.consumeEnergy(level, medusa);
+			}
 
-			this.consumeEnergy(level, medusa);
 			medusa.beamStart(this, level);
 		}
 	}
@@ -228,15 +240,21 @@ public class MedusaBeam
 	public<T extends IMedusa> void consumeEnergy(Level level, T medusa)
 	{
 		MedusaHandler handler = getHandler(level);
+		if(handler == null)
+			return;
+
 		int energy = medusa.getAvailableEnergy(this, level);
-		double energyFactor = 5d/handler.getAttribute(MedusaAttribute.ENERGY_EFFICIENCY);
-		int energyToUse = (int) (energyFactor*settings.radius());
+		double energyFactor = 5d*handler.getAttribute(MedusaAttribute.ENERGY_EFFICIENCY);
+		int energyToUse = Math.min(1, (int) (energyFactor*settings.radius()));
 
 		double maxEnergyUsage = handler.getAttribute(MedusaAttribute.MAX_ENERGY_FLUX)*medusa.getMaximumEnergy(settings.source(), level);
 		if(energyToUse > maxEnergyUsage)
 		{
-				settings = new MedusaSettings(maxEnergyUsage/energyFactor, settings.speed(), settings.color(),
-						settings.location(), settings.uuid(), settings.source());
+			if(maxEnergyUsage == 0)
+				end(level);
+
+			settings = new MedusaSettings(maxEnergyUsage/energyFactor, settings.speed(), settings.color(),
+					settings.location(), settings.uuid(), settings.source());
 		}
 
 		if(energy < energyToUse)
@@ -256,7 +274,10 @@ public class MedusaBeam
 
 	public MedusaHandler getHandler(Level level)
 	{
-		return level.getData(AttachmentTypeInit.MEDUSA).getMedusaHandlers().get(settings.source().getMedusaUUID(level));
+		UUID uuid = settings.source().getMedusaUUID(level);
+		if(uuid != null)
+			return level.getData(AttachmentTypeInit.MEDUSA).getMedusaHandlers().get(uuid);
+		else return null;
 	}
 
 	public void setPosition(Level level, MedusaSettings.MedusaPosition position)

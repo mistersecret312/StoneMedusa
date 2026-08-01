@@ -32,7 +32,7 @@ public class BlockerHexTile extends BaseHexTile
 		if(!isMouseOver(mouseX, mouseY))
 			return false;
 
-		if(screen.activeTileType.equals(TileType.PLATE))
+		if(screen.activeTileType.equals(TilePlacement.PLATE))
 		{
 			screen.placeTile(r, c, x, y, gridRadius, TileType.BLANK);
 			return true;
