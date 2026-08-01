@@ -46,4 +46,10 @@ public class StartHexTile extends BaseHexTile
 				target.updateSignal();
 		}
 	}
+
+	@Override
+	public boolean handlesSignal()
+	{
+		return true;
+	}
 }

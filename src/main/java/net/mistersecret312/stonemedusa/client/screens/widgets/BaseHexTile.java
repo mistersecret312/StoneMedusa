@@ -1,5 +1,6 @@
 package net.mistersecret312.stonemedusa.client.screens.widgets;
 
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -12,12 +13,19 @@ import net.mistersecret312.stonemedusa.client.screens.EngineeringScreen;
 import org.joml.Vector2d;
 
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 
 public class BaseHexTile extends AbstractWidget implements Renderable
 {
 	public static final ResourceLocation GRID =
 			ResourceLocation.fromNamespaceAndPath(StoneMedusa.MODID, "textures/item/grid_1.png");
+
+	public static final ResourceLocation GRID_CONNECTION_HORIZONTAL =
+			ResourceLocation.fromNamespaceAndPath(StoneMedusa.MODID, "textures/item/grid_connection_horizontal.png");
+	public static final ResourceLocation GRID_CONNECTION_DIAGONAL =
+			ResourceLocation.fromNamespaceAndPath(StoneMedusa.MODID, "textures/item/grid_connection_diagonal.png");
+
 	public final EngineeringScreen screen;
 
 	public int signal = 0;
@@ -173,13 +181,35 @@ public class BaseHexTile extends AbstractWidget implements Renderable
 
 		}
 
-		this.signal = Math.max(0, maxIncoming - 1);
+		this.signal = Math.max(0, modifySignal(maxIncoming));
+		for(HexDirection direction : HexDirection.values())
+		{
+			BaseHexTile otherTile = screen.tiles.get(new Vector2d(r+direction.dr, c+direction.dc));
+			if(otherTile != null)
+				this.signal = otherTile.modifyNeighbourSignal(this.signal, direction);
+		}
+
 		for (HexDirection outDir : outputs)
 		{
 			BaseHexTile target = screen.tiles.get(new Vector2d(r + outDir.dr, c + outDir.dc));
 			if (target != null)
 				target.updateSignal();
 		}
+	}
+
+	public int modifySignal(int signal)
+	{
+		return signal-1;
+	}
+
+	public int modifyNeighbourSignal(int signal, HexDirection direction)
+	{
+		return signal;
+	}
+
+	public boolean handlesSignal()
+	{
+		return false;
 	}
 
 	@Override
@@ -202,8 +232,63 @@ public class BaseHexTile extends AbstractWidget implements Renderable
 	{
 		graphics.blit(getTexture(), getX()-8, getY()-8, 0, 0,
 				16, 16, 16, 16);
-		graphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(signal),
-				getX(), getY()-4, 0xFFFFFF);
+		if(handlesSignal())
+		{
+			graphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(signal), getX(), getY() - 4,
+					0xFFFFFF);
+
+			Set<HexDirection> allConnections = new HashSet<>();
+			allConnections.addAll(inputs);
+			allConnections.addAll(outputs);
+
+			for(HexDirection direction : allConnections)
+			{
+				graphics.pose().pushPose();
+
+				if(direction.equals(HexDirection.EAST))
+					graphics.blit(GRID_CONNECTION_HORIZONTAL, getX()-8, getY()-8, 0, 0, 16, 16,
+							16, 16);
+				if(direction.equals(HexDirection.WEST))
+				{
+					graphics.pose().translate(getX()-8, getY()-8, 0);
+					graphics.pose().translate(16, 16, 0);
+					graphics.pose().mulPose(Axis.ZP.rotationDegrees(180));
+					graphics.blit(GRID_CONNECTION_HORIZONTAL, 0, 0, 0, 0, 16, 16,
+							16, 16);
+				}
+
+				if(direction.equals(HexDirection.NORTH_EAST))
+					graphics.blit(GRID_CONNECTION_DIAGONAL, getX()-8, getY()-8, 0, 0, 16, 16,
+							16, 16);
+				if(direction.equals(HexDirection.SOUTH_WEST))
+				{
+					graphics.pose().translate(getX()-8, getY()-8, 0);
+					graphics.pose().translate(16, 16, 0);
+					graphics.pose().mulPose(Axis.ZP.rotationDegrees(180));
+					graphics.blit(GRID_CONNECTION_DIAGONAL, 0, 0, 0, 0, 16, 16,
+							16, 16);
+				}
+				if(direction.equals(HexDirection.NORTH_WEST))
+				{
+					graphics.pose().translate(getX()-8, getY()-8, 0);
+					graphics.pose().translate(2, 14, 0);
+					graphics.pose().mulPose(Axis.ZP.rotationDegrees(270));
+					graphics.blit(GRID_CONNECTION_DIAGONAL, 0, 0, 0, 0, 16, 16,
+							16, 16);
+				}
+				if(direction.equals(HexDirection.SOUTH_EAST))
+				{
+					graphics.pose().translate(getX()-8, getY()-8, 0);
+					graphics.pose().translate(14, 2, 0);
+					graphics.pose().mulPose(Axis.ZP.rotationDegrees(270));
+					graphics.pose().mulPose(Axis.ZP.rotationDegrees(180));
+					graphics.blit(GRID_CONNECTION_DIAGONAL, 0, 0, 0, 0, 16, 16,
+							16, 16);
+				}
+
+				graphics.pose().popPose();
+			}
+		}
 	}
 
 	@Override

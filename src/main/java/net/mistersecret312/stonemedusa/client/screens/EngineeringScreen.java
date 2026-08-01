@@ -7,7 +7,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Items;
 import net.mistersecret312.stonemedusa.client.screens.widgets.*;
-import net.mistersecret312.stonemedusa.init.ItemInit;
 import net.mistersecret312.stonemedusa.menus.EngineeringTableMenu;
 import org.joml.Vector2d;
 
@@ -30,6 +29,11 @@ public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableM
 	@Override
 	protected void init()
 	{
+		tiles.clear();
+		types.clear();
+		solved = false;
+		activeTileType = TileType.BLANK;
+
 		int x = (width) / 2;
 		int y = (height) / 2;
 		int radius = 3;
@@ -47,12 +51,20 @@ public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableM
 
 		placeTypeButton(new TileTypeItemWidget(100, 100, Items.COPPER_INGOT,
 				TileType.WIRE, this));
+		placeTypeButton(new TileTypeItemWidget(100, 126, Items.IRON_INGOT,
+				TileType.PLATE, this));
+		placeTypeButton(new TileTypeItemWidget(100, 152, Items.GOLD_INGOT,
+				TileType.BOOSTER, this));
+		placeTypeButton(new TileTypeItemWidget(100, 178, Items.DIAMOND,
+				TileType.SPLITTER, this));
+
+		placeTile(0, 0, new AoEBlockTile(x, y, 0, 0, radius, this));
 
 		placeTile(-2, -1, new StartHexTile(x,y,-2,-1, radius,this, 15));
 		placeTile(2, -3, new StartHexTile(x,y,2,-3, radius,this, 15));
 
-		placeTile(2, 1, new EndHexTile(x,y,2,1, radius,this, 10));
-		placeTile(-2, 3, new EndHexTile(x,y,-2,3, radius,this, 10));
+		placeTile(2, 1, new EndHexTile(x,y,2,1, radius,this, 20));
+		placeTile(-2, 3, new EndHexTile(x,y,-2,3, radius,this, 25));
 	}
 
 	public void placeTypeButton(TileTypeItemWidget typeWidget)
@@ -66,8 +78,14 @@ public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableM
 		Vector2d coord = new Vector2d(row, column);
 		BaseHexTile oldTile = this.tiles.get(coord);
 
+		if(oldTile == null && !newTile.getType().equals(TileType.BLANK))
+			return;
+
 		if (oldTile != null)
 		{
+			if(oldTile.getType().equals(newTile.getType()))
+				return;
+
 			oldTile.disconnectFromNeighbors();
 			this.removeWidget(oldTile);
 		}
@@ -81,21 +99,26 @@ public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableM
 
 	public void placeTile(int row, int column, int x, int y, int radius, TileType type)
 	{
-		if(type == null)
+		if(type == null || type.equals(TileType.PLATE))
 			return;
 
 		BaseHexTile tile = new BaseHexTile(x, y, row, column, radius, this);
 		if(type.equals(TileType.WIRE))
 			tile = new WireHexTile(x, y, row, column, radius, this);
+		if(type.equals(TileType.BOOSTER))
+			tile = new BoosterHexTile(x, y, row, column, radius, this, 5);
+		if(type.equals(TileType.SPLITTER))
+			tile = new SplitterHexTile(x, y, row, column, radius, this);
 
 		if(!tile.canConnectOnSpot() && !(tile.getType().equals(TileType.BLANK)))
 			return;
 
 		TileTypeItemWidget typeWidget = this.types.get(type);
-		if(typeWidget == null || typeWidget.countItem() == 0)
+		if(type != TileType.BLANK && (typeWidget == null || typeWidget.countItem() == 0))
 			return;
 
-		typeWidget.removeItem();
+		if(type != TileType.BLANK)
+			typeWidget.removeItem();
 		placeTile(row, column, tile);
 	}
 
@@ -120,5 +143,11 @@ public class EngineeringScreen extends AbstractContainerScreen<EngineeringTableM
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY)
 	{
 //		super.renderLabels(guiGraphics, mouseX, mouseY);
+	}
+
+	@Override
+	public boolean isPauseScreen()
+	{
+		return false;
 	}
 }

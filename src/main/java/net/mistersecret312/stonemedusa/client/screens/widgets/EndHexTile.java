@@ -24,7 +24,7 @@ public class EndHexTile extends BaseHexTile
 	@Override
 	public int getMaxInputs()
 	{
-		return 6;
+		return 1;
 	}
 
 	@Override
@@ -36,6 +36,12 @@ public class EndHexTile extends BaseHexTile
 	public TileType getType()
 	{
 		return TileType.END;
+	}
+
+	@Override
+	public boolean handlesSignal()
+	{
+		return true;
 	}
 
 	@Override

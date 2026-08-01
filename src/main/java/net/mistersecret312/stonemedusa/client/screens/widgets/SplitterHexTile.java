@@ -9,12 +9,12 @@ import net.mistersecret312.stonemedusa.client.screens.EngineeringScreen;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WireHexTile extends BaseHexTile
+public class SplitterHexTile extends BaseHexTile
 {
-	public static final ResourceLocation GRID_WIRE =
-			ResourceLocation.fromNamespaceAndPath(StoneMedusa.MODID, "textures/item/grid_wire.png");
+	public static final ResourceLocation GRID_SPLITTER =
+			ResourceLocation.fromNamespaceAndPath(StoneMedusa.MODID, "textures/item/grid_splitter.png");
 
-	public WireHexTile(int x, int y, int row, int column, int radius, EngineeringScreen screen)
+	public SplitterHexTile(int x, int y, int row, int column, int radius, EngineeringScreen screen)
 	{
 		super(x, y, row, column, radius, screen);
 	}
@@ -28,13 +28,7 @@ public class WireHexTile extends BaseHexTile
 	@Override
 	public int getMaxOutputs()
 	{
-		return 1;
-	}
-
-	@Override
-	protected ResourceLocation getTexture()
-	{
-		return GRID_WIRE;
+		return 2;
 	}
 
 	@Override
@@ -43,8 +37,15 @@ public class WireHexTile extends BaseHexTile
 		return true;
 	}
 
+	@Override
+	protected ResourceLocation getTexture()
+	{
+		return GRID_SPLITTER;
+	}
+
+	@Override
 	public TileType getType()
 	{
-		return TileType.WIRE;
+		return TileType.SPLITTER;
 	}
 }

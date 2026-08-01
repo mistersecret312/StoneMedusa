@@ -41,4 +41,6 @@ public class EngineeringTableMenu extends AbstractContainerMenu
 		return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
 				player, BlockInit.ENGINEERING_TABLE.get());
 	}
+
+
 }
