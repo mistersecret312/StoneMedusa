@@ -245,7 +245,7 @@ public class MedusaBeam
 
 		int energy = medusa.getAvailableEnergy(this, level);
 		double energyFactor = 5d*handler.getAttribute(MedusaAttribute.ENERGY_EFFICIENCY);
-		int energyToUse = Math.min(1, (int) (energyFactor*settings.radius()));
+		int energyToUse = Math.max(1, (int) (energyFactor*settings.radius()));
 
 		double maxEnergyUsage = handler.getAttribute(MedusaAttribute.MAX_ENERGY_FLUX)*medusa.getMaximumEnergy(settings.source(), level);
 		if(energyToUse > maxEnergyUsage)
