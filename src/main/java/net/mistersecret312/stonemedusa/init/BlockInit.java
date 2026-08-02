@@ -3,6 +3,7 @@ package net.mistersecret312.stonemedusa.init;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.mistersecret312.stonemedusa.blocks.EngineeringTableBlock;
@@ -19,6 +20,10 @@ public class BlockInit
 
 	public static final DeferredBlock<Block> ENGINEERING_TABLE = registerBlock("engineering_table",
 			() -> new EngineeringTableBlock(BlockBehaviour.Properties.of().noOcclusion()));
+	public static final DeferredBlock<Block> RUSTY_MEDUSA_BLOCK = registerBlock("rusty_medusa_block",
+			() -> new Block(BlockBehaviour.Properties.of().strength(4f).sound(SoundType.METAL).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block> RUSTY_MEDUSA = registerBlock("rusty_medusa",
+			() -> new Block(BlockBehaviour.Properties.of().noOcclusion().noCollission().strength(0f).sound(SoundType.METAL)));
 
 	private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block)
 	{
