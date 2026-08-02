@@ -72,7 +72,7 @@ public class EngineeringTableBlockEntity extends BlockEntity implements MenuProv
 	@Nullable
 	public IItemHandler getItemHandler(Direction side)
 	{
-		if(!side.equals(Direction.UP))
+		if(side == null || !side.equals(Direction.UP))
 			return lazyHandler.get();
 		return null;
 	}
