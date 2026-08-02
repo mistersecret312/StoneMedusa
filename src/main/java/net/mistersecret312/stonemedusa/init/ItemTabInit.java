@@ -35,6 +35,8 @@ public class ItemTabInit
 									 output.accept(ItemInit.SPATIAL_MANIFOLD);
 
 									 output.accept(BlockInit.ENGINEERING_TABLE.asItem());
+									 output.accept(BlockInit.RUSTY_MEDUSA_BLOCK.asItem());
+									 output.accept(BlockInit.RUSTY_MEDUSA.asItem());
 								 }).build());
 
 	public static void register(IEventBus bus)

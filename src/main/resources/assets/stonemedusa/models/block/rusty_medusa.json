@@ -1,0 +1,25 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"0": "stonemedusa:item/rusty_medusa",
+		"particle": "stonemedusa:item/rusty_medusa"
+	},
+	"elements": [
+		{
+			"from": [3.5, 0.6, 3.5],
+			"to": [12.5, 0.6, 12.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0.5, 0.6, -0.5]},
+			"faces": {
+				"north": {"uv": [0, 2, 16, 2], "texture": "#0"},
+				"east": {"uv": [0, 2, 16, 2], "texture": "#0"},
+				"south": {"uv": [0, 2, 16, 2], "texture": "#0"},
+				"west": {"uv": [0, 2, 16, 2], "texture": "#0"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		}
+	]
+}
