@@ -11,14 +11,17 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.data_attachment.PetrificationAttachment;
+import net.mistersecret312.stonemedusa.init.AdvancementInit;
 import net.mistersecret312.stonemedusa.init.AttachmentTypeInit;
 import net.mistersecret312.stonemedusa.init.BeamTypeInit;
 import net.mistersecret312.stonemedusa.init.TagsInit;
@@ -27,6 +30,7 @@ import net.mistersecret312.stonemedusa.medusa.components.MedusaComponentType;
 import net.mistersecret312.stonemedusa.medusa.source.InventorySource;
 import net.mistersecret312.stonemedusa.medusa.source.MedusaSource;
 import net.mistersecret312.stonemedusa.util.MedusaUtil;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -62,10 +66,13 @@ public class MedusaBeam
 
 	private List<UUID> petrifiedBefore = new ArrayList<>();
 
-	public MedusaBeam(MedusaSettings settings)
+	private UUID user;
+
+	public MedusaBeam(MedusaSettings settings, @Nullable UUID user)
 	{
 		this.settings = settings;
 		this.prevPosition = settings.position();
+		this.user = user;
 	}
 
 	public MedusaBeamType<?> getType()
@@ -233,6 +240,14 @@ public class MedusaBeam
 			{
 				petrification.startPetrification(living, pos.sub(living.position().toVector3f()), currentRadius);
 				petrifiedBefore.add(living.getUUID());
+
+				ItemStack stack = getSettings().source().getMedusaItem(level);
+				if(user != null)
+				{
+					ServerPlayer player = ((ServerPlayer) level.getPlayerByUUID(user));
+					AdvancementInit.PETRIFY.get().trigger(player, living, stack == null ? ItemStack.EMPTY : stack);
+					AdvancementInit.PETRIFIED.get().trigger(player, stack == null ? ItemStack.EMPTY : stack);
+				}
 			}
 		}
 	}
@@ -361,6 +376,11 @@ public class MedusaBeam
 		return settings.color();
 	}
 
+	public UUID getUser()
+	{
+		return user;
+	}
+
 	public void markForRemoval(Level level)
 	{
 		this.markForRemoval = true;
@@ -381,6 +401,8 @@ public class MedusaBeam
 			tag.putString("type", type.toString());
 
 		tag.put("source", this.settings.source().save());
+		if(this.user != null)
+			tag.putUUID("user", this.user);
 
 		CompoundTag settingsTag = new CompoundTag();
 		settingsTag.putUUID("uuid", settings.uuid());
@@ -425,6 +447,9 @@ public class MedusaBeam
 		CompoundTag settingsTag = tag.getCompound("settings");
 
 		MedusaSource source = MedusaSource.load(tag.getCompound("source"));
+		UUID user = null;
+		if(tag.contains("user"))
+			user = tag.getUUID("user");
 
 		CompoundTag posTag = settingsTag.getCompound("pos");
 		float x = posTag.getFloat("x");
@@ -443,7 +468,7 @@ public class MedusaBeam
 		double radius = settingsTag.getDouble("radius");
 
 		MedusaSettings settings = new MedusaSettings(radius, speed, color, position, uuid, source);
-		MedusaBeam beam = new MedusaBeam(settings);
+		MedusaBeam beam = new MedusaBeam(settings, user);
 
 		beam.markForRemoval = tag.getBoolean("removal");
 		beam.tick = tag.getInt("tick");

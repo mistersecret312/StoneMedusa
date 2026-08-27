@@ -1,0 +1,33 @@
+{
+  "criteria": {
+    "item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "stonemedusa:rusty_medusa"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.stonemedusa.start.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stonemedusa:rusty_medusa"
+    },
+    "title": {
+      "translate": "advancements.stonemedusa.start.title"
+    },
+    "background": "stonemedusa:textures/block/rusty_medusa_block.png"
+  },
+  "requirements": [
+    [
+      "item"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -37,6 +37,7 @@ public class ItemTabInit
 									 output.accept(BlockInit.ENGINEERING_TABLE.asItem());
 									 output.accept(BlockInit.RUSTY_MEDUSA_BLOCK.asItem());
 									 output.accept(BlockInit.RUSTY_MEDUSA.asItem());
+									 output.accept(ItemInit.ONE_SMALL_STEP_TO_HERO_DISC);
 								 }).build());
 
 	public static void register(IEventBus bus)

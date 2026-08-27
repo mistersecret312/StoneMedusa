@@ -1,0 +1,64 @@
+{
+  "parent": "stonemedusa:start",
+  "criteria": {
+    "plating": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "stonemedusa:mobius_plating"
+          }
+        ]
+      }
+    },
+    "receptacle": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "stonemedusa:crystal_receptacle"
+          }
+        ]
+      }
+    },
+    "filaments": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "stonemedusa:waveguide_filament"
+          }
+        ]
+      }
+    },
+    "manifold": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "stonemedusa:spatial_manifold"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.stonemedusa.components.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stonemedusa:mobius_plating"
+    },
+    "title": {
+      "translate": "advancements.stonemedusa.components.title"
+    }
+  },
+  "requirements": [
+    ["plating"],
+    ["receptacle"],
+    ["filaments"],
+    ["manifold"]
+  ],
+  "sends_telemetry_event": true
+}

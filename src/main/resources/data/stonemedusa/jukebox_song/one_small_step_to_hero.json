@@ -1,0 +1,8 @@
+{
+  "comparator_output": 15,
+  "description": {
+    "translate": "item.stonemedusa.one_small_step_to_hero_disc.desc"
+  },
+  "length_in_seconds": 251,
+  "sound_event": "stonemedusa:one_small_step_to_hero"
+}

@@ -75,6 +75,8 @@ public class StoneMedusa
 		BeamSourceInit.register(modEventBus);
 		StructureTypeInit.register(modEventBus);
 		StructurePlacementInit.register(modEventBus);
+		SoundInit.register(modEventBus);
+		AdvancementInit.register(modEventBus);
 
 		modEventBus.addListener(NetworkInit::registerPackets);
 		modEventBus.addListener(this::onRegisterCapabilities);

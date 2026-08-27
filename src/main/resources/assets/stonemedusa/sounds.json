@@ -1,0 +1,12 @@
+{
+  "one_small_step_to_hero":
+  {
+    "sounds":
+    [
+      {
+        "name": "stonemedusa:one_small_step",
+        "stream": true
+      }
+    ]
+  }
+}

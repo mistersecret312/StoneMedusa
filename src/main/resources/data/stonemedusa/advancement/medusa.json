@@ -1,0 +1,33 @@
+{
+  "parent": "stonemedusa:diamond_battery",
+  "criteria": {
+    "item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "stonemedusa:diamond_battery"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.stonemedusa.medusa.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stonemedusa:medusa"
+    },
+    "title": {
+      "translate": "advancements.stonemedusa.medusa.title"
+    }
+  },
+  "requirements": [
+    [
+      "item"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

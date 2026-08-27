@@ -35,6 +35,8 @@ public class MedusaLevelAttachment
     private final Map<UUID, MedusaHandler> medusaHandlers = new ConcurrentHashMap<>();
     private final List<PetrifiedArea> petrifiedAreas = new ArrayList<>();
 
+    public boolean loadedPyramid = false;
+
     public void addBeam(Level level, MedusaBeam beam)
     {
         activeBeams.put(beam.getSettings().uuid(), beam);
@@ -135,6 +137,8 @@ public class MedusaLevelAttachment
             handlersList.add(handler.serializeNBT(provider));
         tag.put("handlers", handlersList);
 
+        tag.putBoolean("loaded_pyramid", loadedPyramid);
+
         return tag;
     }
 
@@ -164,6 +168,8 @@ public class MedusaLevelAttachment
             MedusaHandler handler = MedusaHandler.deserializeNBT(handlersList.getCompound(i), provider);
             medusaHandlers.put(handler.medusaID, handler);
         }
+
+        loadedPyramid = tag.getBoolean("loaded_pyramid");
     }
 
     public MedusaBeam getMedusa(UUID deviceId)

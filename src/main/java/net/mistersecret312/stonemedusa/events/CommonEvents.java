@@ -1,6 +1,7 @@
 package net.mistersecret312.stonemedusa.events;
 
 import net.minecraft.core.Holder;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
@@ -44,6 +46,7 @@ import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -156,9 +159,33 @@ public class CommonEvents
 		int chunkZ = StructureUtil.getChunkZ(seed, 15524351, MedusaConfig.pyramid_generation_z_chunk_offset.get(),
 				MedusaConfig.pyramid_generation_z_chunk_bounds.get(), 0);
 
-		PetrifiedArea area = new PetrifiedArea(new Vec2(chunkX*16, chunkZ*16),
-				level.dimension(), 250, -1, new HashSet<>(), false);
-		level.getData(AttachmentTypeInit.MEDUSA).addPetrifiedArea(level, area);
+		MedusaLevelAttachment attachment = level.getData(AttachmentTypeInit.MEDUSA);
+		if(!attachment.loadedPyramid)
+		{
+			PetrifiedArea area = new PetrifiedArea(new Vec2(chunkX * 16, chunkZ * 16), level.dimension(), 250, -1,
+					new HashSet<>(), false);
+			attachment.addPetrifiedArea(level, area);
+		}
+	}
+
+	@SubscribeEvent
+	public static void chunkLoad(ChunkEvent.Load event)
+	{
+		MinecraftServer server = event.getLevel().getServer();
+		if(!event.isNewChunk() || server == null)
+			return;
+
+		ServerLevel serverLevel = server.overworld();
+		long seed = serverLevel.getSeed();
+		int chunkX = StructureUtil.getChunkX(seed, 15524351, MedusaConfig.pyramid_generation_x_chunk_offset.get(),
+				MedusaConfig.pyramid_generation_x_chunk_bounds.get(), 0);
+		int chunkZ = StructureUtil.getChunkZ(seed, 15524351, MedusaConfig.pyramid_generation_z_chunk_offset.get(),
+				MedusaConfig.pyramid_generation_z_chunk_bounds.get(), 0);
+
+		ChunkPos pos = event.getChunk().getPos();
+		if(pos.x == chunkX && pos.z == chunkZ)
+			serverLevel.getData(AttachmentTypeInit.MEDUSA.get()).loadedPyramid = true;
+
 	}
 
 	@SubscribeEvent

@@ -5,6 +5,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -16,8 +17,10 @@ import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.mistersecret312.stonemedusa.init.AdvancementInit;
 import net.mistersecret312.stonemedusa.init.AttachmentTypeInit;
 import net.mistersecret312.stonemedusa.util.MedusaUtil;
+import net.neoforged.neoforge.common.EffectCures;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.UnknownNullability;
 import org.joml.Vector3f;
@@ -64,8 +67,11 @@ public class PetrificationAttachment implements INBTSerializable<CompoundTag>
 		if(depetrificationProgress != 0)
 		{
 			if(!level.isClientSide())
-				living.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 1, 999,
-					false, false, false));
+			{
+				living.setHealth(living.getMaxHealth());
+				living.removeAllEffects();
+				living.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 1, 999, false, false, false));
+			}
 
 			if(depetrificationProgress < 100)
 				depetrificationProgress++;
@@ -78,6 +84,8 @@ public class PetrificationAttachment implements INBTSerializable<CompoundTag>
 					living.setNoGravity(hadNoGravityBefore);
 				}
 				depetrify();
+				if(living instanceof ServerPlayer player)
+					AdvancementInit.DEPETRIFIED.get().trigger(player);
 			}
 			living.syncData(AttachmentTypeInit.PETRIFICATION);
 		}

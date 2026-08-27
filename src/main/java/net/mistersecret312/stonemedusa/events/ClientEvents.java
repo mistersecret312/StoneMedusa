@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.Input;
@@ -13,15 +12,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.PhantomRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -31,13 +25,9 @@ import net.minecraft.world.phys.Vec3;
 import net.mistersecret312.stonemedusa.StoneMedusa;
 import net.mistersecret312.stonemedusa.client.*;
 import net.mistersecret312.stonemedusa.client.beams.MedusaBeamRenderer;
-import net.mistersecret312.stonemedusa.config.MedusaConfig;
 import net.mistersecret312.stonemedusa.data_attachment.MedusaLevelAttachment;
 import net.mistersecret312.stonemedusa.data_attachment.PetrificationAttachment;
 import net.mistersecret312.stonemedusa.init.AttachmentTypeInit;
-import net.mistersecret312.stonemedusa.init.DataComponentInit;
-import net.mistersecret312.stonemedusa.init.ItemInit;
-import net.mistersecret312.stonemedusa.items.DiamondBatteryItem;
 import net.mistersecret312.stonemedusa.items.IBorderCustom;
 import net.mistersecret312.stonemedusa.medusa.MedusaBeam;
 import net.neoforged.api.distmarker.Dist;
@@ -45,11 +35,12 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+
+import static net.mistersecret312.stonemedusa.medusa.MedusaChatHandler.MEDUSA_COMMAND;
 
 @EventBusSubscriber(modid = StoneMedusa.MODID, value = Dist.CLIENT)
 public class ClientEvents
@@ -302,4 +293,23 @@ public class ClientEvents
 			event.setBorderEnd(custom.getBorderColors(stack).getSecond());
 		}
 	}
+
+//	@SubscribeEvent
+//	public static void receiveMedusaCommand(ClientChatReceivedEvent.Player event)
+//	{
+//		UUID senderUUID = event.getSender();
+//		String message = event.getMessage().getString();
+//		Matcher matcher = MEDUSA_COMMAND.matcher(message);
+//		Level level = Minecraft.getInstance().level;
+//		Player player = Minecraft.getInstance().player;
+//		if (matcher.matches() && level != null && player != null)
+//		{
+//			Player sender = level.getPlayerByUUID(senderUUID);
+//			if(sender == null)
+//				return;
+//
+//			if(player.position().distanceTo(sender.position()) > 50)
+//				event.setCanceled(true);
+//		}
+//	}
 }

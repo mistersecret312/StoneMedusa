@@ -1,0 +1,33 @@
+{
+  "parent": "stonemedusa:start",
+  "criteria": {
+    "find_pyramid": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "location": {
+            "structures": "stonemedusa:medusa_pyramid"
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.stonemedusa.find_pyramid.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stonemedusa:rusty_medusa_block"
+    },
+    "title": {
+      "translate": "advancements.stonemedusa.find_pyramid.title"
+    }
+  },
+  "requirements": [
+    [
+      "find_pyramid"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

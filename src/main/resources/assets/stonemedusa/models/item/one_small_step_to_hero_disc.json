@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "stonemedusa:item/music_disc_one_small_step"
+  }
+}

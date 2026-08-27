@@ -33,6 +33,8 @@ public class ItemInit
 	public static final DeferredItem<RevivalFluidItem> REVIVAL_FLUID_FLASK = ITEMS.register("revival_fluid_flask",
 			() -> new RevivalFluidItem(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON)));
 
+	public static final DeferredItem<Item> ONE_SMALL_STEP_TO_HERO_DISC = ITEMS.register("one_small_step_to_hero_disc",
+			() -> new Item(new Item.Properties().jukeboxPlayable(SoundInit.ONE_SMALL_STEP_TO_HERO_KEY).stacksTo(1).rarity(Rarity.RARE)));
 
 	public static void register(IEventBus bus)
 	{

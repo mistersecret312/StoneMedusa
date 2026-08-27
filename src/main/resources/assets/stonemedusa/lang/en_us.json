@@ -10,10 +10,34 @@
 
   "item.stonemedusa.revival_fluid_flask": "Revival Fluid Flask",
 
+  "item.stonemedusa.one_small_step_to_hero_disc": "Music Disc",
+  "item.stonemedusa.one_small_step_to_hero_disc.desc": "Hiroaki Tsutsumi - One Small Step (ft. Laura Pitt-Pulford)",
+
   "block.stonemedusa.rusty_medusa_block": "Rusty Medusa Block",
   "block.stonemedusa.rusty_medusa": "Rusty Medusa",
 
   "death.attack.petrification": "%1$s statue was destroyed",
   "death.attack.petrification.player": "%1$s statue was destroyed by %2$s",
-  "death.attack.petrification.item": "%1$s statue was destroyed by %2$s using %3$s"
+  "death.attack.petrification.item": "%1$s statue was destroyed by %2$s using %3$s",
+
+  "advancements.stonemedusa.start.title": "Dr.STONE - Medusa",
+  "advancements.stonemedusa.start.description": "Find a Rusty Medusa, and start your Science Journey",
+
+  "advancements.stonemedusa.components.title": "Medusa Mechanism",
+  "advancements.stonemedusa.components.description": "Obtain all components of a Medusa",
+
+  "advancements.stonemedusa.diamond_battery.title": "Diamond Heart",
+  "advancements.stonemedusa.diamond_battery.description": "Obtain a Diamond Battery",
+
+  "advancements.stonemedusa.medusa.title": "The Medusa's True Face",
+  "advancements.stonemedusa.medusa.description": "Obtain a working Medusa",
+
+  "advancements.stonemedusa.petrified.title": "Flicker of Doom",
+  "advancements.stonemedusa.petrified.description": "Get Petrified",
+
+  "advancements.stonemedusa.depetrified.title": "Last Man Standing",
+  "advancements.stonemedusa.depetrified.description": "Break out of Petrification",
+
+  "advancements.stonemedusa.find_pyramid.title": "Sickening Yet Beautiful",
+  "advancements.stonemedusa.find_pyramid.description": "Locate a Medusa Pyramid"
 }

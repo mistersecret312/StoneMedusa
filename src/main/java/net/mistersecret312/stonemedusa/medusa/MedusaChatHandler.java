@@ -12,6 +12,8 @@ import net.mistersecret312.stonemedusa.medusa.source.MedusaSource;
 import net.mistersecret312.stonemedusa.util.MedusaUtil;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientChatEvent;
+import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
 import net.neoforged.neoforge.event.ServerChatEvent;
 
 import java.util.List;
@@ -22,7 +24,7 @@ import java.util.regex.Pattern;
 @EventBusSubscriber(modid = StoneMedusa.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class MedusaChatHandler {
 
-    private static final Pattern MEDUSA_COMMAND = Pattern.compile(
+    public static final Pattern MEDUSA_COMMAND = Pattern.compile(
             "(\\d+(?:\\.\\d+)?)\\s*meters?\\s*(\\d+(?:\\.\\d+)?)\\s*(seconds?|minutes?|hours?)",
             Pattern.CASE_INSENSITIVE
     );
@@ -73,7 +75,7 @@ public class MedusaChatHandler {
                     double speed = 0.01 + (0.15d * Mth.sqrt((float) meters));
                     MedusaSettings settings = new MedusaSettings(meters, speed, 0x00FF00,
                             position, id, source);
-                    MedusaBeam beam = new MedusaBeam(settings);
+                    MedusaBeam beam = new MedusaBeam(settings, player.getUUID());
                     int ticks = (int) (seconds*20);
                     beam.setMaxDelay(ticks);
                     beam.setDelayTicker(ticks);

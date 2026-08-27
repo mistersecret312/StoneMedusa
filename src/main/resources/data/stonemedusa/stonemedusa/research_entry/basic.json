@@ -3,7 +3,7 @@
   "icon": "stonemedusa:textures/item/diamond_battery_1.png",
   "grid":
   {
-    "radius": 2,
+    "radius": 4,
     "tiles":
     [
       {

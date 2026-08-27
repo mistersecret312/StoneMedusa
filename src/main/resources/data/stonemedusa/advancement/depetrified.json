@@ -1,0 +1,26 @@
+{
+  "parent": "stonemedusa:petrified",
+  "criteria": {
+    "petrified": {
+      "trigger": "stonemedusa:depetrified"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.stonemedusa.depetrified.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:cobblestone"
+    },
+    "title": {
+      "translate": "advancements.stonemedusa.depetrified.title"
+    }
+  },
+  "requirements": [
+    [
+      "petrified"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

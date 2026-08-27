@@ -1,6 +1,7 @@
 package net.mistersecret312.stonemedusa.entity;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -19,6 +20,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.mistersecret312.stonemedusa.config.RevivalConfig;
+import net.mistersecret312.stonemedusa.init.AdvancementInit;
 import net.mistersecret312.stonemedusa.init.AttachmentTypeInit;
 import net.mistersecret312.stonemedusa.init.EntityInit;
 import net.mistersecret312.stonemedusa.init.ItemInit;
@@ -75,6 +77,8 @@ public class ThrownRevivalFluidEntity extends ThrowableItemProjectile
 		for (LivingEntity living : list)
 		{
 			living.getData(AttachmentTypeInit.PETRIFICATION.get()).startDepetrification(living);
+			if(getOwner() instanceof ServerPlayer player)
+				AdvancementInit.DEPETRIFY.get().trigger(player, living);
 			if(this.getOwner() != null && living instanceof Villager villager)
 				villager.getGossips().add(this.getOwner().getUUID(), GossipType.MAJOR_POSITIVE, 100);
 		}
